@@ -1,4 +1,5 @@
-# **Chapter 49. The Build Dashboard Plugin**
+# **第四十三章. Build Announcements插件**
+Chapter 49. The Build Dashboard Plugin
 
 Build Dashboard Plugin目前正在开发中。请注意，DSL和其他配置在以后的Gradle版本中可能会改变。
 The build dashboard plugin is currently incubating. Please be aware that the DSL and other configuration may change in later Gradle versions.
