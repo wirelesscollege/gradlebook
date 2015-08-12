@@ -33,7 +33,7 @@ Gradle already has much of the information needed for Sonar Runner to successful
 
 Sonar Runner 默认用的插件版本3.0适配Sonar 3.0或更高的的sonar版本.为了适配3.0以下的sonar版本，你可以使用更早之前的sonar版本（具体请查看36.4 Sonra runner 的版本说明）
 
-The default version of the Sonar Runner used by the plugin is 2.3, which makes it compatible with Sonar 3.0 and higher. For compatibility with Sonar versions earlier than 3.0, you can configure the use of an earlier Sonar Runner version (see Section 35.4, “Specifying the Sonar Runner version”).
+The default version of the Sonar Runner used by the plugin is 2.3, which makes it compatible with Sonar 3.0 and higher. For compatibility with Sonar versions earlier than 3.0, you can configure the use of an earlier Sonar Runner version (see Section 36.4, “Specifying the Sonar Runner version”).
 
 ## **36.2开始启程**
 36.2. Getting started
@@ -196,9 +196,9 @@ sonarRunner {
 
 Configuration shared between subprojects can be configured in a subprojects block.
 
-Example 35.5.分享配置设置
+Example 36.5.分享配置设置
 
-Example 35.5. Shared configuration settings
+Example 36.5. Shared configuration settings
 
 build.gradle
 ```
@@ -215,9 +215,9 @@ Project-specific information 在相应的sonarRunner项目模块被设置
 
 Project-specific information is configured in the sonarRunner block of the corresponding project.
 
-Example 35.6.个别配置设置
+Example 36.6.个别配置设置
 
-Example 35.6. Individual configuration settings
+Example 36.6. Individual configuration settings
 
 build.gradle
 ```
@@ -253,9 +253,9 @@ project(":project2") {
 
 By default, the Sonar Runner plugin passes on the project's main source set as production sources, and the project's test source set as test sources. This works regardless of the project's source directory layout. Additional source sets can be added as needed.
 
-Example 35.8. 分析自定义的source sets
+Example 36.8. 分析自定义的source sets
 
-Example 35.8. Analyzing custom source sets
+Example 36.8. Analyzing custom source sets
 
 build.gradle
 ```
