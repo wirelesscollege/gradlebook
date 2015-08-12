@@ -14,7 +14,7 @@ Note that this is completely different from the “init” task provided by the 
 
 61.1. Basic usage
 
-初始化脚本（又叫init脚本），它类似于Gradle中的其他脚本，但是这些脚本都是在构建之前运行。这是几个可能的用法：
+初始化脚本（又叫init脚本），它类似于Gradle中的其他脚本，但是这些脚本都是在构建之前运行。以下是几个可能的用法：
 
 Initialization scripts (a.k.a. init scripts) are similar to other scripts in Gradle. These scripts, however, are run before the build starts. Here are several possible uses:
 
