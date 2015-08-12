@@ -1,6 +1,6 @@
 # **第46章 Java lib发布插件**
 
-Chapter 45. The Java Library Distribution Plugin
+Chapter 46. The Java Library Distribution Plugin
 
 Java lib发布插件目前正在开发中。请注意，在以后的Gradleb版本中DSL和其他配置可能会改变。
 
@@ -10,17 +10,17 @@ The Java library distribution plugin is currently incubating. Please be aware th
 
 The Java library distribution plugin adds support for building a distribution ZIP for a Java library. The distribution contains the JAR file for the library and its dependencies.
 
-## **45.1  运用**
+## **46.1  运用**
 
-45.1. Usage
+46.1. Usage
 
 要使用java lib发布插件，需要包含以下构建脚本：
 
 To use the Java library distribution plugin, include the following in your build script:
 
-例45.1 使用java lib 发布插件
+例46.1 使用java lib 发布插件
 
-Example 45.1. Using the Java library distribution plugin
+Example 46.1. Using the Java library distribution plugin
 
 build.gradle
 ```
@@ -31,9 +31,9 @@ apply plugin: 'java-library-distribution'
 
 To define the name for the distribution you have to set the baseName property as shown below:
 
-例 45.2 配置发布名称
+例 46.2 配置发布名称
 
-Example 45.2. Configure the distribution name
+Example 46.2. Configure the distribution name
 
 build.gradle
 ```
@@ -48,17 +48,17 @@ distributions {
 
 The plugin builds a distribution for your library. The distribution will package up the runtime dependencies of the library. All files stored in src/main/dist will be added to the root of the archive distribution. You can run “gradle distZip” to create a ZIP file containing the distribution.
 
-## **45.2 任务**
+## **46.2 任务**
 
-45.2. Tasks
+46.2. Tasks
 
 Java lib 发布插件增加了以下任务到你的项目中。
 
 The Java library distribution plugin adds the following tasks to the project.
 
-表45.1 java lib 发布插件--任务
+表46.1 java lib 发布插件--任务
 
-Table 45.1. Java library distribution plugin - tasks
+Table 46.1. Java library distribution plugin - tasks
 
 |任务名称|	依赖于|	类型	|描述|
 |--
@@ -68,17 +68,17 @@ Table 45.1. Java library distribution plugin - tasks
 |--
 |distZip	|jar	|Zip|Creates a full distribution ZIP archive including runtime libraries.|
 
-## **45.3 发布包含的其他资源**
+## **46.3 发布包含的其他资源**
 
-45.3. Including other resources in the distribution
+46.3. Including other resources in the distribution
 
 所有的文件都拷贝至src/dist目录中。其中包含的任何静态文件，只需将他们放置在src/dist目录中，或将他们添加到发布的目录中。
 
 All of the files from the src/dist directory are copied. To include any static files in the distribution, simply arrange them in the src/dist directory, or add them to the content of the distribution.
 
-例 45.3 发布包含的文件
+例 46.3 发布包含的文件
 
-Example 45.3. Include files in the distribution
+Example 46.3. Include files in the distribution
 
 build.gradle
 ```
