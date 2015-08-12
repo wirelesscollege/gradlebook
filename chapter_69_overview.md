@@ -1,6 +1,6 @@
-# **第66章 基于模型配置的规则**
+# **第69章 基于模型配置的规则**
 
-Chapter 66. Rule based model configuration
+Chapter 69. Rule based model configuration
 
 本章描述的是Gradle3.0版本下一代Gradle构建体系。我们会在Gradle2.X版本的技术上进行开发，使其支持本地Binaries构建。
 
@@ -14,7 +14,7 @@ All of the mechanisms, DSL, API, and techniques discussed here are incubating (i
 
 The following build script is an example of a rule based build.
 
-Example 66.1. an example of a simple rule based build
+Example 69.1. an example of a simple rule based build
 
 build.gradle
 
@@ -71,9 +71,9 @@ Total time: 1 secs
 
 The rest of this chapter is dedicated to explaining what is going on in this build script, and why Gradle is moving in this direction.
 
-## **66.1背景**
+## **69.1背景**
 
-66.1. Background
+69.1. Background
 
 Gradle以为领域模式为核心主旨。聚焦领域模式比执行模式会有更多得优势（例如前一代的Ant构建工具）。强大得领域模型引导结构上的意图。（从怎么做到做什么）.它会让人们更加理解Gradle的构建，因为这个构建将会更有意义。
 
@@ -87,9 +87,9 @@ As well as helping humans, a strong domain model also helps the dutiful machines
 
 The move towards “Rule based model configuration” can be summarised as improving Gradle's ability to model richer domains in a more effective way. It also makes expressing the kinds of models present in today's Gradle more robust and simpler.
 
-## **66.2 为什么要改变**
+## **69.2 为什么要改变**
 
-66.2. Motivations for change
+69.2. Motivations for change
 
 Domain modelling 在Gradle里并不新鲜。java插件的SourceSet concept就是一个Domain modelling的例子，就好像本地插件套装内的NativeBinary模型一样。
 
@@ -107,16 +107,16 @@ While Gradle has long employed sophisticated techniques when it comes to realizi
 
 Another key motivation is performance and scale. Aspects of the current approach that Gradle takes to modelling the build prevent pervasive parallelism and limit scalability. The new model is being designed with the requirements of modern software delivery in mind, where immediate responsiveness is critical for projects large and small.
 
-## **66.3 概念**
+## **69.3 概念**
 
-66.3. Concepts
+69.3. Concepts
 
 本章需要讲解rule based model configuration的关键概念，下述子章节讲解具体实施时的理念。
 
 This section outlines the key concepts of rule based model configuration. Subsequent sections in this chapter will show the concepts in action.
 
 
-### **66.3.1. The “model space”**
+### **69.3.1. The “model space”**
 
 model space这个术语的意思是地址化规则的正式模型。
 
@@ -138,7 +138,7 @@ model space将会代替project space，未来只会有space，然而这中间的
 
 The model space will eventually replace the project space, in so far as it will be the only “space”. However, during the transition the distinction is helpful.
 
-### **66.3.2. Model paths**
+### **69.3.2. Model paths**
 
 model path是通过model space来定义的，通常情况下task就代表这是个任务，但是如果任务得名字是hello，那么她得model path就会被定义为task.hello
 
@@ -147,7 +147,7 @@ A model path identifies a path through a model space, to an element. A common re
 未完持续（官网就这么写的）
 TBD - more needed here.
 
-### **66.3.3. Rules**
+### **69.3.3. Rules**
 
 model space也定义了一系列的规则，规则就相当于抽象场景里得功能，他们产生模型元素，也取决于模型元素。每个规则都有一个单独的主题，以及0或者更多得输入。当输入是有效不变的情况下，只有主题能够被规则所改变。
 
@@ -165,7 +165,7 @@ Model elements are very often defined in terms of other model elements. For exam
 
 There are several ways to declare rules, and in several forms. An explanation of the different forms and mechanisms along with concrete examples is forthcoming in this chapter.
 
-### **66.3.4. Managed model elements**
+### **69.3.4. Managed model elements**
 
 当前任何java对象都是modelspace的一部分，然而在“managed”与“unmanaged”对象之间是有区别的。
 
@@ -179,7 +179,7 @@ unmanaged对象在model space中就是不透明的。也不执行不变性。随
 
 An “unmanaged” object is opaque to the the model space and does not enforce immutability. Over time, more mechanisms will be available for defining managed model elements culminating in all model elements being managed in some way.
 
-### **66.3.5. References, binding and scopes**
+### **69.3.5. References, binding and scopes**
 
 前面提到，一个规则有一个主题，一个0个或者多个输入。在Gradle执行前规则的主题和输入被作为引用reference和绑定bound。
 每条规则都可以有效的宣布主题和input作为引用，如何实现取决于规则的形式，例如，规则可以由RuleSource作为引用参数。
@@ -197,7 +197,7 @@ A “by-type” reference identifies a particular model element by its type. For
 
 A “by-path” reference identifies a particular model element by its path in model space. By-path references are always relative to the rule scope; there is currently no way to path “out” of the scope. All by-path references also have an associated type, but this does not influence what the reference binds to. The element identified by the path must however by type compatible with the reference, or a fatal “binding failure” will occur.
 
-#### **66.3.5.1. Binding scope**
+#### **69.3.5.1. Binding scope**
 
 规则是通过“scope”来绑定的，它决定了引用绑定。大多数的规则在项目目标上绑定，然而，规则也可以被图标内被目标化。CollectionBuilder.named()方法就是一个例子。一个被目标化规则的机制。规则在构建脚本中用{}来宣布，或者通过根空间RuleSource插件作为目标。在默认的scope中被考虑。
 
@@ -227,13 +227,13 @@ The immediate children of the model space (i.e. project space) root.
 
 For the common case, where the rule is effectively scoped to the root, only the immediate children of the root need to be considered.
 
-## **66.4. Rule sources**
+## **69.4. Rule sources**
 
 一种定义规则的方式是通过RuleSource的子类。类型作为插件实现以同样得方式被应用。
 
 One way to define rules, is via a RuleSource subclass. Such types can be applied in the same manner (to project objects) as Plugin implementations (i.e. via Project.apply()).
 
-Example 66.2. applying a rule source plugin
+Example 69.2. applying a rule source plugin
 
 build.gradle
 ```
@@ -265,11 +265,11 @@ apply plugin: PersonRules
 Rule source插件可以以同样的方式与其他类型的插件打包和分发(见58章,编写自定义插件)。
 规则的不同的方法来源是离散的,独立的规则。他们的订单,或者the fact属于同一类,无关紧要。
 
-Rule source plugins can be packaged and distributed in the same manner as other types of plugins (see Chapter 58, Writing Custom Plugins).
+Rule source plugins can be packaged and distributed in the same manner as other types of plugins (see Chapter 61, Writing Custom Plugins).
 
 The different methods of the rule source are discrete, independent rules. Their order, or the fact that they belong to the same class, are irrelevant.
 
-Example 66.3. a model creation rule
+Example 69.3. a model creation rule
 
 build.gradle
 ```
@@ -280,7 +280,7 @@ build.gradle
 
 This rule declares the there is a model element at path "person" (defined by the method name), of type Person. This is the form of the Model type rule for Managed types. Here, the person object is the rule subject. The method could potentially have a body, that mutated the person instance. It could also potentially have more parameters, that would be the rule inputs.
 
-Example 66.4. a model mutation rule
+Example 69.4. a model mutation rule
 
 build.gradle
 ```
@@ -293,7 +293,7 @@ build.gradle
 
 This Mutate rule mutates the person object. The first parameter to the method is the subject. Here, a by-type reference is used as no Path annotation is present on the parameter. It could also potentially have more parameters, that would be the rule inputs.
 
-Example 66.5. creating a task
+Example 69.5. creating a task
 
 build.gradle
 ```
@@ -318,10 +318,10 @@ As Person is a Managed type in this example, any attempt to modify the person pa
 
 Please see the documentation for RuleSource for more information on constraints on how rule sources must be implemented and for more types of rules.
 
-66.5. The “model DSL”
+69.5. The “model DSL”
 It is also possible to declare rules directly in the build script using the “model DSL”.
 
-Example 66.6. the model dsl
+Example 69.6. the model dsl
 
 build.gradle
 ```
@@ -356,7 +356,7 @@ model {
 ```       
 The following model rule is creating the person element:
 
-Example 66.7. a DSL creation rule
+Example 69.7. a DSL creation rule
 
 build.gradle
 ```
@@ -370,7 +370,7 @@ Note: The code for this example can be found at samples/modelRules/modelDsl in t
 
 The model DSL is currently quite limited. It is only possible to declare creation and general mutation rules. It is also only possible to refer to the subject by-path and it is not possible for the rule to have inputs. These are all limitations that will be addressed in future Gradle versions.
 
-## **66.6. The model report**
+## **69.6. The model report**
 
 构建中的模型任务按照树形结构显示model space。他可在查看元素绑定的时候被使用。
 
@@ -398,7 +398,7 @@ model
 Currently the report only shows the structure of the model space. In future Gradle versions it will also display the types and values of the nodes. Future versions will also provide richer and more interactive ways of exploring the model space.
 
 ## **限制与未来方向**
-66.7. Limitations and future direction
+69.7. Limitations and future direction
 
 Rule based model configuration是Gradle的未来，这个领域才刚刚开始，但是也在积极的发展。早期的实验已经证明，这种方法更有效，能够提供更丰富的诊断和援助并且更具可扩展性。然而，还是有很多得限制。
 
