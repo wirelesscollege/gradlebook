@@ -1,4 +1,6 @@
-# **Chapter 61. The Gradle Wrapper**
+# **第64章. The Gradle Wrapper**
+
+# **Chapter 64. The Gradle Wrapper**
 
 The Gradle Wrapper (henceforth referred to as the “wrapper”) is the preferred way of starting a Gradle build. The wrapper is a batch script on Windows, and a shell script for other operating systems. When you start a Gradle build via the wrapper, Gradle will be automatically downloaded and used to run the build.
 
@@ -13,9 +15,9 @@ You install the wrapper into your project by running the wrapper task. (This tas
 
 通过运行wrapper任务，将wrapper安装到项目中。（这项任务是随时可用的，即使你不添加到您的构建）。指定一个Gradle使用版本——-在命令行中输入-gradle-version。你也可以设置url直接通过--gradle-distribution-url下载Gradle。如果没有指定版本或分布URL，wrapper将被配置为使用wrapper任务执行的版本。所以，如果你运行的包装任务版本是Gradle 2.4，那么wrapper将默认配置版本2.4。
 
-Example 61.1. Running the wrapper task
+Example 64.1. Running the wrapper task
 
-例62.1  运行wrapper任务
+例64.1  运行wrapper任务
 
 Output of gradle wrapper --gradle-version 2.0
 ```
@@ -31,9 +33,9 @@ The wrapper can be further customized by adding and configuring a Wrapper task i
 
 wrapper可以通过添加和配置你的构建脚本中的wrapper任务来进一步定制，然后执行。
 
-Example 61.2. Wrapper task
+Example 64.2. Wrapper task
 
-例61.2  Wrapper任务
+例64.2  Wrapper任务
 
 build.gradle
 ```
@@ -44,9 +46,9 @@ task wrapper(type: Wrapper) {
 
 After such an execution you find the following new or updated files in your project directory (in case the default configuration of the wrapper task is used).
 
-Example 61.3. Wrapper generated files
+Example 64.3. Wrapper generated files
 
-例61.3  Wrapper生成文件
+例64.3  Wrapper生成文件
 ```
 Build layout
 simple/
@@ -65,9 +67,9 @@ If you want to switch to a new version of Gradle you don't need to rerun the wra
 
 如果想要改变Gradle的版本，你不必重新执行wrapper任务。在gradle-wrapper.properties文件中可以很好的更改各自入口。但是如果你想要利用Gradle wrapper中心的功能，那么你就需要重新封装文件。
 
-## **61.1. Configuration**
+## **64.1. Configuration**
 
-61.1. 配置
+64.1. 配置
 
 If you run Gradle with gradlew, the wrapper checks if a Gradle distribution for the wrapper is available. If so, it delegates to the gradle command of this distribution with all the arguments passed originally to the gradlew command. If it didn't find a Gradle distribution, it will download it first.
 
@@ -89,9 +91,9 @@ If you build via the wrapper, any existing Gradle distribution installed on the 
 
 如果你通过wrapper构建，那么任何已有的安装好的Gradle分布都会被忽略。
 
-## **61.2. Unix file permissions**
+## **64.2. Unix file permissions**
 
-61.2. Unix 文件权限
+64.2. Unix 文件权限
 
 The Wrapper task adds appropriate file permissions to allow the execution of the gradlew *NIX command. Subversion preserves this file permission. We are not sure how other version control systems deal with this. What should always work is to execute “sh gradlew”.
 
