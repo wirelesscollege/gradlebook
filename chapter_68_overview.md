@@ -1,6 +1,6 @@
-# **第66章 Maven发布**
+# **第68章 Maven发布**
 
-Chapter 66. Maven Publishing (new)
+Chapter 68. Maven Publishing (new)
 
 本章描述的新孵化的Maven发布功能是由“maven-publish”插件提供支持的。最终通过上传任务，新发布支持将取代你的发布。
 
@@ -12,9 +12,9 @@ This chapter describes the new incubating Maven publishing support provided by t
 If you are looking for documentation on the original Maven publishing support using the Upload task please see Chapter 52, Publishing artifacts.
 This chapter describes how to publish build artifacts to an Apache Maven Repository. A module published to a Maven repository can be consumed by Maven, Gradle (see Chapter 51, Dependency Management) and other tools that understand the Maven repository format.
 
-## **66.1.  “maven-publish” 插件**
+## **68.1.  “maven-publish” 插件**
 
-66.1. The “maven-publish” Plugin
+68.1. The “maven-publish” Plugin
 
 “maven-publish”插件提供了发布为maven格式的能力。
 
@@ -24,7 +24,7 @@ The ability to publish in the Maven format is provided by the “maven-publish�
 
 The “publishing” plugin creates an extension on the project named “publishing” of type PublishingExtension. This extension provides a container of named publications and a container of named repositories. The “maven-publish” plugin works with MavenPublication publications and MavenArtifactRepository repositories.
 
-Example 66.1. Applying the 'maven-publish' plugin
+Example 68.1. Applying the 'maven-publish' plugin
 
 build.gradle
 ```
@@ -50,7 +50,7 @@ Establishes a rule to automatically create a PublishToMavenLocal task for each M
 
 ## **发布**
 
-66.2. Publications
+68.2. Publications
 
 如果您不熟悉项目产物和配置，您应该阅读52章，52章介绍了这些发布产物的概念。这一章使用不同的方式描述了“发布产物”是什么。这里描述的发布功能最终将会被取代。发布对象描述的结构/配置会被创建。
 
@@ -65,15 +65,15 @@ Publications are published to repositories via tasks, and the configuration of t
 
 For the “maven-publish” plugin to have any effect, a MavenPublication must be added to the set of publications. This publication determines which artifacts are actually published as well as the details included in the associated POM file. A publication can be configured by adding components, customizing artifacts, and by modifying the generated POM file directly.
 
-### **66.2.1. 发布组件**
+### **68.2.1. 发布组件**
 
-66.2.1. Publishing a Software Component
+68.2.1. Publishing a Software Component
 
 组件从gradle项目发布到maven仓库其实很简单，我们来看看那些支持组件发布的一些插件：
 
 The simplest way to publish a Gradle project to a Maven repository is to specify a SoftwareComponent to publish. The components presently available for publication are:
 
-Table 66.1. Software Components
+Table 68.1. Software Components
 
 |Name	|Provided By	|Artifacts	|Dependencies|
 |--
@@ -84,7 +84,7 @@ Table 66.1. Software Components
 
 In the following example, artifacts and runtime dependencies are taken from the `java` component, which is added by the Java Plugin.
 
-Example 66.2. Adding a MavenPublication for a Java component
+Example 68.2. Adding a MavenPublication for a Java component
 
 build.gradle
 
@@ -98,9 +98,9 @@ publishing {
 }
 ```
 
-### **66.2.2 发布自定义产物**
+### **68.2.2 发布自定义产物**
 
-66.2.2. Publishing custom artifacts
+68.2.2. Publishing custom artifacts
 
 可以在发布中显式的配置产物。附件通常为原始文件,或者为AbstractArchiveTask实例(例如Jar,Zip)。
 
@@ -114,7 +114,7 @@ For each custom artifact, it is possible to specify the extension and classifier
 
 Configure custom artifacts as follows:
 
-Example 66.3. Adding additional artifact to a MavenPublication
+Example 68.3. Adding additional artifact to a MavenPublication
 
 build.gradle
 
@@ -140,9 +140,9 @@ publishing {
 
 See the MavenPublication class in the API documentation for more information about how artifacts can be customized.
 
-### **66.2.3. 在POM文件里标注值**
+### **68.2.3. 在POM文件里标注值**
 
-66.2.3. Identity values in the generated POM
+68.2.3. Identity values in the generated POM
 
 生成的POM文件的属性将包含来源于以下项目属性的标注值:
 
@@ -158,7 +158,7 @@ version - Project.getVersion()
 
 Overriding the default identity values is easy: simply specify the groupId, artifactId or version attributes when configuring the MavenPublication.
 
-Example 66.4. customizing the publication identity
+Example 68.4. customizing the publication identity
 
 build.gradle
 
@@ -188,15 +188,15 @@ Maven restricts 'groupId' and 'artifactId' to a limited character set ([A-Za-z0-
 
 The only Unicode values that are explicitly prohibited are '\', '/' and any ISO control character. Supplied values are validated early in publication.
 
-## **66.2.4. 修改生成的POM文件**
+## **68.2.4. 修改生成的POM文件**
 
-66.2.4. Modifying the generated POM
+68.2.4. Modifying the generated POM
 
 生成的POM文件需要在发布前调整，“maven-publish”提供了hook极致允许如下的修改。
 
 The generated POM file may need to be tweaked before publishing. The “maven-publish” plugin provides a hook to allow such modification.
 
-Example 66.5. Modifying the POM file
+Example 68.5. Modifying the POM file
 
 build.gradle
 
@@ -227,15 +227,15 @@ It is possible to modify virtually any aspect of the created POM should you need
 
 The identifier (groupId, artifactId, version) of the published module is an exception; these values cannot be modified in the POM using the `withXML` hook.
 
-### **66.2.5. 发布多样化模块**
+### **68.2.5. 发布多样化模块**
 
-66.2.5. Publishing multiple modules
+68.2.5. Publishing multiple modules
 
 有时从我们Gradle构建中发布多样化模块相当有用，不用去创建单独的Gradle子工程。下面是一个发布独立API和Jar包的例子：
 
 Sometimes it's useful to publish multiple modules from your Gradle build, without creating a separate Gradle subproject. An example is publishing a separate API and implementation jar for your library. With Gradle this is simple:
 
-Example 66.6. Publishing multiple modules from a single project
+Example 68.6. Publishing multiple modules from a single project
 
 build.gradle
 
@@ -269,15 +269,15 @@ publishing {
 
 If a project defines multiple publications then Gradle will publish each of these to the defined repositories. Each publication must be given a unique identity as described above.
 
-## **66.3. 仓库**
+## **68.3. 仓库**
 
-66.3. Repositories
+68.3. Repositories
 
 发布产物将会被发布到仓库中，发布仓库通过PublishingExtension.getRepositories()容器定义。
 
 Publications are published to repositories. The repositories to publish to are defined by the PublishingExtension.getRepositories() container.
 
-Example 66.7. Declaring repositories to publish to
+Example 68.7. Declaring repositories to publish to
 
 build.gradle
 
@@ -296,9 +296,9 @@ DSL描述发布仓库的依赖性,RepositoryHandler。然而,仅有MavenArtifact
 
 The DSL used to declare repositories for publication is the same DSL that is used to declare repositories to consume dependencies from, RepositoryHandler. However, in the context of Maven publication only MavenArtifactRepository repositories can be used for publication.
 
-## **66.4. 执行发布**
+## **68.4. 执行发布**
 
-66.4. Performing a publish
+68.4. Performing a publish
 
 maven-publish插件为在 publishing.publications与publishing中每个MavenPublication与MavenArtifactRepository的结合自动创建PublishToMavenRepository任务。
 
@@ -308,7 +308,7 @@ The “maven-publish” plugin automatically creates a PublishToMavenRepository 
 
 The created task is named “publish«PUBNAME»PublicationTo«REPONAME»Repository”.
 
-Example 66.8. Publishing a project to a Maven repository
+Example 68.8. Publishing a project to a Maven repository
 
 build.gradle
 
@@ -357,9 +357,9 @@ Total time: 1 secs
 
 In this example, a task named “publishMavenJavaPublicationToMavenRepository” is created, which is of type PublishToMavenRepository. This task is wired into the publish lifecycle task. Executing “gradle publish” builds the POM file and all of the artifacts to be published, and transfers them to the repository.
 
-## **66.5. 发布到Maven本地**
+## **68.5. 发布到Maven本地**
 
-66.5. Publishing to Maven Local
+68.5. Publishing to Maven Local
 
 为了与本地maven集成，发布模块到本地就比较有用了。在maven的规则里，所有的模块都是被安装进去得，maven-publish插件将自动创建PublishToMavenLocal任务为每个在publishing.publications容器内的MavenPublication。这些任务与publishToMavenLocal的生命周期相关联。你不需要在publishing.repositories里配置mavenLocal。
 
@@ -369,7 +369,7 @@ For integration with a local Maven installation, it is sometimes useful to publi
 
 The created task is named “publish«PUBNAME»PublicationToMavenLocal”.
 
-Example 66.9. Publish a project to the Maven local repository
+Example 68.9. Publish a project to the Maven local repository
 
 Output of gradle publishToMavenLocal
 
@@ -391,9 +391,9 @@ Total time: 1 secs
 
 The resulting task in this example is named “publishMavenJavaPublicationToMavenLocal”. This task is wired into the publishToMavenLocal lifecycle task. Executing “gradle publishToMavenLocal” builds the POM file and all of the artifacts to be published, and “installs” them into the local Maven repository.
 
-## **66.6. 不发布生成POM文件**
+## **68.6. 不发布生成POM文件**
 
-66.6. Generating the POM file without publishing
+68.6. Generating the POM file without publishing
 
 有时不需要实际发布而未一个模块生成POM文件很有必要，自从POM可以被单独的任务生成后，这样所就变得相当的简单。
 
@@ -403,7 +403,7 @@ At times it is useful to generate a Maven POM file for a module without actually
 
 The task for generating the POM file is of type GenerateMavenPom, and it is given a name based on the name of the publication: “generatePomFileFor«PUBNAME»Publication”. So in the example below, where the publication is named “mavenCustom”, the task will be named “generatePomFileForMavenCustomPublication”.
 
-Example 66.10. Generate a POM file without publishing
+Example 68.10. Generate a POM file without publishing
 
 build.gradle
 ```
