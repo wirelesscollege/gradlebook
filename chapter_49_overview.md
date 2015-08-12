@@ -55,6 +55,7 @@ Table 49.1. Build Dashboard plugin – tasks
 Build Dashboard插件不要求任何特殊的项目布局
 The Build Dashboard plugin does not require any particular project layout.
 
+
 ## **49.4. Dependency management**
 
 Build Dashboard插件没有定义任何依赖项配置。
