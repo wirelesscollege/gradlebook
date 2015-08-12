@@ -1,183 +1,70 @@
-# **第63章.构建比较**
+# **Chapter 62. Embedding Gradle**
 
-Chapter 63. Comparing Builds
+62.1. Introduction to the Tooling API
 
-支持构建比较是一个潜在的特性.这意味着它是不完整且并没有在Gradle产品质量中形成规则.这也意味着该Gradle用户指南章节是一个正在进行的工作.
+62.1.Tooling API的介绍
 
-Build comparison support is an incubating feature. This means that it is incomplete and not yet at regular Gradle production quality. This also means that this Gradle User Guide chapter is a work in progress.
+The 1.0 milestone 3 release brought a new API called the tooling API, which you can use for embedding Gradle into your own custom software. This API allows you to execute and monitor builds, and to query Gradle about the details of a build. The main audience for this API will be IDEs, CI servers, other UI authors, or integration testing of your Gradle plugins. However, it is open for anyone who needs to embed Gradle in their application.
 
-Gradle提供支持比较两次构建的结果(如.生成的二进制文件).你可能要比较两次构建的结果有几个原因.你可能想比较:
+1.0里程碑发布版3带来了一个新的API名叫Tooling API，它可以用作将Gradle嵌入到你自定义的软件中。此API允许您执行和监控构建，并查询Gradle关于构建的细节。这个API的主要受众将会是一些IDE,CI服务器，其他的UI作者，或者用于Gradle插件的集成测试。然而，它是开放的，只要需要，任何人都可以将Gradle嵌入到他们自己的应用里。
 
-Gradle provides support for comparing the outcomes (e.g. the produced binary archives) of two builds. There are several reasons why you may want to compare the outcomes of two builds. You may want to compare:
+A fundamental characteristic of the tooling API is that it operates in a version independent way. This means that you can use the same API to work with different target versions of Gradle. The tooling API is Gradle wrapper aware and, by default, uses the same target Gradle version as that used by the wrapper-powered project.
 
-使用新Gradle版本的构建与使用当前版本的构建比较(即升级Gradle版本)
+Tooling API的一个基本特点是,它是以版本独立的方式运作。这就意味着您可以使用相同的API来处理不同目标版本的Gradle。Tooling API是Gradle包装意识,默认情况下,使用和包装驱动的项目相同的目标Gradle版本。
 
-A build with a newer version of Gradle than it's currently using (i.e. upgrading the Gradle version).
+Some features that the tooling API provides today:
 
-Gradle构建与其他工具如ant,Maven或其他工具执行构建的比较(即迁移到Gradle).
+当前Tooling API提供的一些特性：
 
-A Gradle build with a build executed by another tool such as Apache Ant, Apache Maven or something else (i.e. migrating to Gradle).
+You can query Gradle for the details of a build, including the project hierarchy and the project dependencies, external dependencies (including source and Javadoc jars), source directories and tasks of each project.
 
-同样的Gradle构建具有在相同版本前后差异的构建(即测试构建更改)
+你可以查询Graddle关于构建的细节，包括每个项目的项目层级和项目依赖，外部依赖（包括源码和javadoc jars文件），源码目录和任务。
 
-The same Gradle build, with the same version, before and after a change to the build (i.e. testing build changes).
+You can execute a build and listen to stdout and stderr logging and progress (e.g. the stuff shown in the 'status bar' when you run on the command line).
+Tooling API can download and install the appropriate Gradle version, similar to the wrapper. Bear in mind that the tooling API is wrapper aware so you should not need to configure a Gradle distribution directly.
 
-在这些情况下通过比较构建你能够做出比较明智的有关Gradle升级,迁移到Gradle或差异构建的决定.该比较过程中产生列出发现的差异结果和识别不同的结果的HTML报告。
+你可以执行一个构建，监听stdout 和stderr日志和进度（比如运行命令行时候在状态栏上显示的东西）。
+Tooling API可以下载和安装合适的Gradle版本，类似于包装。考虑到Tooling API是包装意识所以你没有必要直接配置Gradle分布。
 
-By comparing builds in these scenarios you can make an informed decision about the Gradle upgrade, migration to Gradle or build change by understanding the differences in the outcomes. The comparison process produces a HTML report outlining which outcomes were found to be identical and identifying the differences between non-identical outcomes.
+The implementation is lightweight, with only a small number of dependencies. It is also a well-behaved library, and makes no assumptions about your classloader structure or logging configuration. This makes the API easy to bundle in your application.
 
-## **63.1.术语定义**
+实现是轻量级的,只有少量的依赖性。这也是一个功能良好的库,没有假设你的类加载器结构或日志配置。这使得API很容易绑定您的应用程序。
 
-63.1. Definition of terms
+In the future we may support other interesting features:
 
-以下是用于构建比较及其定义的术语.
+未来我们可能会支持其他有趣的特性
 
-The following are the terms used for build comparison and their definitions.
+Performance. The API gives us the opportunity to do lots of caching, static analysis and preemptive work, to make things faster for the user.
+Better progress monitoring and build cancellation. For example, allowing test execution to be monitored.
 
-“Build”
+性能。API使我们有机会做大量的缓存,静态分析和先发制人的工作,使得用户使用更快。
+更好的进度监控和构建取消。例如,允许监控测试执行。
 
-In the context of build comparison, a build is not necessarily a Gradle build. It can be any invokable “process” that produces observable “outcomes”. At least one of the builds in a comparison will be a Gradle build.
+Notifications when things in the build change, so that UIs and models can be updated. For example, your Eclipse or IDEA project will update immediately, in the background.
 
-“Build Outcome”
+通知由构建时的改变导致的UI和模型可能被更新。例如，Eclipse或IDEA项目将在后台立即更新。
+Validating and prompting for user supplied configuration.
 
-Something that happens in an observable manner during a build, such as the creation of a zip file or test execution. These are the things that are compared.
+验证和提示用户提供的配置
 
-“Source Build”
+Prompting for and managing user credentials.
 
-The build that comparisons are being made against, typically the build in its “current” state. In other words, the left hand side of the comparison.
+提示和管理用户凭证。
 
-“Target Build”
+## **62.2. Tooling API and the Gradle Build Daemon**
 
-The build that is being compared to the source build, typically the “proposed” build. In other words, the right hand side of the comparison.
+62chapter.2. Tooling API和Gradle构建守护进程
 
-“Host Build”
+Please take a look at Chapter 18, The Gradle Daemon. The Tooling API uses the daemon all the time. In fact, you cannot officially use the Tooling API without the daemon. This means that subsequent calls to the Tooling API, be it model building requests or task executing requests can be executed in the same long-living process. Chapter 18, The Gradle Daemon contains more details about the daemon, specifically information on situations when new daemons are forked.
 
-The Gradle build that executes the comparison process. It may be the same project as either the “target” or “source” build or may be a completely separate project. It does not need to be the same Gradle version as the “source” or “target” builds. The host build must be run with Gradle 1.2 or newer.
+请看看第18章,Gradle守护进程。Tooling API无时无刻不使用守护进程。事实上,若没有守护进程你无法正式地使用Tooling API。这意味着后续对Tooling API的调用,无论是模型构建请求还是任务执行请求都可以在同一长期过程下执行。第18章,Gradle守护进程包含更详细的守护进程,特别当新的守护进程被forked的情况信息。
 
-“Compared Build Outcome”
-Build outcomes that are intended to be logically equivalent in the “source” and “target” builds, and are therefore meaningfully comparable.
+## **62.3. Quickstart**
 
-“Uncompared Build Outcome”
-A build outcome is uncompared if a logical equivalent from the other build cannot be found (e.g. a build produces a zip file that the other build does not).
+62.3. 快速入门
 
-“Unknown Build Outcome”
+As the tooling API is an interface for developers, the Javadoc is the main documentation for it. This is exactly our intention - we don't expect this chapter to grow very much. Instead we will add more code samples and improve the Javadoc documentation. The main entry point to the tooling API is the GradleConnector. You can navigate from there to find code samples and other instructions. Another very important set of resources are the samples that live in “$gradleHome/samples/toolingApi”. These samples also specify all of the required dependencies for the Tooling API, along with the suggested repositories to obtain the jars from
 
-A build outcome that cannot be understood by the host build. This can occur when the source or target build is a newer Gradle version than the host build and that Gradle version exposes new outcome types. Unknown build outcomes can be compared in so far as they can be identified to be logically equivalent to an unknown build outcome in the other build, but no meaningful comparison of what the build outcome actually is can be performed. Using the latest Gradle version for the host build will avoid encountering unknown build outcomes.
-
-## **63.2. 当前功能**
-
-63.2. Current Capabilities
-
-由于这是个正在逐渐完善的功能,目前得到实现的功能是有限的.
-
-As this is an incubating feature, a limited set of the eventual functionality has been implemented at this time.
-
-### **63.2.1. 支持构建**
-
-63.2.1. Supported builds
-
-目前仅支持Gradle构建的比较.源码和目标构建必须在Gradle更新或等于1.0的版本上执行.
-
-Only support for comparing Gradle builds is available at this time. Both the source and target build must execute with Gradle newer or equal to version 1.0. The host build must be at least version 1.2.
-
-将来的版本将提供支持从其他构建系统执行的构建,如Apache Ant的或Apache Maven的,以及支持用于执行任意程序（如shell脚本基础版本）
-
-Future versions will provide support for executing builds from other build systems such as Apache Ant or Apache Maven, as well as support for executing arbitrary processes (e.g. shell script based builds)
-
-### **63.2.2. 支持构建输出**
-
-63.2.2. Supported build outcomes
-
-仅支持zip文件比较构建结果,包括jar,war和ear文件.
-
-Only support for comparing build outcomes that are zip archives is supported at this time. This includes jar, war and ear archives.
-
-将来的版本将提供支持比较结果如测试执行的结果(如.哪个测试被执行,哪个测试失败等)
-
-Future versions will provide support for comparing outcomes such as test execution (i.e. which tests were executed, which tests failed, etc.)
-
-## **63.3. 比较Gradle构建**
-
-63.3. Comparing Gradle Builds
-
-compare-gradle-builds插件能够用来促进比较两个Gradle构建.该插件增加了一个名为“compareGradleBuilds”的CompareGradleBuilds任务到项目中.该任务配置指定的比较.默认情况下,它被配置为当前的构建与使用当前Gradle版本通过执行任务:“clean assemble”.
-
-The compare-gradle-builds plugin can be used to facilitate a comparison between two Gradle builds. The plugin adds a CompareGradleBuilds task named “compareGradleBuilds” to the project. The configuration of this task specifies what is to be compared. By default, it is configured to compare the current build with itself using the current Gradle version by executing the tasks: “clean assemble”.
-
-apply plugin: 'compare-gradle-builds'
-
-该任务可以改变配置进行对比.
-
-This task can be configured to change what is compared.
-```
-compareGradleBuilds {
-    sourceBuild {
-        projectDir "/projects/project-a"
-        gradleVersion "1.1"
-    }
-    targetBuild {
-        projectDir "/projects/project-b"
-        gradleVersion "1.2"
-    }
-}
-```
-
-上面的例子指定使用两个不同版本的Gradle进行两个不同的项目的比较.      
-
-The example above specifies a comparison between two different projects using two different Gradle versions.
-
-### **63.3.1. 尝试Gradle升级**
-
-63.3.1. Trying Gradle upgrades
-
-你可以使用构建比较功能快速的尝试新Gradle版本来支持你的构建.
-
-You can use the build comparison functionality to very quickly try a new Gradle version with your build.
-
-尝试试用不同Gradle版本来进行你当前的构建,简单添加以下内容到项目根目录下的build.gradle下
-
-To try your current build with a different Gradle version, simply add the following to the build.gradle of the root project.
-
-```
-apply plugin: 'compare-gradle-builds'
-
-compareGradleBuilds {
-    targetBuild.gradleVersion = "«gradle version»"
-}
-```
-            
-然后只需执行compareGradleBuilds任务.你将看到正在执行的“source” 和 “target” 构建在控制台输出.
-
-Then simply execute the compareGradleBuilds task. You will see the console output of the “source” and “target” builds as they are executing.
-
-### **63.3.2. 比较"结果"**
-
-63.3.2. The comparison “result”
-
-如果有任何差异比较结果输出,该任务将失败.本地的HTML报告将提供洞察比较.如果所有比较结果发现都是相同的,且没有未比较的结果,也没有未知的构建结果,该任务将成功.
-
-If there are any differences between the compared outcomes, the task will fail. The location of the HTML report providing insight into the comparison will be given. If all compared outcomes are found to be identical, and there are no uncompared outcomes, and there are no unknown build outcomes, the task will succeed.
-
-您可以通过配置任务设置ignoreFailures属性为true来忽略差异比较失败的结果.
-
-You can configure the task to not fail on compared outcome differences by setting the ignoreFailures property to true.
-
-```
-compareGradleBuilds {
-    ignoreFailures = true
-}
-```    
-
-### **63.3.3. 比较哪个文档?**
-
-63.3.3. Which archives are compared?
-
-关于选择哪个文档进行比较,必须将其添加到archives配置的artifact中,看看第51章Publishing artifacts关于如何配置和增加artifacts的详细信息.
-
-For an archive to be a candidate for comparison, it must be added as an artifact of the archives configuration. Take a look at Chapter 51, Publishing artifacts for more information on how to configure and add artifacts.
-
-该文档必须必须通过一个zip,Jar,War,Ear任务生成.Gradle将来的版本将在这块区域更加灵活.
-
-The archive must also have been produced by a Zip, Jar, War, Ear task. Future versions of Gradle will support increased flexibility in this area.
+由于Tooling API对于开发者是个接口，Javadoc是它的主要文档。这正是我们的目的,我们不期望这一章非常长。取而代之,我们将添加更多的代码示例来提高Javadoc文档。指向tooling API的主要入口点是GradleConnector。你可以从那里导航找到代码示例和其他指令。另一个非常重要的资源集在“$gradleHome/samples/toolingApi”。这些样例还指明了Tooling API所有必需的依赖项,以及获取jar文件的建议库
 
 百度搜索[无线学院](http://wirelesscollege.cn)

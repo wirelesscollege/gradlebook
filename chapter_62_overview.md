@@ -1,243 +1,375 @@
-# **第六十三章 初始化脚本**
+# **第六十章 组织构建逻辑**
 
-Chapter 63. Initialization Scripts
+Chapter 60. Organizing Build Logic 
 
-Gradle提供了强大的机制来支持基于当前环境的自定义构建，这种机制也支持那些将要和Gradle结合的工具。
+Gradle提供了多种组织构建逻辑的方式。首先你可以把你的构建逻辑直接放到一个任务的动作中。如果多个任务使用共同的逻辑你可以把逻辑抽取出来成一个方法。如果多个项目共用一个逻辑你可以把这个逻辑定义成一个方法并放到父工程里边。如果构建逻辑太复杂不易于抽取出方法，你应该把你的逻辑封装成一个类来执行你的方法。Gradle可以非常简单的实现。把你的类放到一个目录里然后Gradle会自动编译他们并把他们添加到构建脚本的classpath里。
 
-Gradle provides a powerful mechanism to allow customizing the build based on the current environment. This mechanism also supports tools that wish to integrate with Gradle.
+Gradle offers a variety of ways to organize your build logic. First of all you can put your build logic directly in the action closure of a task. If a couple of tasks share the same logic you can extract this logic into a method. If multiple projects of a multi-project build share some logic you can define this method in the parent project. If the build logic gets too complex for being properly modeled by methods then you likely should implement your logic with classes to encapsulate your logic. [25] Gradle makes this very easy. Just drop your classes in a certain directory and Gradle automatically compiles them and puts them in the classpath of your build script. 
 
-注意：这是由“build-init”插件提供的截然不同的“init”任务（参见第47章，构建初始化插件）。
+下面对所有组织构建逻辑的方法做一个总结：
 
-Note that this is completely different from the “init” task provided by the “build-init” incubating plugin (see Chapter 47, Build Init Plugin).
+Here is a summary of the ways you can organise your build logic:
 
-## **61.1 基本用法**
+•   POGOs. 这种方法你可以直接在构建脚本中声明并且使用普通的旧的Groovy对象。构建脚本是用Groovy写的，毕竟Groovy提供了大量的方法去组织代码。
 
-61.1. Basic usage
+•   POGOs. You can declare and use plain old Groovy objects (POGOs) directly in your build script. The build script is written in Groovy, after all, and Groovy provides you with lots of excellent ways to organize code. 
 
-初始化脚本（又叫init脚本），它类似于Gradle中的其他脚本，但是这些脚本都是在构建之前运行。以下是几个可能的用法：
+•   继承属性和方法。在一些工程中，子工程继承父工程的一些属性和方法。
 
-Initialization scripts (a.k.a. init scripts) are similar to other scripts in Gradle. These scripts, however, are run before the build starts. Here are several possible uses:
+•   Inherited properties and methods. In a multi-project build, sub-projects inherit the properties and methods of their parent project.
 
-•	设置enterprise-wide配置，如去哪里查找自定义插件。
+•   配置注入。在一些工程里，一个工程（通常是根工程）可以注入属性和方法到另外的工程。
 
-•	设置基于当前环境的属性，如开发人员的机器和持续集成服务器。
+•   Configuration injection. In a multi-project build, a project (usually the root project) can inject properties and methods into another project.
 
-•	提供所需的用户信息的构建，如资源库或数据库身份验证凭据的个人信息。
+•   源码。把你的构建逻辑的源码放到一个目录下然后Gradle就会自动编译并且把他们添加到构建脚本的classpath里。
 
-•	定义特定机器的细节，如JDK的安装位置。
+•   buildSrc project. Drop the source for your build classes into a certain directory and Gradle automatically compiles them and includes them in the classpath of your build script. 
 
-•	注册构建监听，听听Gradle事件的外部工具，你会发现这很有用。
+•   共享脚本。定义公共的配置在另外的脚本，并且应用这个脚本到多个工程，也可以跨越多个项目。
 
-•	注册构建记录，你可以自定义Gradle事件生成的日志。
+•   Shared scripts. Define common configuration in an external build, and apply the script to multiple projects, possibly across different builds. 
 
-•	Set up enterprise-wide configuration, such as where to find custom plugins.
+•   自定义任务。把构建逻辑放到一个自定义任务中并在多个项目重用这个任务。
 
-•	Set up properties based on the current environment, such as a developer's machine vs. a continuous integration server.
+•   Custom tasks. Put your build logic into a custom task, and reuse that task in multiple places.
 
-•	Supply personal information about the user that is required by the build, such as repository or database authentication credentials.
+•   自定义插件。把你的构建逻辑到一个自定义插件中，并且在多个项目中使用这个插件。这个插件必须在你的构建脚本的classpath中。你可以用构建源码的方法打包这个插件并把它包含在一个额外的目录里。
 
-•	Define machine specific details, such as where JDKs are installed.
+•   Custom plugins. Put your build logic into a custom plugin, and apply that plugin to multiple projects. The plugin must be in the classpath of your build script. You can achieve this either by using build sources or by adding an external library that contains the plugin. 
 
-•	Register build listeners. External tools that wish to listen to Gradle events might find this useful.
+•   执行一个另外的构建。从当前项目执行一个另外Gradle的构建。
 
-•	Register build loggers. You might wish to customize how Gradle logs the events that it generates.
+•   Execute an external build. Execute another Gradle build from the current build.
 
-init脚本的一个主要限制是它不能访问buildSrc 项目中的类（见59.4节，“buildSrc 项目的资源构建”有该功能的详细信息）。
+•   额外的lib目录。直接在你的构建文件中使用额外的lib目录。
 
-One main limitation of init scripts is that they cannot access classes in the buildSrc project (see Section 59.4, “Build sources in the buildSrc project” for details of this feature).
+•   External libraries. Use external libraries directly in your build file. 
 
-## **61.2 使用初始化脚本**
+## **60.1. 继承属性和方法**
 
-61.2. Using an init script
+60.1. Inherited properties and methods
 
-这是几种init脚本的使用方法：
+一个项目构建脚本中定义的任何方法和属性也被所有的子项目可见。你可以利用这配置公共的配置，并且可以把方法抽取出来封装成一个方法并并子项目使用。
 
-There are several ways to use an init script:
+Any method or property defined in a project build script is also visible to all the sub-projects. You can use this to define common configurations, and to extract build logic into methods which can be reused by the sub-projects. 
 
-•	命令行上的文件使用，命令行选项是 -I 或 --init-script后接路径脚本。命令行选项可以出现多次，每次增加一个init脚本。
+例子60.1. 继承属性和方法
 
-•	把一个名叫init.gradle的文件放到USER_HOME/.gradle/目录下。
-
-•	把一个后缀为.gradle的文件放到USER_HOME/.gradle/init.d/目录下。
-
-•	把一个后缀为.gradle的文件放到GRADLE_HOME/init.d/目录下，在Gradle分布中，它允许你打包包含一些自定义构建逻辑和插件。你可以把这些和Gradle包装结合起来，以此进行自定义逻辑，适用于所有的企业构建。
-
-•	Specify a file on the command line. The command line option is -I or --init-script followed by the path to the script. The command line option can appear more than once, each time adding another init script.
-
-•	Put a file called init.gradle in the USER_HOME/.gradle/ directory.
-
-•	Put a file that ends with .gradle in the USER_HOME/.gradle/init.d/ directory.
-
-•	Put a file that ends with .gradle in the GRADLE_HOME/init.d/ directory, in the Gradle distribution. This allows you to package up a custom Gradle distribution containing some custom build logic and plugins. You can combine this with the Gradle wrapper as a way to make custom logic available to all builds in your enterprise.
-
-如果找到一个以上的init脚本，它们都将按照上面指定的顺序被执行。在特定目录的脚本是按照字母顺序来执行。例如，当Gradle执行时，它将允许一个工具在命令行上指定一个init脚本以和放置一个到自己的主目录中定义环境以及两个脚本的运行。
-
-If more than one init script is found they will all be executed, in the order specified above. Scripts in a given directory are executed in alphabetical order. This allows, for example, a tool to specify an init script on the command line and the user to put one in their home directory for defining the environment and both scripts will run when Gradle is executed.
-
-## **61.3 编写一个init脚本**
-
-61.3. Writing an init script
-
-init脚本是一个Groovy脚本，它类似于Gradle构建脚本。每一个init脚本都有一个与之关联的Gradle实例，任何属性的参考和方法的调用在init脚本中将委托给这个Gradle实例。
-
-Similar to a Gradle build script, an init script is a Groovy script. Each init script has a Gradle instance associated with it. Any property reference and method call in the init script will delegate to this Gradle instance.
-
-每个init脚本也实现了脚本接口。
-
-Each init script also implements the Script interface.
-
-### **61.3.1 init脚本配置项目**
-
-61.3.1. Configuring projects from an init script
-
-你可以使用init脚本配置项目的构建，在多项目构建时可用类似的方式去配置项目。下面的示例展示了一个init脚本在项目评估前如何去执行额外的配置，这个示例使用此功能去配置一个仅适用于特定环境的额外库。
-
-You can use an init script to configure the projects in the build. This works in a similar way to configuring projects in a multi-project build. The following sample shows how to perform extra configuration from an init script before the projects are evaluated. This sample uses this feature to configure an extra repository to be used only for certain environments.
-
-例61.1 在项目评估前，使用init脚本去执行额外配置。
-
-Example 60.1. Using init script to perform extra configuration before projects are evaluated
+Example 60.1. Using inherited properties and methods
 
 build.gradle
+```
+// Define an extra property
+ext.srcDirName = 'src/java'
+
+// Define a method
+def getSrcDir(project) {
+    return project.file(srcDirName)
+}
+child/build.gradle
+task show << {
+    // Use inherited property
+    println 'srcDirName: ' + srcDirName
+
+    // Use inherited method
+    File srcDir = getSrcDir(project)
+    println 'srcDir: ' + rootProject.relativePath(srcDir)
+}
+
+Output of gradle -q show
+> gradle -q show
+srcDirName: src/java
+srcDir: child/src/java
+
+```
+
+## **60.2. 注入配置**
+
+60.2. Injected configuration
+
+你可以使用57.1节Section 57.1, “Cross project configuration” 和  57.2节 “Subproject configuration”中介绍的配置注入的方法把属性和方法注入到多个工程里。这相对继承来说是一个更好的选择因为其一注入是在构建脚本中执行这样你就可以注入不同的逻辑到不同的项目中，其二你可以多个配置例如仓库，插件，任务等等。下面的例子显示它是如何起作用的。
+
+You can use the configuration injection technique discussed in Section 57.1, “Cross project configuration” and Section 57.2, “Subproject configuration” to inject properties and methods into various projects. This is generally a better option than inheritance, for a number of reasons: The injection is explicit in the build script, You can inject different logic into different projects, And you can inject any kind of configuration such as repositories, plug-ins, tasks, and so on. The following sample shows how this works. 
+
+例子60.2 注入属性和方法
+
+Example 60.2. Using injected properties and methods
+
+build.gradle
+```
+subprojects {
+    // Define a new property
+    ext.srcDirName = 'src/java'
+
+    // Define a method using a closure as the method body
+    ext.srcDir = { file(srcDirName) }
+
+    // Define a task
+    task show << {
+        println 'project: ' + project.path
+        println 'srcDirName: ' + srcDirName
+        File srcDir = srcDir()
+        println 'srcDir: ' + rootProject.relativePath(srcDir)
+    }
+}
+
+// Inject special case configuration into a particular project
+project(':child2') {
+    ext.srcDirName = "$srcDirName/legacy"
+}
+child1/build.gradle
+// Use injected property and method. Here, we override the injected value
+srcDirName = 'java'
+def dir = srcDir()
+Output of gradle -q show
+> gradle -q show
+project: :child1
+srcDirName: java
+srcDir: child1/java
+project: :child2
+srcDirName: src/java/legacy
+srcDir: child2/src/java/legacy
+```
+
+## **60.3. 用额外的构建脚本配置项目**
+
+60.3. Configuring the project using an external build script
+
+你可以使用的额外的脚本配置当前的项目。Gradle所有的构建语言都可以在额外的脚本获得。你甚至可以在这个额外的配置文件中使用其他项目的脚本。
+
+You can configure the current project using an external build script. All of the Gradle build language is available in the external script. You can even apply other scripts from the external script. 
+
+例子60.3.  使用额外的构建脚本配置项目
+
+Example 60.3. Configuring the project using an external build script
+
+build.gradle
+```
+apply from: 'other.gradle'
+other.gradle
+println "configuring $project"
+task hello << {
+    println 'hello from other script'
+}
+Output of gradle -q hello
+> gradle -q hello
+configuring root project 'configureProjectUsingScript'
+hello from other script
+```
+
+60.4. 在项目中添加源码
+
+60.4. Build sources in the buildSrc project
+
+当你运行Gradle，它会检查buildSrc目录是否存在，若存在Gradle会自动编译并测试源码并把路径添加到构建脚本的classpath里。你不需要提供另外的方法，这可以是一个你添加任务和插件的很好的地方。
+
+When you run Gradle, it checks for the existence of a directory called buildSrc. Gradle then automatically compiles and tests this code and puts it in the classpath of your build script. You don't need to provide any further instruction. This can be a good place to add your custom tasks and plugins. 
+
+对多个项目的构建可以只有一个buildSrc目录，但是必须是在项目的根目录下。
+
+For multi-project builds there can be only one buildSrc directory, which has to be in the root project directory. 
+
+下面的脚本就是Gradle默认应用到buildSrc项目的脚本。
+
+Listed below is the default build script that Gradle applies to the buildSrc project:
+
+图60.1. 默认的buildSrc构建脚本
+
+Figure 60.1. Default buildSrc build script
+```
+apply plugin: 'groovy'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+```
+
+这意味着你可以只把你的源码放到这个目录下并且执行for a Java/Groovy project 转换（见表格23.4 “Table 23.4, “Java plugin - default project layout”）
+
+This means that you can just put your build source code in this directory and stick to the layout convention for a Java/Groovy project (see Table 23.4, “Java plugin - default project layout”). 
+
+如果你需要更普遍的适应性，你可以提供你自己的build.gradle文件。Gradle会不管是否有一个指定的脚本都会使用默认的构建脚本。这意味你只需要声明你需要的额外的元素。下面的例子。我们注意到这个例子不需要声明Gradle API的依赖，这个会被默认的脚本声明。
+
+If you need more flexibility, you can provide your own build.gradle. Gradle applies the default build script regardless of whether there is one specified. This means you only need to declare the extra things you need. Below is an example. Notice that this example does not need to declare a dependency on the Gradle API, as this is done by the default build script: 
+
+例子60.4. 自定义源码构建脚本
+
+Example 60.4. Custom buildSrc build script
+
+buildSrc/build.gradle
 ```
 repositories {
     mavenCentral()
 }
 
-task showRepos << {
-    println "All repos:"
-    println repositories.collect { it.name }
+dependencies {
+    testCompile 'junit:junit:4.12'
 }
-init.gradle
-allprojects {
-    repositories {
-        mavenLocal()
-    }
-}
-Output of gradle --init-script init.gradle -q showRepos
-> gradle --init-script init.gradle -q showRepos
-All repos:
-[MavenLocal, MavenRepo]
 ```
 
-## **61.4 init脚本的外部依赖**
+这个buildSrc项目可以被多个项目构建，类似任何一个常规的其他项目。然而，所有实际运行的项目的classpath都必须在在该根项目的依赖里。你可以往任何你想产出的项目中添加这个配置。
 
-61.4. External dependencies for the init script
+The buildSrc project can be a multi-project build, just like any other regular multi-project build. However, all of the projects that should be on the classpath of the actual build must be runtime dependencies of the root project in buildSrc. You can do this by adding this to the configuration of each project you wish to export: 
 
-在59.6节 “构建脚本的外部依赖”中解释了如何将外部依赖关系添加到构建脚本。init脚本也可以声明依赖，你可以通过initscript() 方法传递一个封闭该声明的init脚本类路径。
+例子60.5.    向根项目的buildSrc里添加子项目
 
-In Section 59.6, “External dependencies for the build script” it was explained how to add external dependencies to a build script. Init scripts can also declare dependencies. You do this with the initscript() method, passing in a closure which declares the init script classpath.
+Example 60.5. Adding subprojects to the root buildSrc project
 
-例61.2声明外部依赖的init脚本
-
-Example 61.2. Declaring external dependencies for an init script
-
-init.gradle
+buildSrc/build.gradle
 ```
-initscript {
+rootProject.dependencies {
+  runtime project(path)
+}
+```
+
+注：该例子的源码可以在samples/multiProjectBuildSrc目录里找到。
+
+Note: The code for this example can be found at samples/multiProjectBuildSrc in the ‘-all’ distribution of Gradle.
+
+## **60.5. 从一个构建里运行另一个Gradle构建**
+
+60.5. Running another Gradle build from a build
+
+你可以使用GradleBuild任务，你既可以要么使用buildFile属性去指定执行哪个构建，也可以使用任务属性去指定执行哪些任务。
+
+You can use the GradleBuild task. You can use either of the dir or buildFile properties to specify which build to execute, and the tasks property to specify which tasks to execute. 
+
+例子60.6. 从一个构建执行另一个构建
+
+Example 60.6. Running another build from a build
+
+build.gradle
+```
+task build(type: GradleBuild) {
+    buildFile = 'other.gradle'
+    tasks = ['hello']
+}
+other.gradle
+task hello << {
+    println "hello from the other build."
+}
+Output of gradle -q build
+> gradle -q build
+hello from the other build.
+```
+
+60.6.构建脚本额外的依赖
+
+60.6. External dependencies for the build script
+
+如果你的构建脚本需要使用额外包，你可以自己把它们添加到构建脚本的classpath里，你使用buildscript()方法来完成这个，会把构建脚本声明的闭环当做参数传递过去。
+
+If your build script needs to use external libraries, you can add them to the script's classpath in the build script itself. You do this using the buildscript() method, passing in a closure which declares the build script classpath. 
+
+例子60.7. 为构建脚本声明另外的依赖
+
+Example 60.7. Declaring external dependencies for the build script
+
+build.gradle
+```
+buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.apache.commons', name: 'commons-math', version: '2.0'
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
     }
 }
 ```
 
-通过initscript()方法关闭一个ScriptHandler 实例，你可以通过添加依赖的classpath来声明init脚本的classpath。例如，Java以同样的方式来编译classpath，见50.4节“如何声明你的依赖”，除了项目的依赖。
+传递到buildscript()方法闭环配置了一个ScriptHandler实例。你通过添加依赖到classpath配置来声明构建脚本的classpath。这和你声明java编译classpath是相同的方法。你可以使用章节51.4. Section 51.4, “How to declare your dependencies”中的任意一种依赖形式。
 
-The closure passed to the initscript() method configures a ScriptHandler instance. You declare the init script classpath by adding dependencies to the classpath configuration. This is the same way you declare, for example, the Java compilation classpath. You can use any of the dependency types described in Section 50.4, “How to declare your dependencies”, except project dependencies.
+The closure passed to the buildscript() method configures a ScriptHandler instance. You declare the build script classpath by adding dependencies to the classpath configuration. This is the same way you declare, for example, the Java compilation classpath. You can use any of the dependency types described in Section 51.4, “How to declare your dependencies”, except project dependencies.
 
-所有的init脚本classpath声明，你都可以使用类的init脚本classpath上的任何其他类。下面是之前的示例添加并使用类的init脚本classpath。
+已经声明了构建脚本的classpath，你可以使用你构建脚本中的类像你使用classpath中的任何一个类一样。下面的例子是对上面例子的补充，使用构建脚本classpath中的类。
 
-Having declared the init script classpath, you can use the classes in your init script as you would any other classes on the classpath. The following example adds to the previous example, and uses classes from the init script classpath.
+Having declared the build script classpath, you can use the classes in your build script as you would any other classes on the classpath. The following example adds to the previous example, and uses classes from the build script classpath.
 
-例61.3 init脚本与外部依赖
+例子60.8.  一个带额外的依赖的构建脚本
 
-Example 60.3. An init script with external dependencies
+Example 60.8. A build script with external dependencies
 
-init.gradle
+build.gradle
 ```
-import org.apache.commons.math.fraction.Fraction
+import org.apache.commons.codec.binary.Base64
 
-initscript {
+buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.apache.commons', name: 'commons-math', version: '2.0'
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
     }
 }
 
-println Fraction.ONE_FIFTH.multiply(2)
-Output of gradle --init-script init.gradle -q doNothing
-> gradle --init-script init.gradle -q doNothing
-2 / 5
+task encode << {
+    def byte[] encodedString = new Base64().encode('hello world\n'.getBytes())
+    println new String(encodedString)
+}
+Output of gradle -q encode
+> gradle -q encode
+aGVsbG8gd29ybGQK
 ```
 
-## **61.5 init脚本插件**
+对多项目的构建，一个项目构建脚本中声明的依赖对其他子项目都是可见的。
 
-61.5. Init script plugins
+For multi-project builds, the dependencies declared in the a project's build script, are available to the build scripts of all sub-projects. 
 
-类似于Gradle构建脚本或者Gradle设置文件，插件也同样可以应用在init脚本中。
+60.7. Ant可选的依赖
 
-Similar to a Gradle build script or a Gradle settings file, plugins can be applied on init scripts.
+60.7. Ant optional dependencies
 
-例 61.4  init脚本的插件使用
+对于额外的依赖没有被ant可选的任务处理的原因我们也不是很理解。但是你可以轻易的用其他方式完成这件事情。
 
-Example 61.4. Using plugins in init scripts
+For reasons we don't fully understand yet, external dependencies are not picked up by Ant's optional tasks. But you can easily do it in another way. [26] 
 
-init.gradle
+例子60.9.  Ant 可选依赖
+
+Example 60.9. Ant optional dependencies
+
+build.gradle
 ```
-apply plugin:EnterpriseRepositoryPlugin
+configurations {
+    ftpAntTask
+}
 
-class EnterpriseRepositoryPlugin implements Plugin<Gradle> {
-
-    private static String ENTERPRISE_REPOSITORY_URL = "https://repo.gradle.org/gradle/repo"
-
-    void apply(Gradle gradle) {
-        // ONLY USE ENTERPRISE REPO FOR DEPENDENCIES
-        gradle.allprojects{ project ->
-            project.repositories {
-
-                // Remove all repositories not pointing to the enterprise repository url
-                all { ArtifactRepository repo ->
-                    if (!(repo instanceof MavenArtifactRepository) ||
-                          repo.url.toString() != ENTERPRISE_REPOSITORY_URL) {
-                        project.logger.lifecycle "Repository ${repo.url} removed. Only $ENTERPRISE_REPOSITORY_URL is allowed"
-                        remove repo
-                    }
-                }
-
-                // add the enterprise repository
-                maven {
-                    name "STANDARD_ENTERPRISE_REPO"
-                    url ENTERPRISE_REPOSITORY_URL
-                }
-            }
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.9.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
         }
     }
 }
-build.gradle
-repositories{
-    mavenCentral()
-}
 
- task showRepositories << {
-    repositories.each{
-        println "repository: ${it.name} ('${it.url}')"
+task ftp << {
+    ant {
+        taskdef(name: 'ftp',
+                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+                classpath: configurations.ftpAntTask.asPath)
+        ftp(server: "ftp.apache.org", userid: "anonymous", password: "me@myorg.com") {
+            fileset(dir: "htdocs/manual")
+        }
     }
 }
-Output of gradle -q -I init.gradle showRepositories
-> gradle -q -I init.gradle showRepositories
-repository: STANDARD_ENTERPRISE_REPO ('https://repo.gradle.org/gradle/repo')
 ```
 
-在init脚本插件中，要确保运行版本时，只有一个指定的存储库在使用。
+这也是一个客户端模块的很好的例子。Maven 中央仓库中的POM 文件没有为ant-commons-net任务这个用例提供正确的信息。
 
-The plugin in the init script ensures that only a specified repository is used when running the build.
+This is also a good example for the usage of client modules. The POM file in Maven Central for the ant-commons-net task does not provide the right information for this use case.
 
-当init脚本中应用插件时，Gradle会实例化插件并调用插件实例的Plugin.apply()方法。该Gradle对象被作为参数传递，其可以被用来配置一个构建的所有方面。当然，这个应用插件可以解析为一个外部的依赖，详情参见60.4节“init脚本的外部依赖”。
+## **60.8. 总结**
 
-When applying plugins within the init script, Gradle instantiates the plugin and calls the plugin instance's Plugin.apply() method. The gradle object is passed as a parameter, which can be used to configure all aspects of a build. Of course, the applied plugin can be resolved as an external dependency as described in Section 60.4, “External dependencies for the init script”
+60.8. Summary
+
+Gradle提供了多种用户组织构建逻辑的方法。你可以选择适合你的需求的方式和不你不需要的方面的一个平衡点，避免冗余和难以维护。我们的经验是每个非常复杂的自定义构建在不同的构建之间很少被分享。其他的构建工具都是分割构建逻辑到单独的工程。Gradle省去了这方面你不必要的开销。
+
+Gradle offers you a variety of ways of organizing your build logic. You can choose what is right for your domain and find the right balance between unnecessary indirections, and avoiding redundancy and a hard to maintain code base. It is our experience that even very complex custom build logic is rarely shared between different builds. Other build tools enforce a separation of this build logic into a separate project. Gradle spares you this unnecessary overhead and indirection. 
+
+________________________________________
+
+[25] Which might range from a single class to something very complex. 
+
+[26] In fact, we think this is a better solution. Only if your buildscript and Ant's optional task need the same library would you have to define it twice. In such a case it would be nice if Ant's optional task would automatically pick up the classpath defined in the “gradle.settings” file. 
 

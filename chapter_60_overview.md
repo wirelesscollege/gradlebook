@@ -1,30 +1,37 @@
-# **Chapter 58. Writing Custom Plugins**
+# **Chapter 57. Writing Custom Task Classes**
 
-Gradle插件能打包可重用的构建逻辑，它能够在许多不同的项目和构建中使用。Gradle允许你实现自己定制的插件，所以你可以重用你自己的构建逻辑，并且可以与人共享。
+Gradle支持两种类型的任务。一种类型是一种你可以使用闭包动作定义的简单任务。我们在第六章 构建脚本基础中看到了这些。对于这种任务类型，闭包动作判断任务的动作。这种任务类型有利于实现构建脚本中一次性的任务
 
-A Gradle plugin packages up reusable pieces of build logic, which can be used across many different projects and builds. Gradle allows you to implement your own custom plugins, so you can reuse your build logic, and share it with others.
+Gradle supports two types of task. One such type is the simple task, where you define the task with an action closure. We have seen these in Chapter 6, Build Script Basics. For this type of task, the action closure determines the behaviour of the task. This type of task is good for implementing one-off tasks in your build script.
 
-你可以用任何你喜欢的语言去实现定制插件，被提供的是最终编译成的字节码。对于这个例子，我们将要使用Groovy最为实现语言。如果你想要，你可以使用java或者Scala替代。
+另一种类型任务是增强任务,其中行为内置在任务里,该任务提供了一些属性,您可以使用它配置行为。我们已经在第14章看到了这些, More about Tasks。大多数Gradle插件使用增强任务。使用增强任务,你不需要实现和用简单任务一样的任务行为。只需声明任务和使用其属性配置任务。通过这种方式,增强任务让你在许多不同的地方可重用一个行为,可能会交叉不同的构建。
 
-You can implement a custom plugin in any language you like, provided the implementation ends up compiled as bytecode. For the examples here, we are going to use Groovy as the implementation language. You could use Java or Scala instead, if you want.
+The other type of task is the enhanced task, where the behaviour is built into the task, and the task provides some properties which you can use to configure the behaviour. We have seen these in Chapter 14, More about Tasks. Most Gradle plugins use enhanced tasks. With enhanced tasks, you don't need to implement the task behaviour as you do with simple tasks. You simply declare the task and configure the task using its properties. In this way, enhanced tasks let you reuse a piece of behaviour in many different places, possibly across different builds.
 
-## **58.1. Packaging a plugin**
+增强型任务的行为和属性是由任务的类来定义的。当你声明增强型任务的时候，你就明确了其类型和任务类。
 
-有许多你可以放插件源码的位置。
+The behaviour and properties of an enhanced task is defined by the task's class. When you declare an enhanced task, you specify the type, or class of the task.
 
-There are several places where you can put the source for the plugin.
+在Gradle中实现你自己定义的任务类很容易。您可以实现一个自定义的任务类几乎可以使用任何你喜欢的语言,最终是以编译成字节码的形式提供。在我们的示例中,我们将使用Groovy作为实现语言,但是你可以使用,例如,Java或Scala语言。一般来说,使用Groovy语言是最简单的选择,因为Gradle API与Groovy运行的很好。
 
+Implementing your own custom task class in Gradle is easy. You can implement a custom task class in pretty much any language you like, provided it ends up compiled to bytecode. In our examples, we are going to use Groovy as the implementation language, but you could use, for example, Java or Scala. In general, using Groovy is the easiest option, because the Gradle API is designed to work well with Groovy.
+
+## **57.1. Packaging a task class**
+
+你可以把任务类的源代码放在很多地方。
+
+There are several places where you can put the source for the task class.
 Build script
 
-你可以直接在构建脚本里包含插件源码。这类的好处是:插件是自动编译和包含在构建脚本类路径里,你无须做任何事。然而,在构建脚本外插件是不可见的,所以你不能在定义的构建脚本外重用插件。
+你可以直接在构建脚本中包含任务类。这样的好处是:任务是自动编译和包含在构建脚本类路径里,你无须做任何事。然而,构建脚本外的任务类是不可见的,所以你不能重用定义在构建脚本外的任务类。
 
-You can include the source for the plugin directly in the build script. This has the benefit that the plugin is automatically compiled and included in the classpath of the build script without you having to do anything. However, the plugin is not visible outside the build script, and so you cannot reuse the plugin outside the build script it is defined in.
+You can include the task class directly in the build script. This has the benefit that the task class is automatically compiled and included in the classpath of the build script without you having to do anything. However, the task class is not visible outside the build script, and so you cannot reuse the task class outside the build script it is defined in.
 
 buildSrc project
 
-你可以把插件的源代码放在目录rootProjectDir/buildSrc/src/main/groovy中。Gradle将注意编译和测试插件，使其可以在构建脚本类路径中执行。插件对于构建中使用的每个构建脚本都是可见的。然而,在构建外它是不可见的。所以你不能重用构建外的插件。
+你可以把任务类的源代码放在目录rootProjectDir/buildSrc/src/main/groovy中。Gradle将注意编译和测试任务类，使其可以在构建脚本类路径中执行。任务类对于构建使用的每个构建脚本都是可见的。然而,在构建外它是不可见的。所以你不能重用构建外的任务类。使用buildSrc项目方法分离任务声明——也就是说,这个任务应该做什么——从任务的实现来看就是,任务是如何做的。
 
-You can put the source for the plugin in the rootProjectDir/buildSrc/src/main/groovy directory. Gradle will take care of compiling and testing the plugin and making it available on the classpath of the build script. The plugin is visible to every build script used by the build. However, it is not visible outside the build, and so you cannot reuse the plugin outside the build it is defined in.
+You can put the source for the task class in the rootProjectDir/buildSrc/src/main/groovy directory. Gradle will take care of compiling and testing the task class and making it available on the classpath of the build script. The task class is visible to every build script used by the build. However, it is not visible outside the build, and so you cannot reuse the task class outside the build it is defined in. Using the buildSrc project approach separates the task declaration - that is, what the task should do - from the task implementation - that is, how the task does it.
 
 见59章、组织构建逻辑 可了解更多关于buildSrc project的详细信息.
 
@@ -32,194 +39,101 @@ See Chapter 59, Organizing Build Logic for more details about the buildSrc proje
 
 Standalone project
 
-你可以为你的插件创建一个单独的项目。这个项目可以生成和发布一个jar文件，你可以在多种构建中使用和共享。一般来说，这个jar文件可能会包含一些自定义的插件或绑定若干相关联的任务类或一些这两者的结合到一个单独的库文件中。
+你可以为你的任务类创建一个单独的项目。这个项目可以生成和发布一个jar文件，你可以在多种构建中使用和共享。一般来说，这个jar文件可能会包含一些定义的插件、绑定若干相关联的任务类，或一些这两者的结合到一个单独的库文件中。
 
-You can create a separate project for your plugin. This project produces and publishes a JAR which you can then use in multiple builds and share with others. Generally, this JAR might include some custom plugins, or bundle several related task classes into a single library. Or some combination of the two.
+You can create a separate project for your task class. This project produces and publishes a JAR which you can then use in multiple builds and share with others. Generally, this JAR might include some custom plugins, or bundle several related task classes into a single library. Or some combination of the two.
+
 在我们的实例中，为了简单化我们将会以构建脚本中的插件开始。之后我们将看下创建一个独立的项目。
-In our examples, we will start with the plugin in the build script, to keep things simple. Then we will look at creating a standalone project.
 
-58.2. Writing a simple plugin
+In our examples, we will start with the task class in the build script, to keep things simple. Then we will look at creating a standalone project.
 
-要创建一个自定义插件,您需要编写一个插件的实现。当项目使用插件时，Gradle实例化插件并调用插件实例的Plugin.apply()方法。项目对象作为参数传递,该插件可以使用它配置项目。下面的示例包含一个greeting插件,添加一个hello任务到项目里。
+## **57.2. Writing a simple task class**
 
-To create a custom plugin, you need to write an implementation of Plugin. Gradle instantiates the plugin and calls the plugin instance's Plugin.apply() method when the plugin is used with a project. The project object is passed as a parameter, which the plugin can use to configure the project however it needs to. The following sample contains a greeting plugin, which adds a hello task to the project.
+为实现一个定义的任务类，你要扩展DefaultTask
 
-例58.1  自定义插件
+To implement a custom task class, you extend DefaultTask.
 
-Example 58.1. A custom plugin
+例57.1 定义一个定制任务
+
+Example 57.1. Defining a custom task
 
 build.gradle
 ```
-apply plugin: GreetingPlugin
-
-class GreetingPlugin implements Plugin<Project> {
-    void apply(Project project) {
-        project.task('hello') << {
-            println "Hello from the GreetingPlugin"
-        }
-    }
+class GreetingTask extends DefaultTask {
 }
 ```
 
+这个任务没做任何有用的事情，所以我们要加些行为。为了这样做，我们给任务添加了个方法，并标注了TaskAction注释。当任务执行的时候，Gradle会调用这个方法。你没有必要使用一个方法为此任务定义行为。例如你可以使用任务函数的闭包调用doFirst() 或 doLast()来添加行为。
+
+This task doesn't do anything useful, so let's add some behaviour. To do so, we add a method to the task and mark it with the TaskAction annotation. Gradle will call the method when the task executes. You don't have to use a method to define the behaviour for the task. You could, for instance, call doFirst() or doLast() with a closure in the task constructor to add behaviour.
+
+例57.2  一个hello world 任务
+
+Example 57.2. A hello world task
+
+build.gradle
+```
+task hello(type: GreetingTask)
+
+class GreetingTask extends DefaultTask {
+    @TaskAction
+    def greet() {
+        println 'hello from GreetingTask'
+    }
+}
+```
 Output of gradle -q hello
 ```
 > gradle -q hello
-Hello from the GreetingPlugin
+hello from GreetingTask
 ```
 
-需要注意的是,一个给定插件会为应用它的每个项目创建一个新实例。还要注意,Plugin类是一个泛型类型。这个例子使他接收到Plugin类型作为类型参数。采取不同的类型参数写出特别的定制插件看似可以实现,但这将是不太可能的(除非有人找出更有创造性的事情要做)。
+我们给一个任务添加个属性，那么我们就可以定义它。任务是简单的POGOs，当你声明一个任务，你就可以设置属性或者调用此任务对象的方法。这里添加一个greeting的属性，并且当我们声明greeting任务的时候就设置该属性的值。
 
-One thing to note is that a new instance of a given plugin is created for each project it is applied to. Also note that the Plugin class is a generic type. This example has it receiving the Plugin type as a type parameter. It's possible to write unusual custom plugins that take different type parameters, but this will be unlikely (until someone figures out more creative things to do here).
+Let's add a property to the task, so we can customize it. Tasks are simply POGOs, and when you declare a task, you can set the properties or call methods on the task object. Here we add a greeting property, and set the value when we declare the greeting task.
 
-## **58.3. Getting input from the build**
+例57.3  一个自定义的hello world任务
 
-大多数插件都需要从构建脚本获取一些配置。这样做的一个方法是使用扩展对象。Gradle项目都有一个关联的ExtensionContainer对象,帮助跟踪传递给插件的所有设置和属性。您可以捕获用户的输入,告诉关于你的插件扩展容器。捕获输入,只需添加一个Java Bean的使用类到扩展容器的列表。Groovy是插件很好的语言选择,因为普通老的Groovy对象包含Java Bean要求的所有getter和setter方法。
-
-Most plugins need to obtain some configuration from the build script. One method for doing this is to use extension objects. The Gradle Project has an associated ExtensionContainer object that helps keep track of all the settings and properties being passed to plugins. You can capture user input by telling the extension container about your plugin. To capture input, simply add a Java Bean compliant class into the extension container's list of extensions. Groovy is a good language choice for a plugin because plain old Groovy objects contain all the getter and setter methods that a Java Bean requires.
-
-让我们添加一个简单的扩展对象到项目中。这里我们添加一个greeting扩展对象到项目里，它允许你配置greeting
-
-Let's add a simple extension object to the project. Here we add a greeting extension object to the project, which allows you to configure the greeting.
-
-例58.2.  自定义插件扩展
-
-Example 58.2. A custom plugin extension
+Example 57.3. A customizable hello world task
 
 build.gradle
 ```
-apply plugin: GreetingPlugin
+// Use the default greeting
+task hello(type: GreetingTask)
 
-greeting.message = 'Hi from Gradle'
-
-class GreetingPlugin implements Plugin<Project> {
-    void apply(Project project) {
-        // Add the 'greeting' extension object
-        project.extensions.create("greeting", GreetingPluginExtension)
-        // Add a task that uses the configuration
-        project.task('hello') << {
-            println project.greeting.message
-        }
-    }
+// Customize the greeting
+task greeting(type: GreetingTask) {
+    greeting = 'greetings from GreetingTask'
 }
 
-class GreetingPluginExtension {
-    def String message = 'Hello from GreetingPlugin'
-}
-```
-```
-Output of gradle -q hello
-> gradle -q hello
-Hi from Gradle
-```
-
-在这个例子中，GreetingPluginExtension是一个普通的老的Groovy对象，它含有一个message的字段。扩展对象被添加到插件列表中，名字为greeting。这个对象随后成为了项目的属性，名字和在扩展对象名字一样。
-
-In this example, GreetingPluginExtension is a plain old Groovy object with a field called message. The extension object is added to the plugin list with the name greeting. This object then becomes available as a project property with the same name as the extension object.
-
-通常,你需要给一个单独的插件指定若干个相关的属性。Gradle为每个扩展对象添加一个配置闭包块,所以你可以把设置分组。下面的例子展示了是如何工作的
-
-Oftentimes, you have several related properties you need to specify on a single plugin. Gradle adds a configuration closure block for each extension object, so you can group settings together. The following example shows you how this works.
-
-例58.3.  带有配置闭包的自定义插件
-
-Example 58.3. A custom plugin with configuration closure
-
-build.gradle
-```
-apply plugin: GreetingPlugin
-
-greeting {
-    message = 'Hi'
-    greeter = 'Gradle'
-}
-
-class GreetingPlugin implements Plugin<Project> {
-    void apply(Project project) {
-        project.extensions.create("greeting", GreetingPluginExtension)
-        project.task('hello') << {
-            println "${project.greeting.message} from ${project.greeting.greeter}"
-        }
-    }
-}
-
-class GreetingPluginExtension {
-    String message
-    String greeter
-}
-```
-
-Output of gradle -q hello
-```
-> gradle -q hello
-Hi from Gradle
-```
-
-在这个例子中，很多设置使用greeting闭包被分组。构建脚本中闭包块的名字需要与扩展对象名字匹配。那么当闭包快被执行的时候，根据标准Groovy闭包委托特性，在扩展对象的字段将会被映射到闭包变量中。
-
-In this example, several settings can be grouped together within the greeting closure. The name of the closure block in the build script (greeting) needs to match the extension object name. Then, when the closure is executed, the fields on the extension object will be mapped to the variables within the closure based on the standard Groovy closure delegate feature.
-
-## **58.4. Working with files in custom tasks and plugins**
-
-当开发自定义任务和插件,灵活地接受输入配置文件地址是个好办法。要做到这一点,您可以利用Project.file()方法尽可能晚地分解值到文件中。
-
-When developing custom tasks and plugins, it's a good idea to be very flexible when accepting input configuration for file locations. To do this, you can leverage the Project.file() method to resolve values to files as late as possible.
-
-例58.4   延迟评估文件属性
-
-Example 58.4. Evaluating file properties lazily
-
-build.gradle
-
-```
-class GreetingToFileTask extends DefaultTask {
-
-    def destination
-
-    File getDestination() {
-        project.file(destination)
-    }
+class GreetingTask extends DefaultTask {
+    String greeting = 'hello from GreetingTask'
 
     @TaskAction
     def greet() {
-        def file = getDestination()
-        file.parentFile.mkdirs()
-        file.write "Hello!"
+        println greeting
     }
 }
-
-task greet(type: GreetingToFileTask) {
-    destination = { project.greetingFile }
-}
-
-task sayGreeting(dependsOn: greet) << {
-    println file(greetingFile).text
-}
-
-ext.greetingFile = "$buildDir/hello.txt"
 ```
 
-Output of gradle -q sayGreeting
+Output of gradle -q hello greeting
 ```
-> gradle -q sayGreeting
-Hello!
+> gradle -q hello greeting
+hello from GreetingTask
+greetings from GreetingTask
 ```
 
-在这个例子中,我们配置了greeting任务目标属性作为一个闭包,这是用Project.file()方法评估在最后一刻将闭包返回值转化为一个文件对象。您会注意到,在上面的示例中,我们在任务中配置好投入使用后才指定greetingFile的属性值。这种延迟评估的关键性好处在于当设置一个文件的属性的时候可接受任何值，然后在读取属性的时候分解值。
+## **57.3. A standalone project**
 
-In this example, we configure the greet task destination property as a closure, which is evaluated with the Project.file() method to turn the return value of the closure into a file object at the last minute. You will notice that in the example above we specify the greetingFile property value after we have configured to use it for the task. This kind of lazy evaluation is a key benefit of accepting any value when setting a file property, then resolving that value when reading the property.
+现在我们将我们的任务转移到一个独立的项目,所以我们可以发布它,并分享。这个项目是一个简单的Groovy项目,生成一个包含任务类的JAR。这是一个简单的项目构建脚本。它适用于Groovy插件,并添加Gradle API作为编译时依赖项。
 
-## **58.5. A standalone project**
+Now we will move our task to a standalone project, so we can publish it and share it with others. This project is simply a Groovy project that produces a JAR containing the task class. Here is a simple build script for the project. It applies the Groovy plugin, and adds the Gradle API as a compile-time dependency.
 
-现在我们将插件移到一个独立的项目,这样我们可以发布,并与他人分享。这个项目是一个简单的Groovy项目,可以产生一个包含插件类的jar包。这里是项目中一个简单的构建脚本。它适用于Groovy插件,并添加Gradle API作为编译时依赖项。
+例57.4  一个自定义任务的构建
 
-Now we will move our plugin to a standalone project, so we can publish it and share it with others. This project is simply a Groovy project that produces a JAR containing the plugin classes. Here is a simple build script for the project. It applies the Groovy plugin, and adds the Gradle API as a compile-time dependency.
-
-例58.5  一个自定义插件的构建
-
-Example 58.5. A build for a custom plugin
+Example 57.4. A build for a custom task
 
 build.gradle
-
 ```
 apply plugin: 'groovy'
 
@@ -229,90 +143,42 @@ dependencies {
 }
 ```
 
-注意：这个实例代码能够在gradle根目录下的samples/customPlugin/plugin找到。
-
 Note: The code for this example can be found at samples/customPlugin/plugin in the ‘-all’ distribution of Gradle.
 
-那么Gradle是怎样发现Plugin执行的？答案是你需要在jar中的META-INF/gradle-plugins目录中提供一个属性文件用来匹配你插件的id.
+对于任务类的源码应该在哪里，我们仅仅是依据惯例。
 
-So how does Gradle find the Plugin implementation? The answer is you need to provide a properties file in the jar's META-INF/gradle-plugins directory that matches the id of your plugin.
+We just follow the convention for where the source for the task class should go.
 
-例58.6   连接自定义插件
+例57.5   一个自定义任务
 
-Example 58.6. Wiring for a custom plugin
+Example 57.5. A custom task
 
-src/main/resources/META-INF/gradle-plugins/org.samples.greeting.properties
-implementation-class=org.gradle.GreetingPlugin
+src/main/groovy/org/gradle/GreetingTask.groovy
+```
+package org.gradle
 
-注意属性文件名匹配插件id且放在源文件夹中，实现类属性指明Plugin实现类。
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-Notice that the properties filename matches the plugin id and is placed in the resources folder, and that the implementation-class property identifies the Plugin implementation class.
+class GreetingTask extends DefaultTask {
+    String greeting = 'hello from GreetingTask'
 
-### **58.5.1. Creating a plugin id**
+    @TaskAction
+    def greet() {
+        println greeting
+    }
+}
+```
 
-插件id是完全受限，与java包的方式类似（即反向域名）。这有助于避免冲突且提供了使用类似所有制方式分组插件的方法。
+## **57.3.1. Using your task class in another project**
 
-Plugin ids are fully qualified in a manner similar to Java packages (i.e. a reverse domain name). This helps to avoid collisions and provides a way to group plugins with similar ownership.
+为在构建脚本时使用某任务类,您需要添加类到构建脚本的类路径中。要做到这一点,你需要用一个“buildscript { }”块,如59.6节所述,“构建脚本的外部依赖”。下面的例子显示当载有任务类的JAR包已经发布到一个本地存储库时，你该如何做到这一点:
 
-你的插件id应该是一个组件的结合，它能反映所提供插件的命名空间及名称(合理的指向你或你的组织)。例如,如果你有一个Github账户名为“foo”和你的插件名为“bar”,一个合适的插件id名可能就是com.github.foo.bar。类似地,如果你的插件在baz组织开发,插件id可能是org.baz.bar。
+To use a task class in a build script, you need to add the class to the build script's classpath. To do this, you use a buildscript { } block, as described in Section 59.6, “External dependencies for the build script”. The following example shows how you might do this when the JAR containing the task class has been published to a local repository:
 
-Your plugin id should be a combination of components that reflect namespace (a reasonable pointer to you or your organization) and the name of the plugin it provides. For example if you had a Github account named “foo” and your plugin was named “bar”, a suitable plugin id might be com.github.foo.bar. Similarly, if the plugin was developed at the baz organization, the plugin id might be org.baz.bar.
+例57.6 在其他的项目使用自定义任务
 
-插件id应遵从如下规则：
-
-Plugin ids should conform to the following:
-
-可能包含任何字母数字字符,'.', 和 '-'。
-
-必须包含至少一个'.' 用来分隔插件名中的命名空间
-
-命名空间按照惯例使用小字母反向域名惯例
-
-按照惯例名字只使用小写字母
-
-org.gradle和com.gradleware命名空间不能被使用
-
-不能以'.'开头或结尾
-
-不能包含连续的'.'字符（比如'..'）
-
-May contain any alphanumeric character, '.', and '-'.
-
-Must contain at least one '.' character separating the namespace from the name of the plugin.
-
-Conventionally use a lowercase reverse domain name convention for the namespace.
-
-Conventionally use only lowercase characters in the name.
-
-org.gradle and com.gradleware namespaces may not be used.
-
-Cannot start or end with a '.' character.
-
-Cannot contain consecutive '.' characters (i.e. '..').
-
-尽管插件Id和包名称存在着常规的相似性，但是包名称通常比插件id有必要更具体些。例如，添加 “gradle”作为你插件id的组件看起来是合理的，但由于插件id仅用于Gradle插件，这样做是多余的。一般情况下，一个命名空间指明了所有权，一个名字是一个好插件需要的所有。
-
-Although there are conventional similarities between plugin ids and package names, package names are generally more detailed than is necessary for a plugin id. For instance, it might seem reasonable to add “gradle” as a component of your plugin id, but since plugin ids are only used for Gradle plugins, this would be superfluous. Generally, a namespace that identifies ownership and a name are all that are needed for a good plugin id.
-
-### **58.5.2. Publishing your plugin**
-
-如果在你组织发布插件内部使用，你可以像发布其他代码构建产物一样发布它。可以看下ivy和maven发布构建产物的章节
-
-If you are publishing your plugin internally for use within your organization, you can publish it like any other code artifact. See the ivy and maven chapters on publishing artifacts.
-
-如果你有兴趣发布插件使其能够在Gradle社区被广泛使用,你可以发布到Gradle插件门户中。这个网站提供搜索和收集Gradle社区提供的插件信息。看看这里的说明关于如何使你的插件发布到这个网站上。
-
-If you are interested in publishing your plugin to be used by the wider Gradle community, you can publish it to the Gradle plugin portal. This site provides the ability to search for and gather information about plugins contributed by the Gradle community. See the instructions here on how to make your plugin available on this site.
-
-### **58.5.3. Using your plugin in another project**
-
-为在构建脚本时使用某插件,您需要添加插件类到构建脚本的类路径中。要做到这一点,你需要用一个“buildscript { }”块,如20.4节所述,“使用构建脚本块应用插件”。下面的例子显示当载有插件的JAR包已经发布到一个本地存储库时，你该如何做到这一点:
-
-To use a plugin in a build script, you need to add the plugin classes to the build script's classpath. To do this, you use a “buildscript { }” block, as described in Section 20.4, “Applying plugins with the buildscript block”. The following example shows how you might do this when the JAR containing the plugin has been published to a local repository:
-
-例58.7  在其他项目中使用自定义插件
-
-Example 58.7. Using a custom plugin in another project
+Example 57.6. Using a custom task in another project
 
 build.gradle
 ```
@@ -327,124 +193,272 @@ buildscript {
                   version: '1.0-SNAPSHOT'
     }
 }
-apply plugin: 'org.samples.greeting'
-```
 
-或者，如果你的插件被发布到插件门户上，你可以使用孵化插件DSL（见20.5节,“使用DSL应用插件”)来应用插件
-Alternatively, if your plugin is published to the plugin portal, you can use the incubating plugins DSL (see Section 20.5, “Applying plugins with the plugins DSL”) to apply the plugin:
-
-Example 58.8. Applying a community plugin with the plugins DSL
-
-build.gradle
-```
-plugins {
-    id "com.jfrog.bintray" version "0.4.1"
+task greeting(type: org.gradle.GreetingTask) {
+    greeting = 'howdy!'
 }
 ```
 
-### **58.5.4. Writing tests for your plugin**
+## **57.3.2. Writing tests for your task class**
 
-当你测试你插件执行时候，可以使用ProjectBuilder类来创建Project实例使用
+当你测试任务类时候，可以使用ProjectBuilder类来创建Project实例使用。
 
-You can use the ProjectBuilder class to create Project instances to use when you test your plugin implementation.
+You can use the ProjectBuilder class to create Project instances to use when you test your task class.
 
-例58.9 测试自定义插件
+例57.7 测试一个自定义任务
 
-Example 58.9. Testing a custom plugin
+Example 57.7. Testing a custom task
 
+src/test/groovy/org/gradle/GreetingTaskTest.groovy
 ```
-src/test/groovy/org/gradle/GreetingPluginTest.groovy
-class GreetingPluginTest {
+class GreetingTaskTest {
     @Test
-    public void greeterPluginAddsGreetingTaskToProject() {
+    public void canAddTaskToProject() {
         Project project = ProjectBuilder.builder().build()
-        project.pluginManager.apply 'org.samples.greeting'
-
-        assertTrue(project.tasks.hello instanceof GreetingTask)
+        def task = project.task('greeting', type: GreetingTask)
+        assertTrue(task instanceof GreetingTask)
     }
 }
 ```
 
-58.5.5. Using the Java Gradle Plugin development plugin
+## **57.4. Incremental tasks**
 
-您可以使用孵化Java Gradle插件开发插件来消除一些在你构建脚本中的样本声明并提供一些基本的插件元数据的验证。这个插件会自动应用java插件，添加gradleApi()依赖到编译配置,并执行插件元数据验证作为jar任务执行的一部分。
+增量任务是个待开发的特性
 
-You can use the incubating Java Gradle Plugin development plugin to eliminate some of the boilerplate declarations in your build script and provide some basic validations of plugin metadata. This plugin will automatically apply the Java plugin, add the gradleApi() dependency to the compile configuration, and perform plugin metadata validations as part of the jar task execution.
+Incremental tasks are an incubating feature.
 
-例58.10  使用Java Gradle Plugin Development插件
+由于之前描述的实现的介绍（早在Gradle 1.6 的发布周期），在Gradle社区中的讨论已经生成了优越的想法，就是如同下面的描述一样公开更改的信息给任务实现者。如同这样，这个特性的API将会在未来的版本中几乎一定会变更。然而，请与当前的实现做实验并且在论坛中分享经验。
 
-Example 58.10. Using the Java Gradle Plugin Development plugin
+Since the introduction of the implementation described above (early in the Gradle 1.6 release cycle), discussions within the Gradle community have produced superior ideas for exposing the information about changes to task implementors to what is described below. As such, the API for this feature will almost certainly change in upcoming releases. However, please do experiment with the current implementation and share your experiences with the Gradle community.
+
+孵化过程的特性,它是Gradle特性生命周期的一部分(请参阅附录C,生命周期),为此它的存在性在于通过结合早期用户的反馈确保高质量的最终实现。
+
+The feature incubation process, which is part of the Gradle feature lifecycle (see Appendix C, The Feature Lifecycle), exists for this purpose of ensuring high quality final implementations through incorporation of early user feedback.
+
+使用Gradle,很容易实现一个任务，即当它所有的输入和输出是最新的的时候跳过此任务(参见14.9节,“跳过最新的任务”)。然而,有些时候只有几个输入文件相对上次执行改变了,那么你就想要避免再次加工所有那些没改变的输入。这对一个转换器的任务特别有用,它会将输入文件以一对一的比例转换为输出文件。
+
+With Gradle, it's very simple to implement a task that gets skipped when all of it's inputs and outputs are up to date (see Section 14.9, “Skipping tasks that are up-to-date”). However, there are times when only a few input files have changed since the last execution, and you'd like to avoid reprocessing all of the unchanged inputs. This can be particularly useful for a transformer task, that converts input files to output files on a 1:1 basis.
+
+如果你想优化你的构建使得处理仅过期的输出，那么你可以使用增强任务。
+
+If you'd like to optimise your build so that only out-of-date inputs are processed, you can do so with an incremental task.
+
+### **57.4.1. Implementing an incremental task**
+
+对于一个处理输出不断增值的任务,它必须包含增量任务动作。这个任务动作方法包含一个IncrementalTaskInputs参数,这表明对于Gradle的此动作将仅处理改变的输入。
+
+For a task to process inputs incrementally, that task must contain an incremental task action. This is a task action method that contains a single IncrementalTaskInputs parameter, which indicates to Gradle that the action will process the changed inputs only.
+
+增量任务动作可能会提供一个IncrementalTaskInputs.outOfDate()动作来处理任何过时的输入文件,还有一个IncrementalTaskInputs.removed()动作  用来执行在之前执行过程中被删除的任何输入文件。
+
+The incremental task action may supply an IncrementalTaskInputs.outOfDate() action for processing any input file that is out-of-date, and a IncrementalTaskInputs.removed() action that executes for any input file that has been removed since the previous execution.
+
+例57.8 定义一个增量任务行为
+
+Example 57.8. Defining an incremental task action
 
 build.gradle
 ```
-apply plugin: 'java-gradle-plugin'
-```
+class IncrementalReverseTask extends DefaultTask {
+    @InputDirectory
+    def File inputDir
 
-## **58.6. Maintaining multiple domain objects**
+    @OutputDirectory
+    def File outputDir
 
-Gradle提供了一些实用程序类维护对象的集合,它们与Gradle构建语言融合得很好。
+    @Input
+    def inputProperty
 
-Gradle provides some utility classes for maintaining collections of objects, which work well with the Gradle build language.
-
-例58.11 管理域对象
-
-Example 58.11. Managing domain objects
-
-build.gradle
-
-```
-apply plugin: DocumentationPlugin
-
-books {
-    quickStart {
-        sourceFile = file('src/docs/quick-start')
-    }
-    userGuide {
-
-    }
-    developerGuide {
-
-    }
-}
-
-task books << {
-    books.each { book ->
-        println "$book.name -> $book.sourceFile"
-    }
-}
-
-class DocumentationPlugin implements Plugin<Project> {
-    void apply(Project project) {
-        def books = project.container(Book)
-        books.all {
-            sourceFile = project.file("src/docs/$name")
+    @TaskAction
+    void execute(IncrementalTaskInputs inputs) {
+        println inputs.incremental ? "CHANGED inputs considered out of date"
+                                   : "ALL inputs considered out of date"
+        inputs.outOfDate { change ->
+            println "out of date: ${change.file.name}"
+            def targetFile = new File(outputDir, change.file.name)
+            targetFile.text = change.file.text.reverse()
         }
-        project.extensions.books = books
-    }
-}
 
-class Book {
-    final String name
-    File sourceFile
-
-    Book(String name) {
-        this.name = name
+        inputs.removed { change ->
+            println "removed: ${change.file.name}"
+            def targetFile = new File(outputDir, change.file.name)
+            targetFile.delete()
+        }
     }
 }
 ```
 
-Output of gradle -q books
+Note: The code for this example can be found at samples/userguide/tasks/incrementalTask in the ‘-all’ distribution of Gradle.
+
+对于这样一个简单的转换器任务,任务动作只需要为过时的输入文件生成输出文件，且为任何移除的输入删除输出文件。
+
+For a simple transformer task like this, the task action simply needs to generate output files for any out-of-date inputs, and delete output files for any removed inputs.
+
+一个任务可能仅包含一个单独的增量任务动作。
+
+A task may only contain a single incremental task action.
+
+### **57.4.2. Which inputs are considered out of date?**
+
+当Gradle有之前任务执行历史记录，且仅相对之前任务执行改变的内容写进了输入文件，那么Gradle能够判定哪个输入文件需要被任务重新处理。这种情况下，IncrementalTaskInputs.outOfDate()动作可以执行应用于任何添加和修改的输入文件。IncrementalTaskInputs.removed()动作可以执行用于任何移除的输入文件。
+
+When Gradle has history of a previous task execution, and the only changes to the task execution context since that execution are to input files, then Gradle is able to determine which input files need to be reprocessed by the task. In this case, the IncrementalTaskInputs.outOfDate() action will be executed for any input file that was added or modified, and the IncrementalTaskInputs.removed() action will be executed for any removed input file.
+
+然而，很多情况下Gradle是不能判定哪个输入文件需要被再次处理。例子包括：
+
+However, there are many cases where Gradle is unable to determine which input files need to be reprocessed. Examples include:
+
+没有从前执行可用的历史记录。
+
+There is no history available from a previous execution.
+
+你正在使用一个不同的Gradle版本来进行构建。目前，Gradle不能使用来自不同版本的任务历史。
+
+You are building with a different version of Gradle. Currently, Gradle does not use task history from a different version.
+
+添加到任务中的upToDateWhen条件返回为false.
+
+An upToDateWhen criteria added to the task returns false.
+
+相对之前的执行现在的输入属性已经改变了。
+
+An input property has changed since the previous execution.
+
+相对之前的执行 一个或多个输出文件已经改变了。
+
+One or more output files have changed since the previous execution.
+
+在这些情况下，Gradle会认为所有的输入文件都是过时的。每个输入文件都会执行IncrementalTaskInputs.outOfDate()
+动作，而IncrementalTaskInputs.removed()动作根本不会被执行。
+
+In any of these cases, Gradle will consider all of the input files to be outOfDate. The IncrementalTaskInputs.outOfDate() action will be executed for every input file, and the IncrementalTaskInputs.removed() action will not be executed at all.
+
+你可以验证下Gradle是否可以通过IncrementalTaskInputs.isIncremental()来判断输入文件新增的变化。
+
+You can check if Gradle was able to determine the incremental changes to input files with IncrementalTaskInputs.isIncremental().
+
+### **57.4.3. An incremental task in action**
+
+鉴于上述增量任务的实现,我们可以通过例子探索各种变化场景。注意各种突变任务(“updateInputs”、“removeInput”等)只是出于当前演示目的:这些通常不会是你构建脚本的一部分。
+
+Given the incremental task implementation above, we can explore the various change scenarios by example. Note that the various mutation tasks ('updateInputs', 'removeInput', etc) are only present for demonstration purposes: these would not normally be part of your build script.
+
+首先,考虑IncrementalReverseTask首次对一组输入执行。在这种情况下,所有的输入都将被认为是“过时的”:
+
+First, consider the IncrementalReverseTask executed against a set of inputs for the first time. In this case, all inputs will be considered “out of date”:
+
+例57.9  首次运行增量任务
+
+Example 57.9. Running the incremental task for the first time
+
+build.gradle
 ```
-> gradle -q books
-developerGuide -> /home/user/gradle/samples/userguide/organizeBuildLogic/customPluginWithDomainObjectContainer/src/docs/developerGuide
-quickStart -> /home/user/gradle/samples/userguide/organizeBuildLogic/customPluginWithDomainObjectContainer/src/docs/quick-start
-userGuide -> /home/user/gradle/samples/userguide/organizeBuildLogic/customPluginWithDomainObjectContainer/src/docs/userGuide
-````
+task incrementalReverse(type: IncrementalReverseTask) {
+    inputDir = file('inputs')
+    outputDir = file("$buildDir/outputs")
+    inputProperty = project.properties['taskInputProperty'] ?: "original"
+}
+Build layout
+incrementalTask/
+  build.gradle
+  inputs/
+    1.txt
+    2.txt
+    3.txt
+```
+Output of gradle -q incrementalReverse
+```
+> gradle -q incrementalReverse
+ALL inputs considered out of date
+out of date: 1.txt
+out of date: 2.txt
+out of date: 3.txt
+```
 
-Project.container()方法创建NamedDomainObjectContainer实例,有很多有用管理和配置对象的方法。为了使用一种类型在任何project.container方法中,它必须公开一个名字是“name”的属性作为唯一的,且为常量的对象的名称。project.container(类)容器方法的变体创建新实例,试图调用类的构造函数，这个构造函数只有一个字符串参数并期望为对象的名字。请点击上面的链接查看project.container方法变量允许自定义实例化策略。
+自然地若没有变化再次执行任务,那么整个任务是最新的没有文件传送给任务动作:
 
-The Project.container() methods create instances of NamedDomainObjectContainer, that have many useful methods for managing and configuring the objects. In order to use a type with any of the project.container methods, it MUST expose a property named “name” as the unique, and constant, name for the object. The project.container(Class) variant of the container method creates new instances by attempting to invoke the constructor of the class that takes a single string argument, which is the desired name of the object. See the above link for project.container method variants that allow custom instantiation strategies.
+Naturally when the task is executed again with no changes, then the entire task is up to date and no files are reported to the task action:
 
-Previous|Contents|Next
+例57.10  使用没有改变的输入文件运行增量任务
 
+Example 57.10. Running the incremental task with unchanged inputs
+
+Output of gradle -q incrementalReverse
+```
+> gradle -q incrementalReverse
+When an input file is modified in some way or a new input file is added, then re-executing the task results in those files being reported to IncrementalTaskInputs.outOfDate():
+```
+例57.11  使用过时的输入文件运行增量任务
+
+Example 57.11. Running the incremental task with updated input files
+
+build.gradle
+```
+task updateInputs() << {
+    file('inputs/1.txt').text = "Changed content for existing file 1."
+    file('inputs/4.txt').text = "Content for new file 4."
+}
+Output of gradle -q updateInputs incrementalReverse
+> gradle -q updateInputs incrementalReverse
+CHANGED inputs considered out of date
+out of date: 1.txt
+out of date: 4.txt
+```
+
+当一个存在的输入文件被移除，那么再次执行这项任务将会导致那个文件被传送给IncrementalTaskInputs.removed()。
+
+When an existing input file is removed, then re-executing the task results in that file being reported to IncrementalTaskInputs.removed():
+
+例57.12 使用已移除的输入文件运行增量任务
+
+Example 57.12. Running the incremental task with an input file removed
+
+build.gradle
+```
+task removeInput() << {
+    file('inputs/3.txt').delete()
+}
+Output of gradle -q removeInput incrementalReverse
+> gradle -q removeInput incrementalReverse
+CHANGED inputs considered out of date
+removed: 3.txt
+```
+
+当一个输出文件被删除（或被修改），此时Gradle不能判定哪个输入文件过时。在这种情况下，所有的输入文件被报给ncrementalTaskInputs.outOfDate()行为，而没有输出文件被报给IncrementalTaskInputs.removed()。
+
+When an output file is deleted (or modified), then Gradle is unable to determine which input files are out of date. In this case, all input files are reported to the IncrementalTaskInputs.outOfDate() action, and no input files are reported to the IncrementalTaskInputs.removed() action:
+
+例57.13  使用已移除的输出文件运行增量任务
+
+Example 57.13. Running the incremental task with an output file removed
+
+build.gradle
+```
+task removeOutput() << {
+    file("$buildDir/outputs/1.txt").delete()
+}
+Output of gradle -q removeOutput incrementalReverse
+> gradle -q removeOutput incrementalReverse
+ALL inputs considered out of date
+out of date: 1.txt
+out of date: 2.txt
+out of date: 3.txt
+```
+
+当任务输入属性被修改时,Gradle无法判断这个属性如何影响任务输出,所以所有输入文件被认为是过时了。因此类似于改变的输出文件的例子,所有输入文件传送给IncrementalTaskInputs.outOfDate()操作,并没有输入文件传送给IncrementalTaskInputs.removed():
+
+When a task input property is modified, Gradle is unable to determine how this property impacted the task outputs, so all input files are assumed to be out of date. So similar to the changed output file example, all input files are reported to the IncrementalTaskInputs.outOfDate() action, and no input files are reported to the IncrementalTaskInputs.removed() action:
+
+例57.14  使用改变的输入属性运行增量任务
+
+Example 57.14. Running the incremental task with an input property changed
+
+```
+Output of gradle -q -PtaskInputProperty=changed incrementalReverse
+> gradle -q -PtaskInputProperty=changed incrementalReverse
+ALL inputs considered out of date
+out of date: 1.txt
+out of date: 2.txt
+out of date: 3.txt
+```
 百度搜索[无线学院](http://wirelesscollege.cn)

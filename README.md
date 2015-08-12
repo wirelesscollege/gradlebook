@@ -2,7 +2,7 @@ Gradle中文文档by无线学院
 =======
 欢迎加入[无线学院](http://wirelesscollege.cn)Gradle中文社区，本文档由无线学院院长自娱老师组织翻译，感谢雷亚、刘学美、徐俏、朱俊峰、陈立元等对本文档翻译的贡献。
 
-本文档为Gradle使用手册V2.5，欢迎指正，也欢迎加入Gradel中文QQ群：463988029，联系我们一起为开源工具做贡献。
+本文档为Gradle使用手册V2.6，欢迎指正，也欢迎加入Gradel中文QQ群：463988029，联系我们一起为开源工具做贡献。
 
 本文档前11章来自github[开源翻译项目](http://pkaq.github.io/gradledoc/docs/userguide/userguide.html)但是比较残缺部分章节无线学院补充翻译、12章-31张来自[CSDN博客](http://blog.csdn.net/column/details/gradle-translation.html)，感谢他们对Gradle中文社区的支持，31章后为Gradle中文社区无线学院翻译，如有疑义前31章可以联系[官网客服](http://wirelesscollege.cn)我们可以随时下架。
 
