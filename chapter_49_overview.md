@@ -14,7 +14,7 @@ The Build Dashboard plugin can be used to generate a single HTML dashboard that 
 
 49.1. Usage
 
-在build脚本中使用build buildDashboard插件，方法如下：……
+在build脚本中使用build buildDashboard插件，方法如下：
 
 To use the Build Dashboard plugin, include the following in your build script:
 
