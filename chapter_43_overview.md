@@ -1,6 +1,6 @@
 # **第四十三章. Build Announcements插件**
 
-Chapter 42. The Build Announcements Plugin
+Chapter 43. The Build Announcements Plugin
 
 build announcements插件正在开发中，值得注意的是在以后的Gradle版本中DSL与其他配置可以会变化。
 
