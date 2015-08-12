@@ -37,10 +37,12 @@ The buildDashboard task does not depend on any other tasks. It will only aggrega
 49.2. Tasks
 
 在项目中Build Dashboard plugin添加如下task
+
 The Build Dashboard plugin adds the following task to the project:
+表49.1 Build Dashboard插件-任务
 
 Table 49.1. Build Dashboard plugin – tasks
-表49.1 Build Dashboard插件-任务
+
 
 |Task name	|Depends on|	Type|	Description|
 |--
