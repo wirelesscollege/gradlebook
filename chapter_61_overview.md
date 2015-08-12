@@ -128,9 +128,9 @@ All repos:
 
 In Section 59.6, “External dependencies for the build script” it was explained how to add external dependencies to a build script. Init scripts can also declare dependencies. You do this with the initscript() method, passing in a closure which declares the init script classpath.
 
-例60.2声明外部依赖的init脚本
+例61.2声明外部依赖的init脚本
 
-Example 60.2. Declaring external dependencies for an init script
+Example 61.2. Declaring external dependencies for an init script
 
 init.gradle
 ```
