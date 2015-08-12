@@ -17,9 +17,9 @@ The Build Dashboard plugin can be used to generate a single HTML dashboard that 
 在build脚本中使用build buildDashboard插件，方法如下：
 
 To use the Build Dashboard plugin, include the following in your build script:
+例49.1   使用buildDashboard 插件
 
 Example 49.1. Using the Build Dashboard plugin
-例49.1   使用buildDashboard 插件
 
 build.gradle
 
