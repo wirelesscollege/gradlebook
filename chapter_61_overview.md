@@ -152,7 +152,7 @@ The closure passed to the initscript() method configures a ScriptHandler instanc
 
 Having declared the init script classpath, you can use the classes in your init script as you would any other classes on the classpath. The following example adds to the previous example, and uses classes from the init script classpath.
 
-例60.3 init脚本与外部依赖
+例61.3 init脚本与外部依赖
 
 Example 60.3. An init script with external dependencies
 
@@ -175,17 +175,17 @@ Output of gradle --init-script init.gradle -q doNothing
 2 / 5
 ```
 
-## **60.5 init脚本插件**
+## **61.5 init脚本插件**
 
-60.5. Init script plugins
+61.5. Init script plugins
 
 类似于Gradle构建脚本或者Gradle设置文件，插件也同样可以应用在init脚本中。
 
 Similar to a Gradle build script or a Gradle settings file, plugins can be applied on init scripts.
 
-例 60.4  init脚本的插件使用
+例 61.4  init脚本的插件使用
 
-Example 60.4. Using plugins in init scripts
+Example 61.4. Using plugins in init scripts
 
 init.gradle
 ```
