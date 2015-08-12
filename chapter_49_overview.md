@@ -34,6 +34,7 @@ Applying the plugin adds the buildDashboard task to your project. The task aggre
 The buildDashboard task does not depend on any other tasks. It will only aggregate the reporting tasks that are independently being executed as part of the build run. To generate the build dashboard, simply include this task in the list of tasks to execute. For example, “gradle buildDashboard build” will generate a dashboard for all of the reporting tasks that are dependents of the build task.
 
 ## **49.2. Tasks**
+## **49.2. Tasks**
 
 Build Dashboard插件添加如下任务到项目中
 The Build Dashboard plugin adds the following task to the project:
