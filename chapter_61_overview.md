@@ -2,7 +2,7 @@
 
 Chapter 60. Initialization Scripts
 
-Gradle提供了强大的机制来支持基于当前环境的自定义构建，这种机制也支持那些要和Gradle结合的工具。
+Gradle提供了强大的机制来支持基于当前环境的自定义构建，这种机制也支持那些将要和Gradle结合的工具。
 
 Gradle provides a powerful mechanism to allow customizing the build based on the current environment. This mechanism also supports tools that wish to integrate with Gradle.
 
