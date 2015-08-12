@@ -1,23 +1,27 @@
 
-# **Chapter 65. Ivy Publishing (new)**
+# **Chapter 67. Ivy Publishing (new)**
+
+Chapter 67. Ivy 发布
 
 This chapter describes the new incubating Ivy publishing support provided by the “ivy-publish” plugin. Eventually this new publishing support will replace publishing via the Upload task.
 
-本章描述了新的由“ivy-publish” 插件提供的待开发的Ivy发布支持。最终这个新的发布支持将替代通过上传任务发布功能。
+本章描述了“ivy-publish” 插件，该插件将替代Upload任务。
 
-If you are looking for documentation on the original Ivy publishing support using the Upload task please see Chapter 52, Publishing artifacts.
+If you are looking for documentation on the original Ivy publishing support using the Upload task please see Chapter 53, Publishing artifacts.
+
+如果你正在查看Ivy的相关文档，请查看53章，发布构建产物。
 
 This chapter describes how to publish build artifacts in the Apache Ivy format, usually to a repository for consumption by other builds or projects. What is published is one or more artifacts created by the build, and an Ivy module descriptor (normally ivy.xml) that describes the artifacts and the dependencies of the artifacts, if any.
 
-如果你正在找最初的使用上传任务的Ivy发布支持请看51章，发布构建产物。这章描述了如何以Apache Ivy格式发布构建产物，通常发布到其他构建或项目消耗的存储库中。发布的内容是一个或多个构建产物，以及一个Ivy组件描述文件（通常是ivy.xml），它描述产物和产物依赖，如果存在的话。
+这章描述了如何以Apache Ivy格式发布构建产物，通常发布到其他构建或项目消耗的存储库中。发布的内容是一个或多个构建产物，以及一个Ivy组件描述文件（通常是ivy.xml），它描述产物和产物依赖，如果存在的话。
 
 A published Ivy module can be consumed by Gradle (see Chapter 51, Dependency Management) and other tools that understand the Ivy format.
 
-一个发布的Ivy组件可以被Gradle（看50章依赖管理）和其他理解Ivy格式的工具使用。
+一个发布的Ivy组件可以被Gradle（看52章依赖管理）和其他理解Ivy格式的工具使用。
 
-## **65.1. The “ivy-publish” Plugin**
+## **67.1. The “ivy-publish” Plugin**
 
-65.1.“ivy-publish”插件
+67.1.“ivy-publish”插件
 
 The ability to publish in the Ivy format is provided by the “ivy-publish” plugin.
 
@@ -27,9 +31,9 @@ The “publishing” plugin creates an extension on the project named “publish
 
 “publishing” 插件在项目上创建一个类型为PublishingExtension命名为“publishing”的扩展。这个扩展提供了一个名字是publications和名字是repositories的容器。“ivy-publish” 插件与IvyPublication publications和IvyArtifactRepository repositories一块工作。
 
-Example 65.1. Applying the “ivy-publish” plugin
+Example 67.1. Applying the “ivy-publish” plugin
 
-例65.1. 应用“ivy-publish”插件
+例67.1. 应用“ivy-publish”插件
 
 build.gradle
 ```
@@ -53,9 +57,9 @@ Establishes a rule to automatically create a PublishToIvyRepository task for the
 
 建立一个规则来自动为每个IvyPublication添加的组合创建一个PublishToIvyRepository任务（参见65.3节,“存储库”)。
 
-## **65.2. Publications**
+## **67.2. Publications**
 
-65.2.发布
+67.2.发布
 
 If you are not familiar with project artifacts and configurations, you should read Chapter 52, Publishing artifacts, which introduces these concepts. This chapter also describes “publishing artifacts” using a different mechanism than what is described in this chapter. The publishing functionality described here will eventually supersede that functionality.
 
@@ -69,13 +73,13 @@ For the “ivy-publish” plugin to have any effect, an IvyPublication must be a
 
 要使“ivy-publish”插件有所作用,必须添加一个IvyPublication到发布集。这个发布决定实际要发布哪些产物以及包含在相关Ivy组件描述文件中的详细信息。一次发布可以通过添加组件,定制产物,以及直接修改生成的组件描述符文件来配置。
 
-## **65.2.1. Publishing a Software Component**
+## **67.2.1. Publishing a Software Component**
 
 The simplest way to publish a Gradle project to an Ivy repository is to specify a SoftwareComponent to publish. The components presently available for publication are:
 
 发布Gradle项目到一个Ivy存储库最简单的方式是指明一个要发布的SoftwareComponent，当前支持发布的的构成有：
 
-Table 65.1. Software Components
+Table 67.1. Software Components
 
 |Name	|Provided By	|Artifacts	|Dependencies|
 |--
@@ -86,7 +90,7 @@ In the following example, artifacts and runtime dependencies are taken from the 
 
 下面的例子中，构建产物和运行时依赖从‘java’构成中获取，而‘java’构成是由Java Plugin插件添加的。
 
-Example 65.2. Publishing a Java module to Ivy
+Example 67.2. Publishing a Java module to Ivy
 
 build.gradle
 ```
@@ -97,9 +101,9 @@ publications {
 }
 ```
 
-### **65.2.2. Publishing custom artifacts**
+### **67.2.2. Publishing custom artifacts**
 
-65.2.2. 发布自定义产物
+67.2.2. 发布自定义产物
 
 It is also possible to explicitly configure artifacts to be included in the publication. Artifacts are commonly supplied as raw files, or as instances of AbstractArchiveTask (e.g. Jar, Zip).
 
@@ -112,7 +116,7 @@ Configure custom artifacts as follows:
 
 配置自定义产物如下：
 
-Example 65.3. Publishing additional artifact to Ivy
+Example 67.3. Publishing additional artifact to Ivy
 
 build.gradle
 ```
@@ -137,9 +141,9 @@ See the IvyPublication class in the API documentation for more detailed informat
 
 查看API文档中IvyPublication类可以了解关于产物如何被自定义的详细信息。
 
-## **65.2.3. Identity values for the published project**
+## **67.2.3. Identity values for the published project**
 
-65.2.3.  已发布项目的Identity值
+67.2.3.  已发布项目的Identity值
 
 The generated Ivy module descriptor file contains an <info> element that identifies the module. The default identity values are derived from the following:
 
@@ -155,9 +159,9 @@ Overriding the default identity values is easy: simply specify the organisation,
 
 覆盖默认的identity值很简单：仅需在配置IvyPublication指定organisation, module 或 revision的属性。status和branch属性可以通过descriptor属性来设置。descriptor属性也可以用于添加其他的自定义元素，比如 <info>元素的子元素。
 
-Example 65.4. customizing the publication identity
+Example 67.4. customizing the publication identity
 
-例65.4. 自定义发布identity
+例67.4. 自定义发布identity
 
 build.gradle
 ```
@@ -185,17 +189,17 @@ Gradle will handle any valid Unicode character for organisation, module and revi
 
 Gradle会处理在organisation,module和revision (以及产物的name, extension 和classifier)中任何有效的Unicode字符。唯一被明确禁止的是'\', '/'和任何ISO控制字符。所有提供的值会在发布前期校验。
 
-## **65.2.4. Modifying the generated module descriptor**
+## **67.2.4. Modifying the generated module descriptor**
 
-65.2.4. 修改生成的组件描述符文件
+67.2.4. 修改生成的组件描述符文件
 
 At times, the module descriptor file generated from the project information will need to be tweaked before publishing. The “ivy-publish” plugin provides a hook to allow such modification.
 
 有时可能需要在发布前调整由项目信息生成的组件描述符文件。“ivy-publish”插件就提供了一个允许修改的hook。
 
-Example 65.5. Customizing the module descriptor file
+Example 67.5. Customizing the module descriptor file
 
-例65.5.  自定义组件descriptor文件
+例67.5.  自定义组件descriptor文件
 
 build.gradle
 ```
@@ -224,15 +228,15 @@ The identifier (organisation, module, revision) of the published module is an ex
 
 已发布的组件标识符 (organisation, module, revision)是个特例；这个值在descriptor中不能使用 `withXML`修改。
 
-## **65.2.5. Publishing multiple modules***
+## **67.2.5. Publishing multiple modules***
 
-65.2.5. 发布多个组件
+67.2.5. 发布多个组件
 
 Sometimes it's useful to publish multiple modules from your Gradle build, without creating a separate Gradle subproject. An example is publishing a separate API and implementation jar for your library. With Gradle this is simple:
 
 有时候在Gradle构建时发布多个组件是很有用的，而不需创建一个单独的Gradle子项目。有个例子是 为你的库发布一个单独的API和实现jar。使用Gradle很简单：
 
-Example 65.6. Publishing multiple modules from a single project
+Example 67.6. Publishing multiple modules from a single project
 
 build.gradle
 ```
@@ -263,12 +267,12 @@ If a project defines multiple publications then Gradle will publish each of thes
 
 如果一个项目定义了多个发布产品那么Gradle将发布每个产品到定义的库中。每个发布品必须要指明一个唯一的标识符，如上面描述的那样。
 
-## **65.3. Repositories**
+## **67.3. Repositories**
 
 Publications are published to repositories. The repositories to publish to are defined by the PublishingExtension.getRepositories() container.
 
 发布品被发布到存储库中。要发布的库是由PublishingExtension.getRepositories()容器定义的。
-Example 65.7. Declaring repositories to publish to
+Example 67.7. Declaring repositories to publish to
 
 build.gradle
 ```
@@ -284,7 +288,7 @@ The DSL used to declare repositories for publishing is the same DSL that is used
 
 用来声明发布库的DSL和用来声明依赖 (RepositoryHandler)的库是一样的。然而，在Ivy发布内容里只有被ivy()方法创建的库才会被用作发布目标库。例如你不能发布一个IvyPublication到一个Maven库中。
 
-## **65.4. Performing a publish**
+## **67.4. Performing a publish**
 
 The “ivy-publish” plugin automatically creates a PublishToIvyRepository task for each IvyPublication and IvyArtifactRepository combination in the publishing.publications and publishing.repositories containers respectively.
 
@@ -294,7 +298,7 @@ The created task is named “publish«PUBNAME»PublicationTo«REPONAME»Reposito
 
 创建的任务名字为“publish«PUBNAME»PublicationTo«REPONAME»Repository”，对于这个例子也就是“publishIvyJavaPublicationToIvyRepository”。这个任务是PublishToIvyRepository类型。
 
-Example 65.8. Choosing a particular publication to publish
+Example 67.8. Choosing a particular publication to publish
 
 build.gradle
 ```
@@ -334,7 +338,7 @@ BUILD SUCCESSFUL
 Total time: 1 secs
 ```
 
-### **65.4.1. The “publish” lifecycle task**
+### **67.4.1. The “publish” lifecycle task**
 
 The “publish” plugin (that the “ivy-publish” plugin implicitly applies) adds a lifecycle task that can be used to publish all publications to all applicable repositories named “publish”.
 
@@ -343,7 +347,7 @@ In more concrete terms, executing this task will execute all PublishToIvyReposit
 
 更具体而言，执行这项任务将会执行项目中的所有PublishToIvyRepository任务。通常这个是执行发布最方便的方式。
 
-Example 65.9. Publishing all publications via the “publish” lifecycle task
+Example 67.9. Publishing all publications via the “publish” lifecycle task
 
 Output of gradle publish
 ```
@@ -361,9 +365,9 @@ BUILD SUCCESSFUL
 Total time: 1 secs
 ```
 
-## **65.5. Generating the Ivy module descriptor file without publishing**
+## **67.5. Generating the Ivy module descriptor file without publishing**
 
-65.5.不用发布生成Ivy组件描述文件
+67.5.不用发布生成Ivy组件描述文件
 
 At times it is useful to generate the Ivy module descriptor file (normally ivy.xml) without publishing your module to an Ivy repository. Since descriptor file generation is performed by a separate task, this is very easy to do.
 
@@ -376,7 +380,7 @@ You can specify where the generated Ivy file will be located by setting the dest
 
 你可以通过设置任务中的目的属性指明Ivy文件的生成路径。默认情况文件会被写入到“build/publications/«PUBNAME»/ivy.xml”。
 
-Example 65.10. Generating the Ivy module descriptor file
+Example 67.10. Generating the Ivy module descriptor file
 
 build.gradle
 ```
@@ -402,13 +406,13 @@ The same applies to any attempt to access publication-specific tasks like Publis
 
 同样适用于任何像PublishToIvyRepository一样企图访问publication-specific的任务，这些任务应在模型块中被引用。
 
-## **65.6. Complete example**
+## **67.6. Complete example**
 
 The following example demonstrates publishing with a multi-project build. Each project publishes a Java component and a configured additional source artifact. The descriptor file is customized to include the project description for each project.
 
 下面的例子演示了多项目构建的演示发布。每个项目发布了一个java组件和一个配置好的另外的源产物。项目描述文件中包含了每个项目的项目描述。
 
-Example 65.11. Publishing a Java module
+Example 67.11. Publishing a Java module
 
 build.gradle
 ```
@@ -490,9 +494,11 @@ When project1 is published, the module descriptor (i.e. the ivy.xml file) that i
 
 Note that «PUBLICATION-TIME-STAMP» in this example Ivy module descriptor will be the timestamp of when the descriptor was generated.
 
-Example 65.12. Example generated ivy.xml
+Example 67.12. Example generated ivy.xml
 
 output-ivy.xml
+
+```
 
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0">
@@ -513,7 +519,9 @@ output-ivy.xml
   </dependencies>
 </ivy-module>
 
-## **65.7. Future features**
+```
+
+## **67.7. Future features**
 
 The “ivy-publish” plugin functionality as described above is incomplete, as the feature is still incubating. In upcoming Gradle releases, the functionality will be expanded to include (but not limited to):
 
