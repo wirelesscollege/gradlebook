@@ -1,6 +1,6 @@
 # **第六十三章 初始化脚本**
 
-Chapter 61. Initialization Scripts
+Chapter 63. Initialization Scripts
 
 Gradle提供了强大的机制来支持基于当前环境的自定义构建，这种机制也支持那些将要和Gradle结合的工具。
 
