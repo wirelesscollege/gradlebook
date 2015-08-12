@@ -54,7 +54,7 @@ The Build Dashboard plugin does not define any dependency configurations.
 
 ## **49.5. 配置**
 
-## **49.5. Configuration**
+49.5. Configuration
 
 你可以通过ReportingExtension插件来控制面板插件生成的位置
 You can influence the location of build dashboard plugin generation via ReportingExtension.
