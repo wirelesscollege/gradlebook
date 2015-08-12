@@ -10,17 +10,17 @@ The build announcements plugin is currently incubating. Please be aware that the
 
 The build announcements plugin uses the announce plugin to send local announcements on important events in the build.
 
-## **42.1. 用法**
+## **43.1. 用法**
 
-42.1. Usage
+43.1. Usage
 
 在build脚本中使用build announcements 插件，方法如下：
 
 To use the build announcements plugin, include the following in your build script:
 
-例42.1 使用build announcements插件
+例43.1 使用build announcements插件
 
-Example 42.1. Using the build announcements plugin
+Example 43.1. Using the build announcements plugin
 
 build.gradle
 ```
@@ -35,9 +35,9 @@ That's it. If you want to tweak where the announcements go, you can configure th
 
 You can also apply the plugin from an init script:
 
-例42.2.在init script中使用build announcements插件
+例43.2.在init script中使用build announcements插件
 
-Example 42.2. Using the build announcements plugin from an init script
+Example 43.2. Using the build announcements plugin from an init script
 
 init.gradle
 ```
