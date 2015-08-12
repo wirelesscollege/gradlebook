@@ -10,9 +10,9 @@ Gradle provides a powerful mechanism to allow customizing the build based on the
 
 Note that this is completely different from the “init” task provided by the “build-init” incubating plugin (see Chapter 47, Build Init Plugin).
 
-## **60.1 基本用法**
+## **61.1 基本用法**
 
-60.1. Basic usage
+61.1. Basic usage
 
 初始化脚本（又叫init脚本），它类似于Gradle中的其他脚本，但是这些脚本都是在构建之前运行。这是几个可能的用法：
 
