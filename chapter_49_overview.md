@@ -35,24 +35,26 @@ The buildDashboard task does not depend on any other tasks. It will only aggrega
 Build Dashboard插件添加如下任务到项目中
 The Build Dashboard plugin adds the following task to the project:
 
-Table 48.1. Build Dashboard plugin – tasks
-表48.1 Build Dashboard插件-任务
+Table 49.1. Build Dashboard plugin – tasks
+表49.1 Build Dashboard插件-任务
 
 |Task name	|Depends on|	Type|	Description|
 |--
 |buildDashboard	|-	|GenerateBuildDashboard|Generates build dashboard report.|
 
-## **48.3. Project layout**
+## **49.3. Project layout**
 
 Build Dashboard插件不要求任何特殊的项目布局
 The Build Dashboard plugin does not require any particular project layout.
 
-## **48.4. Dependency management**
+## **49.4. Dependency management**
 
 Build Dashboard插件没有定义任何依赖项配置。
 The Build Dashboard plugin does not define any dependency configurations.
 
-## **48.5. Configuration**
+## **49.5. Configuration**
+
+## **49.5. Configuration**
 
 你可以通过ReportingExtension插件来控制面板插件生成的位置
 You can influence the location of build dashboard plugin generation via ReportingExtension.
