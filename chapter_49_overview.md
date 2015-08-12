@@ -50,7 +50,7 @@ Table 49.1. Build Dashboard plugin – tasks
 |buildDashboard	|-	|GenerateBuildDashboard|Generates build dashboard report.|
 ## **49.3. 项目布局**
 
-## **49.3. Project layout**
+49.3. Project layout
 
 Build Dashboard插件不要求任何特殊的项目布局
 The Build Dashboard plugin does not require any particular project layout.
