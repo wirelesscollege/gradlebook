@@ -77,7 +77,7 @@ OSGI插件添加了如下的方法转换。欲知更多细节，参加对象转�
 
 The OSGi plugin adds the following methods. For more details, see the API documentation of the convention object.
 
-表371.1 OSGI 方法
+表37.1 OSGI 方法
 
 Table 37.1. OSGi methods
 
