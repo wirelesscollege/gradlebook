@@ -1,213 +1,401 @@
-# **Chapter 54. The Signing Plugin（签名插件）**
+# **第五十二章  Maven 插件**
 
-The signing plugin添加了为构建文件及产物做数字签名的功能。数字签名可以被用来证明谁构建了签名产物，以及其他的信息比如签名是什么时候生成的。
+Chapter 52. The Maven Plugin
 
-The signing plugin adds the ability to digitally sign built files and artifacts. These digital signatures can then be used to prove who built the artifact the signature is attached to as well as other information such as when the signature was generated.
+本章还在编写中
 
-The signing plugin目前只支持生成PGP签名(是一种被Maven Central Repository要求的出版所需的签名格式)。
+This chapter is a work in progress.
 
-The signing plugin currently only provides support for generating PGP signatures (which is the signature format required for publication to the Maven Central Repository).
+maven插件可以添加项目依赖到maven仓库.
 
-## **54.1. Usage**
+The Maven plugin adds support for deploying artifacts to Maven repositories.
 
-在使用the Signing plugin时需包含如下内容到你的构建脚本中
+## **52.1.  使用**
 
-To use the Signing plugin, include the following in your build script:
+52.1.  Usage
 
-例54.1 使用签名插件
+要使用maven插件，在项目的build 脚本中加入如下代码：
 
-Example 54.1. Using the Signing plugin
+To use the Maven plugin, include the following in your build script:
+
+例子52.1.  使用maven插件
+
+Example 52.1. Using the Maven plugin
 
 build.gradle
 ```
-apply plugin: 'signing'
+apply plugin: 'maven'
 ```
 
-## **54.2. Signatory credentials**
+## **52.2.  任务**
 
-为了创建PGP签名，你需要一个钥匙对（你可以在GnuPG HOWTOs中找到使用GnuPG tools 创建钥匙对时用到的那些指令/命令）。你需要给签名插件你的钥匙信息，这就意味着三件事：
+52.2.  Tasks
 
-In order to create PGP signatures, you will need a key pair (instructions on creating a key pair using the GnuPG tools can be found in the GnuPG HOWTOs). You need to provide the signing plugin with your key information, which means three things
+maven插件定义了如下的任务：
+
+The Maven plugin defines the following tasks:
+
+表52.1.   maven 插件---任务
+
+Table 52.1. Maven plugin - tasks
+
+|Task name|	Depends on|	Type|	Description|
+|--
+|install 	|All |tasks that build the associated archives. |	Upload|
+
+安装相应的产物到maven缓存包括maven产生的元数据。安装任务默认的会伴随着产物配置。这个配置默认的只有一个jar包作为元素。要了解更多请参阅Section 53.6.3, “Installing to the local repository”
+
+## **52.3. 依赖管理**
+
+52.3. Dependency management
+
+maven插件没有定义任何的依赖配置
+
+The Maven plugin does not define any dependency configurations.
+
+## **52.4. 约定属性**
+
+52.4. Convention properties
+
+maven插件定义了下面一些属性：
+
+The Maven plugin defines the following convention properties:
+
+表52.2. Maven插件---属性
+
+Table 53.2. Maven plugin - properties
+
+|Property name	|Type	|Default value	|Description|
+|--
+|pomDirName |	String |	poms |	写产生的pom文件的路径，相对于build目录|
+|pomDir 	|File (read-only) 	|buildDir/pomDirName |	已产生的pom文件被写入的路径 |
+|conf2ScopeMappings |	Conf2ScopeMappingContainer |n/a |	|
+
+Grade配置与maven范围的介绍。请查看 Section 53.6.4.2, “Dependency mapping”. 
+
+这些属性是由MavenPluginConvention 条约对象提供的。
+
+These properties are provided by a MavenPluginConvention convention object.
+
+## **52.5. 约定方法**
+
+52.5. Convention methods
+
+maven插件提供了一个创建POM文件的工厂类方法，这种方法当你需要一个不依赖于maven 仓库上下文的pom文件时是有用的。
+
+The maven plugin provides a factory method for creating a POM. This is useful if you need a POM without the context of uploading to a Maven repo.
+
+例子52.2. 创建一个单独的pom文件
+
+Example 52.2. Creating a stand alone pom.
+build.gradle
 ```
-•	公钥ID（一个8个字符的十六进制字符串）
-•	包含私钥的秘钥环文件的绝对路径
-•	用来保护你私钥的密码
-•	The public key ID (an 8 character hexadecimal string).
-•	The absolute path to the secret key ring file containing your private key.
-•	The passphrase used to protect your private key.
+task writeNewPom << {
+    pom {
+        project {
+            inceptionYear '2008'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }.writeTo("$buildDir/newpom.xml")
+}
 ```
 
-这几项必须要提供signing.keyId, signing.secretKeyRingFile, 和 signing.password属性的值。考虑到这些值所特有和私有的属性，把他们放在用户gradle.properties文件里是个很好的做法（在“Gradle properties and system properties”19.2部分描述过）
+除其他事情外，gradle支持maven通用的相同的构建语法。要了解更多的Gradle Maven POM 对象，请查看 MavenPom。也可以看看：MavenPluginConvention
 
-These items must be supplied as the values of properties signing.keyId, signing.secretKeyRingFile, and signing.passwordrespectively. Given the personal and private nature of these values, a good practice is to store them in the user gradle.propertiesfile (described in Section 19.2, “Gradle properties and system properties”).
-signing.keyId=24875D73
-signing.password=secret
-signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
+Amongst other things, Gradle supports the same builder syntax as polyglot Maven. To learn more about the Gradle Maven POM object, see MavenPom. See also: MavenPluginConvention 
 
-如果在用户gradle.properties文件中指定这些信息你的环境是不可行的，那么你就需要无论如何找到信息源头，手动地设置项目属性。
+## **52.6. 与Maven 仓库交互**
 
-If specifying this information in the user gradle.properties file is not feasible for your environment, you can source the information however you need to and set the project properties manually.
+52.6. Interacting with Maven repositories
 
+### **52.6.1. 介绍***
+
+52.6.1. Introduction
+
+使用Gradle你可以部署到远程maven仓库或者安装到你本地的maven仓库。这包括maven所有的元数据以及快照。事实上，Gradle的部署是百分之百和maven兼容的，因为Gradle的底层实质上就是在执行maven ant 的任务。
+
+With Gradle you can deploy to remote Maven repositories or install to your local Maven repository. This includes all Maven metadata manipulation and works also for Maven snapshots. In fact, Gradle's deployment is 100 percent Maven compatible as we use the native Maven Ant tasks under the hood. 
+
+如果你没有一个pom文件那么部署到一个maven仓库只相当于做了一半的工作，幸运的是Gradle可以依据依赖信息自动为你产生pom文件。
+
+Deploying to a Maven repository is only half the fun if you don't have a POM. Fortunately Gradle can generate this POM for you using the dependency information it has. 
+
+## ***52.6.2. 部署一个maven仓库***
+
+52.6.2. Deploying to a Maven repository
+
+假设你的工程只产生了一个默认的jar包，现在你想把这个jar包部署到一个远程的maven仓库。
+
+Let's assume your project produces just the default jar file. Now you want to deploy this jar file to a remote Maven repository. 
+
+例子52.3.  上传一个文件到远程maven仓库
+
+Example 52.3. Upload of file to remote Maven repository
+
+build.gradle
 ```
-import org.gradle.plugins.signing.Sign
+apply plugin: 'maven'
 
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.allTasks.any { it instanceof Sign }) {
-        // Use Java 6's console to read from the console (no good for
-        // a CI environment)
-        Console console = System.console()
-        console.printf "\n\nWe have to sign some things in this build." +
-                       "\n\nPlease enter your signing details.\n\n"
-
-        def id = console.readLine("PGP Key Id: ")
-        def file = console.readLine("PGP Secret Key Ring File (absolute path): ")
-        def password = console.readPassword("PGP Private Key Password: ")
-
-        allprojects { ext."signing.keyId" = id }
-        allprojects { ext."signing.secretKeyRingFile" = file }
-        allprojects { ext."signing.password" = password }
-
-        console.printf "\nThanks.\n\n"
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/tmp/myRepo/")
+        }
     }
 }
 ```
-        
-## **54.3. Specifying what to sign**
 
-和配置怎样签署（即签署配置）一样，你同样需要指明签什么。The Signing plugin提供了DSL来指明需要签署的任务和/或配置
+以上就是全部。调用uploadArchives方法将会产生一个pom文件并且上传这个pom文件和jar文件到指定的maven仓库。
 
-As well as configuring how things are to be signed (i.e. the signatory configuration), you must also specify what is to be signed. The Signing plugin provides a DSL that allows you to specify the tasks and/or configurations that should be signed.
+That is all. Calling the uploadArchives task will generate the POM and deploys the artifact and the POM to the specified repository. 
 
-### **54.3.1. Signing Configurations**
+如果你需要协议的支持那你需要做更多的工作。在这种情况下，那我们所举的例子本地的maven代码将需要更多的依赖的包，根据你依赖的协议的不同将决定你需要什么样的包。可用的协议以及相应的依赖详见表52.3 “Protocol jars for Maven deployment”（这些库具有传递依赖关系）例如，要使用ssh协议你可以这样做：
 
-想要签署一个配置的构建产物很常见。例如,Java插件配置一个jar来构建，进而这个jar的构建产物被添加到产物配置中。使用DSL签署,您就可以指定的所有应该签署的配置产物。
+There is more work to do if you need support for protocols other than file. In this case the native Maven code we delegate to needs additional libraries. Which libraries are needed depends on what protocol you plan to use. The available protocols and the corresponding libraries are listed in Table 53.3, “Protocol jars for Maven deployment” (those libraries have transitive dependencies which have transitive dependencies). [19] For example, to use the ssh protocol you can do: 
 
-It is common to want to sign the artifacts of a configuration. For example, the Java plugin configures a jar to build and this jar artifact is added to the archives configuration. Using the Signing DSL, you can specify that all of the artifacts of this configuration should be signed.
+例子52.4.    通过ssh上传一个文件
 
-Example 54.2. Signing a configuration
+Example 52.4. Upload of file via SSH
 
 build.gradle
 ```
-signing {
-    sign configurations.archives
+configurations {
+    deployerJars
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+        repository(url: "scp://repos.mycompany.com/releases") {
+            authentication(userName: "me", password: "myPassword")
+        }
+    }
 }
 ```
 
-在你的项目中创建一个名字叫signArchives的任务（sign类型），如果有需要的话可以构建任何产物并且为它们生成签名。签名文件将会放在构建产物被签名的位置。
+对于部署人员来说有好多配置的选择。这些配置由Groovy 编译器来执行完成。这个树上的所有节点都是java 对象。要配置一个简单的属性你可以传递一个map给java对象。要把对象添加到父对象，你可以使用闭包。上面的例子中的repository和authentication就是这样的对象。表52.4“Configuration elements of the MavenDeployer”列出了所有可用的对象元素以及它对应的javadoc文档的链接。在javadoc文档中你可以查看某个对象的某个特定的属性的设置方法。
 
-This will create a task (of type Sign) in your project named “signArchives”, that will build any archives artifacts (if needed) and then generate signatures for them. The signature files will be placed alongside the artifacts being signed.
+There are many configuration options for the Maven deployer. The configuration is done via a Groovy builder. All the elements of this tree are Java beans. To configure the simple attributes you pass a map to the bean elements. To add bean elements to its parent, you use a closure. In the example above repository and authentication are such bean elements. Table 53.4, “Configuration elements of the MavenDeployer” lists the available bean elements and a link to the Javadoc of the corresponding class. In the Javadoc you can see the possible attributes you can set for a particular element. 
 
-Example 54.3. Signing a configuration output
+在maven中你可以定义仓库地址以及可选的快照地址。如果没有快照被定义，发布包和快照包都将会被部署到定义的仓库中。否则快照就会被部署到快照仓库中。
 
-Output of gradle signArchives
-````
-> gradle signArchives
-:compileJava
-:processResources
-:classes
-:jar
-:signArchives
+In Maven you can define repositories and optionally snapshot repositories. If no snapshot repository is defined, releases and snapshots are both deployed to the repository element. Otherwise snapshots are deployed to the snapshotRepository element. 
 
-BUILD SUCCESSFUL
+表52.3.  maven部署可用的协议jar包
 
-Total time: 1 secs
-```
+Table 52.3. Protocol jars for Maven deployment
 
-### **54.3.2. Signing Tasks**
+|Protocol	|Library|
+|--
+|http	|org.apache.maven.wagon:wagon-http:2.2|
+|ssh	|org.apache.maven.wagon:wagon-ssh:2.2|
+|ssh-external	|org.apache.maven.wagon:wagon-ssh-external:2.2|
+|ftp	|org.apache.maven.wagon:wagon-ftp:2.2|
+|webdav	|org.apache.maven.wagon:wagon-webdav:1.0-beta-2|
+|file	|-|
 
-在某些情况下您需要签署的产物可能不是配置的一部分。在这种情况下你可以直接签署产生此构建产物的任务。
+表52.4.  maven部署的配置方法
 
-In some cases the artifact that you need to sign may not be part of a configuration. In this case you can directly sign the task that produces the artifact to sign.
+Table 52.4. Configuration elements of the MavenDeployer
 
-Example 54.4. Signing a task
+|Element	|Javadoc|
+|--
+|root	|MavenDeployer |
+|repository |	org.apache.maven.artifact.ant.RemoteRepository |
+|authentication	|org.apache.maven.artifact.ant.Authentication |
+|releases	|org.apache.maven.artifact.ant.RepositoryPolicy |
+|snapshots|	org.apache.maven.artifact.ant.RepositoryPolicy |
+|proxy	|org.apache.maven.artifact.ant.Proxy |
+|snapshotRepository	|org.apache.maven.artifact.ant.RemoteRepository |
 
-build.gradle
-```
-task stuffZip (type: Zip) {
-    baseName = "stuff"
-    from "src/stuff"
-}
+## ***52.6.3    安装到本地仓库***
 
-signing {
-    sign stuffZip
-}
-```
+52.6.3   Installing to the local repository
 
-这将会在你的项目里创建一个名为“signStuffZip”的任务（Sign类型），它会构建输入任务的产物（如果需要）并给它签名。签名文件会放在签名产物的旁边。
+maven插件添加了一个安装任务到你的项目。这个任务依赖于打包配置中所有的打包任务。它安装这些打好的包到你的本地maven仓库。如果本地仓库默认的地址在maven settings.xml文件中被重定义了，这个任务会考虑这个配置。
 
-This will create a task (of type Sign) in your project named “signStuffZip”, that will build the input task's archive (if needed) and then sign it. The signature file will be placed alongside the artifact being signed.
+The Maven plugin adds an install task to your project. This task depends on all the archives task of the archives configuration. It installs those archives to your local Maven repository. If the default location for the local repository is redefined in a Maven settings.xml, this is considered by this task. 
 
-例54.5  签署一项任务输出
+## ***52.6.4. maven pom 的生成***
 
-Example 54.5. Signing a task output
+52.6.4.  Maven POM generation
 
-Output of gradle signStuffZip
-```
-> gradle signStuffZip
-:stuffZip
-:signStuffZip
+当部署一个产物到maven仓库的时候，Gradle自动的会为它生成一个pom文件。groupId，artifactId，version 以及 package 元素是pom中默认的属性如下表所示。依赖元素是从项目的依赖声明中产生的。
 
-BUILD SUCCESSFUL
+When deploying an artifact to a Maven repository, Gradle automatically generates a POM for it. The groupId, artifactId, version and packaging elements used for the POM default to the values shown in the table below. The dependency elements are created from the project's dependency declarations. 
 
-Total time: 1 secs
-```
+表52.5. maven pom 生成的默认属性
 
-对于一个要被签署的任务，她必须要生成某种类型的产物。能够做到这点的是 Tar, Zip, Jar, War 和 Ear类型的任务。
+Table 52.5. Default Values for Maven POM generation
 
-For a task to be “signable”, it must produce an archive of some type. Tasks that do this are the Tar, Zip, Jar, War and Ear tasks.
+|Maven Element	|Default Value|
+|--
+|groupId	|project.group|
+|artifactId	|uploadTask.repositories.mavenDeployer.pom.artifactId (if set) or archiveTask.baseName.|
+|version	|project.version|
+|packaging	|archiveTask.extension|
 
-### **54.3.3. Conditional Signing**
+这里，uploadTask 和 archiveTask 分别指的是用来上传和产生构建产物的方法。相应的archiveTask.baseName也是基于project.archivesBaseName生成的。
 
-一种常见的使用模式是仅在一定条件下签署构建产物。例如，你不希望签署非发布版本的构建产物，为了做到这点，你就可以指定签名仅在一定条件下执行。
+Here, uploadTask and archiveTask refer to the tasks used for uploading and generating the archive, respectively (for example uploadArchives and jar). archiveTask.baseName defaults to project.archivesBaseName which in turn defaults to project.name. 
 
-A common usage pattern is to only sign build artifacts under certain conditions. For example, you may not wish to sign artifacts for non release versions. To achieve this, you can specify that signing is only required under certain conditions.
+当你设置archiveTask.baseName 属性不是默认的值时，你将也不得不设置uploadTask.repositories.mavenDeployer.pom.artifactId成相同的值。否则，你手上的项目可能会依赖错artifact ID，因为这个artifact ID是由pom文件为build其他项目产生的。
 
-例54.6  有条件的签名
+When you set the “archiveTask.baseName” property to a value other than the default, you'll also have to set uploadTask.repositories.mavenDeployer.pom.artifactId to the same value. Otherwise, the project at hand may be referenced with the wrong artifact ID from generated POMs for other projects in the same build. 
 
-Example 54.6. Conditional signing
+产生的pom文件可以在 build目录下找到。它可以被用户编辑定义根据mavenpom api。例如，你也许希望部署到maven仓库的产物是另外的版本或名称而不是Gradle产生的artifact。要编辑它你可以这样做：
 
-build.gradle
-```
-version = '1.0-SNAPSHOT'
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+Generated POMs can be found in <buildDir>/poms. They can be further customized via the MavenPom API. For example, you might want the artifact deployed to the Maven repository to have a different version or name than the artifact generated by Gradle. To customize these you can do: 
 
-signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-```
-
-在本例中，仅当正在创建一个发布版本并且即将发布的时候我们需要签名。因为我们是要检查任务图确定我们是否要出版,我们必须设置signing.required属性为关闭状态以延迟评估。查看 SigningExtension.setRequired()来获取更多信息。
-
-In this example, we only want to require signing if we are building a release version and we are going to publish it. Because we are inspecting the task graph to determine if we are going to be publishing, we must set the signing.required property to a closure to defer the evaluation. See SigningExtension.setRequired() for more information.
-
-## **54.4. Publishing the signatures**
-
-当通过签署DSL指明签署内容后，合成的签署产物将会自动的加入到签名和产物依赖配置中。这就意味着如果你想要上传你的签名和产物到分布式存储库仅需要跟平常一样执行uploadArchives 任务即可。
-
-When specifying what is to be signed via the Signing DSL, the resultant signature artifacts are automatically added to the signatures and archives dependency configurations. This means that if you want to upload your signatures to your distribution repository along with the artifacts you simply execute the uploadArchives task as normal.
-
-## **54.5. Signing POM files**
-
-当部署构建产物签名到Maven存储库中时，你也会想要将已发布的POM文件签名。将签名插件添加一个signing.signPom()（查看:SigningExtension.signPom()）方法，它用于你上传任务配置中的beforeDeployment()块中
-
-When deploying signatures for your artifacts to a Maven repository, you will also want to sign the published POM file. The signing plugin adds a signing.signPom() (see:SigningExtension.signPom()) method that can be used in the beforeDeployment() block in your upload task configuration.
-
-Example 54.7. Signing a POM for deployment
+例子 52.5.   编辑一个pom文件
+Example 52.5. Customization of pom
 
 build.gradle
 ```
 uploadArchives {
     repositories {
         mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: "file://localhost/tmp/myRepo/")
+            pom.version = '1.0Maven'
+            pom.artifactId = 'myMavenName'
+        }
+    }
+```
+
+可以使用pom.project 编译器添加另外的内容到pom文件，有了这个编辑器，pom依赖文件中罗列出的任意的元素都可以被添加。
+
+To add additional content to the POM, the pom.project builder can be used. With this builder, any element listed in the Maven POM reference can be added. 
+
+例子52.6.  编辑pom文件的格式
+
+Example 52.6. Builder style customization of pom
+
+build.gradle
+```
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/tmp/myRepo/")
+            pom.project {
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+            }
         }
     }
 }
 ```
-当签名没有被要求且POM由于配置不足不能被签名的时候（即没有签名的凭证），signPom()方法将保持静止什么都不做。
 
-When signing is not required and the POM cannot be signed due to insufficient configuration (i.e. no credentials for signing) then the signPom() method will silently do nothing.
+请注意：groupId，artifactId，version以及package必须总是直接在pom文件中设置。
 
-百度搜索[无线学院](http://wirelesscollege.cn)
+Note: groupId, artifactId, version, and packaging should always be set directly on the pom object. 
 
+例子52.7. 编辑自动产生的内容
+
+Example 52.7. Modifying auto-generated content
+
+build.gradle
+```
+def installer = install.repositories.mavenInstaller
+def deployer = uploadArchives.repositories.mavenDeployer
+
+[installer, deployer]*.pom*.whenConfigured {pom ->
+    pom.dependencies.find {dep -> dep.groupId == 'group3' && dep.artifactId == 'runtime' }.optional = true
+}
+```
+
+如果你有多于一个产物需要发布，那么配置的方式将会稍微不同。参加52.6.4.1.小节“Multiple artifacts per project”
+
+If you have more than one artifact to publish, things work a little bit differently. See Section 53.6.4.1, “Multiple artifacts per project”. 
+
+要自定义maven 安装器的设置（见52.6.3." Installing to the local repository "）你可以这样做：
+
+To customize the settings for the Maven installer (see Section 53.6.3, “Installing to the local repository”), you can do: 
+
+例子 52.8.  编辑maven 安装器
+
+Example 52.8. Customization of Maven installer
+
+build.gradle
+```
+install {
+    repositories.mavenInstaller {
+        pom.version = '1.0Maven'
+        pom.artifactId = 'myName'
+    }
+}
+```
+
+## ***52.6.4.1 一个项目多个产物***
+
+52.6.4.1. Multiple artifacts per project
+
+Maven只能处理一个项目一个产物的情况。这个在maven的pom文件中也有体现。我们认为有很多方法可以让一个项目有多于一个的产物。在这样的情况下你需要产生多个pom文件并且你必须精确的声明每个产物你想部署的maven仓库地址。maven部署工具和maven安装工具都分别提供了相应的API：
+
+Maven can only deal with one artifact per project. This is reflected in the structure of the Maven POM. We think there are many situations where it makes sense to have more than one artifact per project. In such a case you need to generate multiple POMs. In such a case you have to explicitly declare each artifact you want to publish to a Maven repository. The MavenDeployer and the MavenInstaller both provide an API for this: 
+
+例子52.9.  产生多个pom文件
+
+Example 52.9. Generation of multiple poms
+
+build.gradle
+```
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/tmp/myRepo/")
+            addFilter('api') {artifact, file ->
+                artifact.name == 'api'
+            }
+            addFilter('service') {artifact, file ->
+                artifact.name == 'service'
+            }
+            pom('api').version = 'mySpecialMavenVersion'
+        }
+    }
+}
+```
+
+你需要为每个要发布的项目建立一个过滤器，该过滤器定义了一个布尔表达式，这个布尔表达式代表着什么样的Gradle产物是maven接受的。每个过滤器伴随着一个你可以配置的pom文件。想要了解更多细节你可以查阅 PomFilterContainer 以及它相应的类。
+
+You need to declare a filter for each artifact you want to publish. This filter defines a boolean expression for which Gradle artifact it accepts. Each filter has a POM associated with it which you can configure. To learn more about this have a look at PomFilterContainer and its associated classes. 
+
+## ***52.6.4.2. 依赖映射***
+
+52.6.4.2. Dependency mapping
+
+maven插件配置了由java和war插件添加的Gradle配置与maven范围之间的默认映射关系。大多数情况下你不需要去触及这部分也就是你可以安全的跳过这部分。该映射关系的工作方式如下。你只能让一个配置与一个范围相对应。多个配置可以被映射到一个或多个范围。你也可以给一个配置--范围映射赋予一个优先级。想要了解更多请参阅Conf2ScopeMappingContainer。要访问映射配置你可以这样做：
+
+The Maven plugin configures the default mapping between the Gradle configurations added by the Java and War plugin and the Maven scopes. Most of the time you don't need to touch this and you can safely skip this section. The mapping works like the following. You can map a configuration to one and only one scope. Different configurations can be mapped to one or different scopes. You can also assign a priority to a particular configuration-to-scope mapping. Have a look at Conf2ScopeMappingContainer to learn more. To access the mapping configuration you can say: 
+
+例子52.10. 访问一个映射配置
+
+Example 52.10. Accessing a mapping configuration
+
+build.gradle
+```
+task mappings << {
+    println conf2ScopeMappings.mappings
+```
+
+Gradle会尽可能的排除maven已经排除了的规则，但是只有当这个规则在Gradle的配置中group的名称也是module的名称（因为maven需要两个相反的配置）这种排除才是可行的。每个排除的规则配置都会包含在maven的pom文件中如果他们是可转换的。
+
+Gradle exclude rules are converted to Maven excludes if possible. Such a conversion is possible if in the Gradle exclude rule the group as well as the module name is specified (as Maven needs both in contrast to Ivy). Per-configuration excludes are also included in the Maven POM, if they are convertible. 

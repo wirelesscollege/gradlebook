@@ -1,401 +1,178 @@
-# **第五十二章  Maven 插件**
+# **第51章．发布构建产物**
 
-Chapter 52. The Maven Plugin
+Chapter 51. Publishing artifacts
 
-本章还在编写中
+可能在Gradle 1.0至Gradle 1.3，一个新的出版机构被介绍过。而这种新的机制是孵化产品还不成熟，它引入了一些新的概念与特征，这将会使Gradle publishing 将会更强大。
 
-This chapter is a work in progress.
+This chapter describes the original publishing mechanism available in Gradle 1.0: in Gradle 1.3 a new mechanism for publishing was introduced. While this new mechanism is incubating and not yet complete, it introduces some new concepts and features that do (and will) make Gradle publishing even more powerful. 
 
-maven插件可以添加项目依赖到maven仓库.
+在64章Ivy Publishing (new)与65章Maven Publishing (new)，可以读到关于新出版物的插件，请试着使用它们，并给我们反馈使用中的问题。
 
-The Maven plugin adds support for deploying artifacts to Maven repositories.
+You can read about the new publishing plugins in Chapter 64, Ivy Publishing (new) and Chapter 65, Maven Publishing (new). Please try them out and give us feedback. 
 
-## **52.1.  使用**
+## **51.1引言**
 
-52.1.  Usage
+51.1. Introduction
 
-要使用maven插件，在项目的build 脚本中加入如下代码：
+本章是关于如何声明项目的构建产物，以及在工作中如何利用这些构建产物。定义项目的产物作为文件提供给外面的世界。产物有可能是个库或者是 ZIP文件或者是其他的文件，并且想发布多少产物就发布多少。
 
-To use the Maven plugin, include the following in your build script:
+This chapter is about how you declare the outgoing artifacts of your project, and how to work with them (e.g. upload them). We define the artifacts of the projects as the files the project provides to the outside world. This might be a library or a ZIP distribution or any other file. A project can publish as many artifacts as it wants. 
 
-例子52.1.  使用maven插件
+## **51.2.产物与配置**
 
-Example 52.1. Using the Maven plugin
+51.2. Artifacts and configurations
+
+像依赖一样，artifacts是配出来的。事实上，配置可以同时包括artifacts与dependencies。
+
+Like dependencies, artifacts are grouped by configurations. In fact, a configuration can contain both artifacts and dependencies at the same time. 
+
+在项目中为每个配置，Gradle提供uploadConfigurationName 与 buildConfigurationName任务。这些任务会 build并上传属于各自配置的artifacts。
+
+For each configuration in your project, Gradle provides the tasks uploadConfigurationName and buildConfigurationName. [18] Execution of these tasks will build or upload the artifacts belonging to the respective configuration. 
+
+表22.5,” Java plugin - dependency configurations” 通过Java plugin显示添加的配置，两个配置对artifacts的用法都有重大意义。archives configuration 是将标准配置分配到自己的artifacts 中。Java plugin自动分配默认的jar为这些配置。在51.5“More about project libraries”会介绍更多关于runtime配置，作为依赖，你可以声明许多自定义配置，将artifacts分配给自定义的配置
+
+Table 22.5, “Java plugin - dependency configurations” shows the configurations added by the Java plugin. Two of the configurations are relevant for the usage with artifacts. The archives configuration is the standard configuration to assign your artifacts to. The Java plugin automatically assigns the default jar to this configuration. We will talk more about the runtime configuration in Section 51.5, “More about project libraries”. As with dependencies, you can declare as many custom configurations as you like and assign artifacts to them. 
+
+## **51.3声明artifacts**
+
+51.3. Declaring artifacts
+
+### **51.3.1. Archive task artifacts**
+
+可以使用archive task来定义artifact
+
+You can use an archive task to define an artifact:
+
+例：51.1. 用archive task定义一个artifact
+
+Example 51.1. Defining an artifact using an archive task
 
 build.gradle
 ```
-apply plugin: 'maven'
-```
+task myJar(type: Jar)
 
-## **52.2.  任务**
-
-52.2.  Tasks
-
-maven插件定义了如下的任务：
-
-The Maven plugin defines the following tasks:
-
-表52.1.   maven 插件---任务
-
-Table 52.1. Maven plugin - tasks
-
-|Task name|	Depends on|	Type|	Description|
-|--
-|install 	|All |tasks that build the associated archives. |	Upload|
-
-安装相应的产物到maven缓存包括maven产生的元数据。安装任务默认的会伴随着产物配置。这个配置默认的只有一个jar包作为元素。要了解更多请参阅Section 53.6.3, “Installing to the local repository”
-
-## **52.3. 依赖管理**
-
-52.3. Dependency management
-
-maven插件没有定义任何的依赖配置
-
-The Maven plugin does not define any dependency configurations.
-
-## **52.4. 约定属性**
-
-52.4. Convention properties
-
-maven插件定义了下面一些属性：
-
-The Maven plugin defines the following convention properties:
-
-表52.2. Maven插件---属性
-
-Table 53.2. Maven plugin - properties
-
-|Property name	|Type	|Default value	|Description|
-|--
-|pomDirName |	String |	poms |	写产生的pom文件的路径，相对于build目录|
-|pomDir 	|File (read-only) 	|buildDir/pomDirName |	已产生的pom文件被写入的路径 |
-|conf2ScopeMappings |	Conf2ScopeMappingContainer |n/a |	|
-
-Grade配置与maven范围的介绍。请查看 Section 53.6.4.2, “Dependency mapping”. 
-
-这些属性是由MavenPluginConvention 条约对象提供的。
-
-These properties are provided by a MavenPluginConvention convention object.
-
-## **52.5. 约定方法**
-
-52.5. Convention methods
-
-maven插件提供了一个创建POM文件的工厂类方法，这种方法当你需要一个不依赖于maven 仓库上下文的pom文件时是有用的。
-
-The maven plugin provides a factory method for creating a POM. This is useful if you need a POM without the context of uploading to a Maven repo.
-
-例子52.2. 创建一个单独的pom文件
-
-Example 52.2. Creating a stand alone pom.
-build.gradle
-```
-task writeNewPom << {
-    pom {
-        project {
-            inceptionYear '2008'
-            licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
-                }
-            }
-        }
-    }.writeTo("$buildDir/newpom.xml")
+artifacts {
+    archives myJar
 }
 ```
 
-除其他事情外，gradle支持maven通用的相同的构建语法。要了解更多的Gradle Maven POM 对象，请查看 MavenPom。也可以看看：MavenPluginConvention
+值得注意的是：自定义的archives是构建的一部分不会自动分配到任何配置中，因此必须明确指出具体的配置。
 
-Amongst other things, Gradle supports the same builder syntax as polyglot Maven. To learn more about the Gradle Maven POM object, see MavenPom. See also: MavenPluginConvention 
+It is important to note that the custom archives you are creating as part of your build are not automatically assigned to any configuration. You have to explicitly do this assignment.
 
-## **52.6. 与Maven 仓库交互**
+### **51.3.2. File artifacts**
 
-52.6. Interacting with Maven repositories
+也可以把artifact放到文件中。
 
-### **52.6.1. 介绍***
+You can also use a file to define an artifact:
 
-52.6.1. Introduction
+例51.2 使用文件来存放artifact
 
-使用Gradle你可以部署到远程maven仓库或者安装到你本地的maven仓库。这包括maven所有的元数据以及快照。事实上，Gradle的部署是百分之百和maven兼容的，因为Gradle的底层实质上就是在执行maven ant 的任务。
-
-With Gradle you can deploy to remote Maven repositories or install to your local Maven repository. This includes all Maven metadata manipulation and works also for Maven snapshots. In fact, Gradle's deployment is 100 percent Maven compatible as we use the native Maven Ant tasks under the hood. 
-
-如果你没有一个pom文件那么部署到一个maven仓库只相当于做了一半的工作，幸运的是Gradle可以依据依赖信息自动为你产生pom文件。
-
-Deploying to a Maven repository is only half the fun if you don't have a POM. Fortunately Gradle can generate this POM for you using the dependency information it has. 
-
-## ***52.6.2. 部署一个maven仓库***
-
-52.6.2. Deploying to a Maven repository
-
-假设你的工程只产生了一个默认的jar包，现在你想把这个jar包部署到一个远程的maven仓库。
-
-Let's assume your project produces just the default jar file. Now you want to deploy this jar file to a remote Maven repository. 
-
-例子52.3.  上传一个文件到远程maven仓库
-
-Example 52.3. Upload of file to remote Maven repository
+Example 51.2. Defining an artifact using a file
 
 build.gradle
 ```
-apply plugin: 'maven'
+def someFile = file('build/somefile.txt')
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://localhost/tmp/myRepo/")
-        }
+artifacts {
+    archives someFile
+}
+```
+
+Gradle根据文件的名称计算出artifact的属性，可以自己自定义这些属性：
+
+Gradle will figure out the properties of the artifact based on the name of the file. You can customize these properties:
+
+Example 51.3. Customizing an artifact
+
+build.gradle
+```
+task myTask(type:  MyTaskType) {
+    destFile = file('build/somefile.txt')
+}
+
+artifacts {
+    archives(myTask.destFile) {
+        name 'my-artifact'
+        type 'text'
+        builtBy myTask
     }
 }
 ```
 
-以上就是全部。调用uploadArchives方法将会产生一个pom文件并且上传这个pom文件和jar文件到指定的maven仓库。
+map-based syntax定义使用文件的artifact，map必须包括输入文件，也可以包括其他属性
 
-That is all. Calling the uploadArchives task will generate the POM and deploys the artifact and the POM to the specified repository. 
+There is a map-based syntax for defining an artifact using a file. The map must include a file entry that defines the file. The map may include other artifact properties: 
 
-如果你需要协议的支持那你需要做更多的工作。在这种情况下，那我们所举的例子本地的maven代码将需要更多的依赖的包，根据你依赖的协议的不同将决定你需要什么样的包。可用的协议以及相应的依赖详见表52.3 “Protocol jars for Maven deployment”（这些库具有传递依赖关系）例如，要使用ssh协议你可以这样做：
-
-There is more work to do if you need support for protocols other than file. In this case the native Maven code we delegate to needs additional libraries. Which libraries are needed depends on what protocol you plan to use. The available protocols and the corresponding libraries are listed in Table 53.3, “Protocol jars for Maven deployment” (those libraries have transitive dependencies which have transitive dependencies). [19] For example, to use the ssh protocol you can do: 
-
-例子52.4.    通过ssh上传一个文件
-
-Example 52.4. Upload of file via SSH
+Example 51.4. Map syntax for defining an artifact using a file
 
 build.gradle
 ```
-configurations {
-    deployerJars
+task generate(type:  MyTaskType) {
+    destFile = file('build/somefile.txt')
 }
 
+artifacts {
+    archives file: generate.destFile, name: 'my-artifact', type: 'text', builtBy: generate
+}
+```
+
+## **51.4.发布artifacts**
+
+51.4. Publishing artifacts
+
+每一个任务都有一个特定的upload task，在上传之前，必须配置upload task并定义要发布的路径. 您所定义的库不会自动用于上传, 事实上，这些库中的一些只允许下载artifacts，而不是上传。下面是一个示例，您可以配置一个upload task configuration：
+
+We have said that there is a specific upload task for each configuration. Before you can do an upload, you have to configure the upload task and define where to publish the artifacts to. The repositories you have defined (as described in Section 50.6, “Repositories”) are not automatically used for uploading. In fact, some of those repositories only allow downloading artifacts, not uploading. Here is an example of how you can configure the upload task of a configuration: 
+
+Example 51.5. Configuration of the upload task
+
+build.gradle
+```
 repositories {
-    mavenCentral()
-}
-
-dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
-}
-
-uploadArchives {
-    repositories.mavenDeployer {
-        configuration = configurations.deployerJars
-        repository(url: "scp://repos.mycompany.com/releases") {
-            authentication(userName: "me", password: "myPassword")
-        }
+    flatDir {
+        name "fileRepo"
+        dirs "repo"
     }
 }
-```
 
-对于部署人员来说有好多配置的选择。这些配置由Groovy 编译器来执行完成。这个树上的所有节点都是java 对象。要配置一个简单的属性你可以传递一个map给java对象。要把对象添加到父对象，你可以使用闭包。上面的例子中的repository和authentication就是这样的对象。表52.4“Configuration elements of the MavenDeployer”列出了所有可用的对象元素以及它对应的javadoc文档的链接。在javadoc文档中你可以查看某个对象的某个特定的属性的设置方法。
-
-There are many configuration options for the Maven deployer. The configuration is done via a Groovy builder. All the elements of this tree are Java beans. To configure the simple attributes you pass a map to the bean elements. To add bean elements to its parent, you use a closure. In the example above repository and authentication are such bean elements. Table 53.4, “Configuration elements of the MavenDeployer” lists the available bean elements and a link to the Javadoc of the corresponding class. In the Javadoc you can see the possible attributes you can set for a particular element. 
-
-在maven中你可以定义仓库地址以及可选的快照地址。如果没有快照被定义，发布包和快照包都将会被部署到定义的仓库中。否则快照就会被部署到快照仓库中。
-
-In Maven you can define repositories and optionally snapshot repositories. If no snapshot repository is defined, releases and snapshots are both deployed to the repository element. Otherwise snapshots are deployed to the snapshotRepository element. 
-
-表52.3.  maven部署可用的协议jar包
-
-Table 52.3. Protocol jars for Maven deployment
-
-|Protocol	|Library|
-|--
-|http	|org.apache.maven.wagon:wagon-http:2.2|
-|ssh	|org.apache.maven.wagon:wagon-ssh:2.2|
-|ssh-external	|org.apache.maven.wagon:wagon-ssh-external:2.2|
-|ftp	|org.apache.maven.wagon:wagon-ftp:2.2|
-|webdav	|org.apache.maven.wagon:wagon-webdav:1.0-beta-2|
-|file	|-|
-
-表52.4.  maven部署的配置方法
-
-Table 52.4. Configuration elements of the MavenDeployer
-
-|Element	|Javadoc|
-|--
-|root	|MavenDeployer |
-|repository |	org.apache.maven.artifact.ant.RemoteRepository |
-|authentication	|org.apache.maven.artifact.ant.Authentication |
-|releases	|org.apache.maven.artifact.ant.RepositoryPolicy |
-|snapshots|	org.apache.maven.artifact.ant.RepositoryPolicy |
-|proxy	|org.apache.maven.artifact.ant.Proxy |
-|snapshotRepository	|org.apache.maven.artifact.ant.RemoteRepository |
-
-## ***52.6.3    安装到本地仓库***
-
-52.6.3   Installing to the local repository
-
-maven插件添加了一个安装任务到你的项目。这个任务依赖于打包配置中所有的打包任务。它安装这些打好的包到你的本地maven仓库。如果本地仓库默认的地址在maven settings.xml文件中被重定义了，这个任务会考虑这个配置。
-
-The Maven plugin adds an install task to your project. This task depends on all the archives task of the archives configuration. It installs those archives to your local Maven repository. If the default location for the local repository is redefined in a Maven settings.xml, this is considered by this task. 
-
-## ***52.6.4. maven pom 的生成***
-
-52.6.4.  Maven POM generation
-
-当部署一个产物到maven仓库的时候，Gradle自动的会为它生成一个pom文件。groupId，artifactId，version 以及 package 元素是pom中默认的属性如下表所示。依赖元素是从项目的依赖声明中产生的。
-
-When deploying an artifact to a Maven repository, Gradle automatically generates a POM for it. The groupId, artifactId, version and packaging elements used for the POM default to the values shown in the table below. The dependency elements are created from the project's dependency declarations. 
-
-表52.5. maven pom 生成的默认属性
-
-Table 52.5. Default Values for Maven POM generation
-
-|Maven Element	|Default Value|
-|--
-|groupId	|project.group|
-|artifactId	|uploadTask.repositories.mavenDeployer.pom.artifactId (if set) or archiveTask.baseName.|
-|version	|project.version|
-|packaging	|archiveTask.extension|
-
-这里，uploadTask 和 archiveTask 分别指的是用来上传和产生构建产物的方法。相应的archiveTask.baseName也是基于project.archivesBaseName生成的。
-
-Here, uploadTask and archiveTask refer to the tasks used for uploading and generating the archive, respectively (for example uploadArchives and jar). archiveTask.baseName defaults to project.archivesBaseName which in turn defaults to project.name. 
-
-当你设置archiveTask.baseName 属性不是默认的值时，你将也不得不设置uploadTask.repositories.mavenDeployer.pom.artifactId成相同的值。否则，你手上的项目可能会依赖错artifact ID，因为这个artifact ID是由pom文件为build其他项目产生的。
-
-When you set the “archiveTask.baseName” property to a value other than the default, you'll also have to set uploadTask.repositories.mavenDeployer.pom.artifactId to the same value. Otherwise, the project at hand may be referenced with the wrong artifact ID from generated POMs for other projects in the same build. 
-
-产生的pom文件可以在 build目录下找到。它可以被用户编辑定义根据mavenpom api。例如，你也许希望部署到maven仓库的产物是另外的版本或名称而不是Gradle产生的artifact。要编辑它你可以这样做：
-
-Generated POMs can be found in <buildDir>/poms. They can be further customized via the MavenPom API. For example, you might want the artifact deployed to the Maven repository to have a different version or name than the artifact generated by Gradle. To customize these you can do: 
-
-例子 52.5.   编辑一个pom文件
-Example 52.5. Customization of pom
-
-build.gradle
-```
 uploadArchives {
     repositories {
-        mavenDeployer {
-            repository(url: "file://localhost/tmp/myRepo/")
-            pom.version = '1.0Maven'
-            pom.artifactId = 'myMavenName'
-        }
-    }
-```
-
-可以使用pom.project 编译器添加另外的内容到pom文件，有了这个编辑器，pom依赖文件中罗列出的任意的元素都可以被添加。
-
-To add additional content to the POM, the pom.project builder can be used. With this builder, any element listed in the Maven POM reference can be added. 
-
-例子52.6.  编辑pom文件的格式
-
-Example 52.6. Builder style customization of pom
-
-build.gradle
-```
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://localhost/tmp/myRepo/")
-            pom.project {
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
-                    }
-                }
+        add project.repositories.fileRepo
+        ivy {
+            credentials {
+                username "username"
+                password "pw"
             }
+            url "http://repo.mycompany.com"
         }
     }
 }
 ```
 
-请注意：groupId，artifactId，version以及package必须总是直接在pom文件中设置。
+如上所示，你可以使用一个引用到现在的repository或者创建一个新的repository. 如第50.6.9中“More about Ivy resolvers”描述，你就可以使用所有的Ivy resolver来用于上传。
 
-Note: groupId, artifactId, version, and packaging should always be set directly on the pom object. 
+如果upload repository被定义于多模式的，Gradle必须为每个上传文件选择一个模式。Gradle将会结合可选布书友参数默认上传url parameter定义的模式。如果没有提供url parameter，Gradle将会使用第一个定义的artifactPattern进行上传或者如果设置了ivyPattern，将会使用第一个定义的ivyPattern上传Ivy files
+上传Maven repository的相关描述，详见Section 52.6, “Interacting with Maven repositories”
 
-例子52.7. 编辑自动产生的内容
+As you can see, you can either use a reference to an existing repository or create a new repository. As described in Section 50.6.9, “More about Ivy resolvers”, you can use all the Ivy resolvers suitable for the purpose of uploading. 
 
-Example 52.7. Modifying auto-generated content
+If an upload repository is defined with multiple patterns, Gradle must choose a pattern to use for uploading each file. By default, Gradle will upload to the pattern defined by the url parameter, combined with the optional layout parameter. If no url parameter is supplied, then Gradle will use the first defined artifactPattern for uploading, or the first defined ivyPattern for uploading Ivy files, if this is set. 
+Uploading to a Maven repository is described in Section 52.6, “Interacting with Maven repositories”.
 
-build.gradle
-```
-def installer = install.repositories.mavenInstaller
-def deployer = uploadArchives.repositories.mavenDeployer
+## **51.5. More about project libraries**
 
-[installer, deployer]*.pom*.whenConfigured {pom ->
-    pom.dependencies.find {dep -> dep.groupId == 'group3' && dep.artifactId == 'runtime' }.optional = true
-}
-```
+如果你的项目被用作library，你需要定义这个library的artifacts是什么并且定义这些artifacts的依赖关系。Java plugin为这个目的添了runtime configuration，隐含假设是，即runtime依赖是要发布的artifact的依赖，当然这个是完全可定制的，您可以添加自定义配置，或者让现有的配置从其他配置扩展。你可能有一个不同artifacts 组，其中一组有不同的dependencies设置。这个机制是非常强大和灵活的。
 
-如果你有多于一个产物需要发布，那么配置的方式将会稍微不同。参加52.6.4.1.小节“Multiple artifacts per project”
+If your project is supposed to be used as a library, you need to define what are the artifacts of this library and what are the dependencies of these artifacts. The Java plugin adds a runtime configuration for this purpose, with the implicit assumption that the runtime dependencies are the dependencies of the artifact you want to publish. Of course this is fully customizable. You can add your own custom configuration or let the existing configurations extend from other configurations. You might have a different group of artifacts which have a different set of dependencies. This mechanism is very powerful and flexible. 
 
-If you have more than one artifact to publish, things work a little bit differently. See Section 53.6.4.1, “Multiple artifacts per project”. 
+如果有人想使用你的项目作为library，她只需简单声明所依赖的配置。Gradle dependency提供配置属性。如果未指定配置属性，则使用默认配置（详见50.4.9 “Dependency configurations”）,使用你的项目作为一个库，无从是从multi-project build还是通过从存储库中检索项目。在后一种情况下，版本库中的ivy.xml描述符应该包含所有必要的信息。如果你使用Maven库你不工作要有灵活性，如上面所描述的。如何发布Maven repository,详见52.6, “Interacting with Maven repositories”
 
-要自定义maven 安装器的设置（见52.6.3." Installing to the local repository "）你可以这样做：
+If someone wants to use your project as a library, she simply needs to declare which configuration of the dependency to depend on. A Gradle dependency offers the configuration property to declare this. If this is not specified, the default configuration is used (see Section 50.4.9, “Dependency configurations”). Using your project as a library can either happen from within a multi-project build or by retrieving your project from a repository. In the latter case, an ivy.xml descriptor in the repository is supposed to contain all the necessary information. If you work with Maven repositories you don't have the flexibility as described above. For how to publish to a Maven repository, see the section Section 52.6, “Interacting with Maven repositories”. 
 
-To customize the settings for the Maven installer (see Section 53.6.3, “Installing to the local repository”), you can do: 
+________________________________________
+[18] To be exact, the Base plugin provides those tasks. This plugin is automatically applied if you use the Java plugin.
 
-例子 52.8.  编辑maven 安装器
+百度搜索[无线学院](http://wirelesscollege.cn)
 
-Example 52.8. Customization of Maven installer
-
-build.gradle
-```
-install {
-    repositories.mavenInstaller {
-        pom.version = '1.0Maven'
-        pom.artifactId = 'myName'
-    }
-}
-```
-
-## ***52.6.4.1 一个项目多个产物***
-
-52.6.4.1. Multiple artifacts per project
-
-Maven只能处理一个项目一个产物的情况。这个在maven的pom文件中也有体现。我们认为有很多方法可以让一个项目有多于一个的产物。在这样的情况下你需要产生多个pom文件并且你必须精确的声明每个产物你想部署的maven仓库地址。maven部署工具和maven安装工具都分别提供了相应的API：
-
-Maven can only deal with one artifact per project. This is reflected in the structure of the Maven POM. We think there are many situations where it makes sense to have more than one artifact per project. In such a case you need to generate multiple POMs. In such a case you have to explicitly declare each artifact you want to publish to a Maven repository. The MavenDeployer and the MavenInstaller both provide an API for this: 
-
-例子52.9.  产生多个pom文件
-
-Example 52.9. Generation of multiple poms
-
-build.gradle
-```
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://localhost/tmp/myRepo/")
-            addFilter('api') {artifact, file ->
-                artifact.name == 'api'
-            }
-            addFilter('service') {artifact, file ->
-                artifact.name == 'service'
-            }
-            pom('api').version = 'mySpecialMavenVersion'
-        }
-    }
-}
-```
-
-你需要为每个要发布的项目建立一个过滤器，该过滤器定义了一个布尔表达式，这个布尔表达式代表着什么样的Gradle产物是maven接受的。每个过滤器伴随着一个你可以配置的pom文件。想要了解更多细节你可以查阅 PomFilterContainer 以及它相应的类。
-
-You need to declare a filter for each artifact you want to publish. This filter defines a boolean expression for which Gradle artifact it accepts. Each filter has a POM associated with it which you can configure. To learn more about this have a look at PomFilterContainer and its associated classes. 
-
-## ***52.6.4.2. 依赖映射***
-
-52.6.4.2. Dependency mapping
-
-maven插件配置了由java和war插件添加的Gradle配置与maven范围之间的默认映射关系。大多数情况下你不需要去触及这部分也就是你可以安全的跳过这部分。该映射关系的工作方式如下。你只能让一个配置与一个范围相对应。多个配置可以被映射到一个或多个范围。你也可以给一个配置--范围映射赋予一个优先级。想要了解更多请参阅Conf2ScopeMappingContainer。要访问映射配置你可以这样做：
-
-The Maven plugin configures the default mapping between the Gradle configurations added by the Java and War plugin and the Maven scopes. Most of the time you don't need to touch this and you can safely skip this section. The mapping works like the following. You can map a configuration to one and only one scope. Different configurations can be mapped to one or different scopes. You can also assign a priority to a particular configuration-to-scope mapping. Have a look at Conf2ScopeMappingContainer to learn more. To access the mapping configuration you can say: 
-
-例子52.10. 访问一个映射配置
-
-Example 52.10. Accessing a mapping configuration
-
-build.gradle
-```
-task mappings << {
-    println conf2ScopeMappings.mappings
-```
-
-Gradle会尽可能的排除maven已经排除了的规则，但是只有当这个规则在Gradle的配置中group的名称也是module的名称（因为maven需要两个相反的配置）这种排除才是可行的。每个排除的规则配置都会包含在maven的pom文件中如果他们是可转换的。
-
-Gradle exclude rules are converted to Maven excludes if possible. Such a conversion is possible if in the Gradle exclude rule the group as well as the module name is specified (as Maven needs both in contrast to Ivy). Per-configuration excludes are also included in the Maven POM, if they are convertible. 

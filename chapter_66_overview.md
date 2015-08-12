@@ -1,174 +1,175 @@
-# **第66章 Maven发布**
 
-Chapter 66. Maven Publishing (new)
+# **Chapter 65. Ivy Publishing (new)**
 
-本章描述的新孵化的Maven发布功能是由“maven-publish”插件提供支持的。最终通过上传任务，新发布支持将取代你的发布。
+This chapter describes the new incubating Ivy publishing support provided by the “ivy-publish” plugin. Eventually this new publishing support will replace publishing via the Upload task.
 
-This chapter describes the new incubating Maven publishing support provided by the “maven-publish” plugin. Eventually this new publishing support will replace publishing via the Upload task.
+本章描述了新的由“ivy-publish” 插件提供的待开发的Ivy发布支持。最终这个新的发布支持将替代通过上传任务发布功能。
 
-如果你正在查找原始的maven发布文档去支持使用上传任务，那么请参阅章Chapter 52, Publishing artifacts。
-本章描述了如何发布构建产物到一个Apache Maven仓库。模块可以使用理解maven仓库格式的maven、gradle和其他工具发布到Maven仓库,(见依赖管理51章)。
+If you are looking for documentation on the original Ivy publishing support using the Upload task please see Chapter 52, Publishing artifacts.
 
-If you are looking for documentation on the original Maven publishing support using the Upload task please see Chapter 52, Publishing artifacts.
-This chapter describes how to publish build artifacts to an Apache Maven Repository. A module published to a Maven repository can be consumed by Maven, Gradle (see Chapter 51, Dependency Management) and other tools that understand the Maven repository format.
+This chapter describes how to publish build artifacts in the Apache Ivy format, usually to a repository for consumption by other builds or projects. What is published is one or more artifacts created by the build, and an Ivy module descriptor (normally ivy.xml) that describes the artifacts and the dependencies of the artifacts, if any.
 
-## **66.1.  “maven-publish” 插件**
+如果你正在找最初的使用上传任务的Ivy发布支持请看51章，发布构建产物。这章描述了如何以Apache Ivy格式发布构建产物，通常发布到其他构建或项目消耗的存储库中。发布的内容是一个或多个构建产物，以及一个Ivy组件描述文件（通常是ivy.xml），它描述产物和产物依赖，如果存在的话。
 
-66.1. The “maven-publish” Plugin
+A published Ivy module can be consumed by Gradle (see Chapter 51, Dependency Management) and other tools that understand the Ivy format.
 
-“maven-publish”插件提供了发布为maven格式的能力。
+一个发布的Ivy组件可以被Gradle（看50章依赖管理）和其他理解Ivy格式的工具使用。
 
-The ability to publish in the Maven format is provided by the “maven-publish” plugin.
+## **65.1. The “ivy-publish” Plugin**
 
-“publishing”插件在项目中创建一个扩展名为“publishing”的PublishingExtension类型。这个扩展提供了一个发布容器以及一个资源仓库。“maven-publish”插件与MavenPublication plublications 以及MavenArtifactRepository仓库协同工作。
+65.1.“ivy-publish”插件
 
-The “publishing” plugin creates an extension on the project named “publishing” of type PublishingExtension. This extension provides a container of named publications and a container of named repositories. The “maven-publish” plugin works with MavenPublication publications and MavenArtifactRepository repositories.
+The ability to publish in the Ivy format is provided by the “ivy-publish” plugin.
 
-Example 66.1. Applying the 'maven-publish' plugin
+用Ivy格式发布的功能是由插件“ivy-publish” 提供。
+
+The “publishing” plugin creates an extension on the project named “publishing” of type PublishingExtension. This extension provides a container of named publications and a container of named repositories. The “ivy-publish” plugin works with IvyPublication publications and IvyArtifactRepository repositories.
+
+“publishing” 插件在项目上创建一个类型为PublishingExtension命名为“publishing”的扩展。这个扩展提供了一个名字是publications和名字是repositories的容器。“ivy-publish” 插件与IvyPublication publications和IvyArtifactRepository repositories一块工作。
+
+Example 65.1. Applying the “ivy-publish” plugin
+
+例65.1. 应用“ivy-publish”插件
 
 build.gradle
 ```
-apply plugin: 'maven-publish'
+apply plugin: 'ivy-publish'
 ```
 
-应用“maven-publish”插件
+Applying the “ivy-publish” plugin does the following:
 
-Applying the “maven-publish” plugin does the following:
-
-"publish"插件可以自动创建pom。(see Section 66.2, “Publications”).
+应用“ivy-publish”插件做到以下这些：
 
 Applies the “publishing” plugin
-Establishes a rule to automatically create a GenerateMavenPom task for each MavenPublication added (see Section 66.2, “Publications”).
 
-自动发布以及自动创建maven仓库。(see Section 66.2, “Publications”)(see Section 66.3, “Repositories”).
+应用“publishing”插件
 
-Establishes a rule to automatically create a PublishToMavenRepository task for the combination of each MavenPublication added (see Section 66.2, “Publications”), with each MavenArtifactRepository added (see Section 66.3, “Repositories”).
+Establishes a rule to automatically create a GenerateIvyDescriptor task for each IvyPublication added (see Section 65.2, “Publications”).
 
-自动发布到maven本地仓库。(seeSection 66.2, “Publications”).
+建立一个规则来自动为每个添加的IvyPublication创建一个GenerateIvyDescriptor任务(参见65.2节,“发布”)。
 
-Establishes a rule to automatically create a PublishToMavenLocal task for each MavenPublication added (seeSection 66.2, “Publications”).
+Establishes a rule to automatically create a PublishToIvyRepository task for the combination of each IvyPublication added (see Section 65.2, “Publications”), with each IvyArtifactRepository added (see Section 
+65.3, “Repositories”).
 
-## **发布**
+建立一个规则来自动为每个IvyPublication添加的组合创建一个PublishToIvyRepository任务（参见65.3节,“存储库”)。
 
-66.2. Publications
+## **65.2. Publications**
 
-如果您不熟悉项目产物和配置，您应该阅读52章，52章介绍了这些发布产物的概念。这一章使用不同的方式描述了“发布产物”是什么。这里描述的发布功能最终将会被取代。发布对象描述的结构/配置会被创建。
+65.2.发布
 
-If you are not familiar with project artifacts and configurations, you should read the Chapter 52, Publishing artifacts that introduces these concepts. This chapter also describes “publishing artifacts” using a different mechanism than what is described in this chapter. The publishing functionality described here will eventually supersede that functionality.
-Publication objects describe the structure/configuration of a publication to be created. 
+If you are not familiar with project artifacts and configurations, you should read Chapter 52, Publishing artifacts, which introduces these concepts. This chapter also describes “publishing artifacts” using a different mechanism than what is described in this chapter. The publishing functionality described here will eventually supersede that functionality.
 
-通过任务我们可以把产物发布到仓库,发布对象配置决定了究竟要发布什么。所有项目的发布都是在PublishingExtension.getPublications()容器中定义的。在项目中每个发布都有一个唯一的名字。
+Publication objects describe the structure/configuration of a publication to be created. Publications are published to repositories via tasks, and the configuration of the publication object determines exactly what is published. All of the publications of a project are defined in the PublishingExtension.getPublications() container. Each publication has a unique name within the project.
 
-Publications are published to repositories via tasks, and the configuration of the publication object determines exactly what is published. All of the publications of a project are defined in the PublishingExtension.getPublications() container. Each publication has a unique name within the project.
+如果您不熟悉项目构建产物和配置,你应该阅读51章,发布构建产物,这里介绍这些概念。这一章还增加描述了使用不同的机制“发布工件”。这里描述的发布功能将最终取代那种功能。
 
-如果让“maven-publish”插件产生效果，MavenPublication必须添加到发布集中。这个发布决定了那些在POM文件中定义的附件将会被发布出去。可以通过添加组件，自定义附件以及修改POM文件来决定发布配置。
+发布对象描述了要创建发布的结构/配置。发布品通过任务发布到存储库,发布的配置对象决定究竟发布什么。项目中所有的发布品由PublishingExtension.getPublications()容器决定。在项目中每个发布品都有一个唯一的名称。
 
-For the “maven-publish” plugin to have any effect, a MavenPublication must be added to the set of publications. This publication determines which artifacts are actually published as well as the details included in the associated POM file. A publication can be configured by adding components, customizing artifacts, and by modifying the generated POM file directly.
+For the “ivy-publish” plugin to have any effect, an IvyPublication must be added to the set of publications. This publication determines which artifacts are actually published as well as the details included in the associated Ivy module descriptor file. A publication can be configured by adding components, customizing artifacts, and by modifying the generated module descriptor file directly.
 
-### **66.2.1. 发布组件**
+要使“ivy-publish”插件有所作用,必须添加一个IvyPublication到发布集。这个发布决定实际要发布哪些产物以及包含在相关Ivy组件描述文件中的详细信息。一次发布可以通过添加组件,定制产物,以及直接修改生成的组件描述符文件来配置。
 
-66.2.1. Publishing a Software Component
+## **65.2.1. Publishing a Software Component**
 
-组件从gradle项目发布到maven仓库其实很简单，我们来看看那些支持组件发布的一些插件：
+The simplest way to publish a Gradle project to an Ivy repository is to specify a SoftwareComponent to publish. The components presently available for publication are:
 
-The simplest way to publish a Gradle project to a Maven repository is to specify a SoftwareComponent to publish. The components presently available for publication are:
+发布Gradle项目到一个Ivy存储库最简单的方式是指明一个要发布的SoftwareComponent，当前支持发布的的构成有：
 
-Table 66.1. Software Components
+Table 65.1. Software Components
 
 |Name	|Provided By	|Artifacts	|Dependencies|
 |--
-|java	|Chapter 23, The Java Plugin|	Generated jar file	|Dependencies from 'runtime' configuration|
-|web	|Chapter 26, The War Plugin|	Generated war file	|No dependencies|
-
-在下面的例子里，演示了附件以及运行时依赖是如何在java组件中配置的
+|java	|Java Plugin	|Generated jar file|	Dependencies from 'runtime' configuration|
+|web	|War Plugin	|Generated war file	|No dependencies|
 
 In the following example, artifacts and runtime dependencies are taken from the `java` component, which is added by the Java Plugin.
 
-Example 66.2. Adding a MavenPublication for a Java component
+下面的例子中，构建产物和运行时依赖从‘java’构成中获取，而‘java’构成是由Java Plugin插件添加的。
+
+Example 65.2. Publishing a Java module to Ivy
 
 build.gradle
-
 ```
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
+publications {
+    ivyJava(IvyPublication) {
+        from components.java
     }
 }
 ```
 
-### **66.2.2 发布自定义产物**
+### **65.2.2. Publishing custom artifacts**
 
-66.2.2. Publishing custom artifacts
-
-可以在发布中显式的配置产物。附件通常为原始文件,或者为AbstractArchiveTask实例(例如Jar,Zip)。
+65.2.2. 发布自定义产物
 
 It is also possible to explicitly configure artifacts to be included in the publication. Artifacts are commonly supplied as raw files, or as instances of AbstractArchiveTask (e.g. Jar, Zip).
 
-对于每一个定制的产物,可以指定要使用的扩展和类型来发布。注意,构建产物可以为空，但是必须要有扩展名。
+我们也可以明确地配置发布的产物。产物通常是作为源文件，或者作为AbstractArchiveTasks的实例提供 (比如 Jar, Zip).
 
-For each custom artifact, it is possible to specify the extension and classifier values to use for publication. Note that only one of the published artifacts can have an empty classifier, and all other artifacts must have a unique classifier/extension combination.
-
-可以按照如下来配置自定义产物：
-
+For each custom artifact, it is possible to specify the name, extension, type, classifier and conf values to use for publication. Note that each artifacts must have a unique name/classifier/extension combination.
 Configure custom artifacts as follows:
 
-Example 66.3. Adding additional artifact to a MavenPublication
+对于每个自定义的产物，可以指定发布的name, extension, type, classifier 和 conf的值，要注意每个产物必须有唯一的name/classifier/extension组合。
+
+配置自定义产物如下：
+
+Example 65.3. Publishing additional artifact to Ivy
 
 build.gradle
-
 ```
 task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
+    from sourceSets.main.java
+    classifier "source"
 }
-
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        ivy(IvyPublication) {
             from components.java
-
-            artifact sourceJar {
-                classifier "sources"
+            artifact(sourceJar) {
+                type "source"
+                conf "runtime"
             }
         }
     }
 }
 ```
 
-如果想了解更多关于如何自定义产物可以查看MavenPublicationAPI文档。
+See the IvyPublication class in the API documentation for more detailed information on how artifacts can be customized.
 
-See the MavenPublication class in the API documentation for more information about how artifacts can be customized.
+查看API文档中IvyPublication类可以了解关于产物如何被自定义的详细信息。
 
-### **66.2.3. 在POM文件里标注值**
+## **65.2.3. Identity values for the published project**
 
-66.2.3. Identity values in the generated POM
+65.2.3.  已发布项目的Identity值
 
-生成的POM文件的属性将包含来源于以下项目属性的标注值:
+The generated Ivy module descriptor file contains an <info> element that identifies the module. The default identity values are derived from the following:
 
-The attributes of the generated POM file will contain identity values derived from the following project properties:
+生成的Ivy组件descriptor文件包含一个可以识别组件的<info>元素，这个默认的identity值来源如下：
 
-```
-groupId - Project.getGroup()
-artifactId - Project.getName()
-version - Project.getVersion()
-```
+organisation - Project.getGroup()
+module - Project.getName()
+revision - Project.getVersion()
+status - Project.getStatus()
+branch - (not set)
 
-覆盖默认值很简单:当配置MavenPublication artifactId或版本属性，简单地指定groupId即可。
+Overriding the default identity values is easy: simply specify the organisation, module or revision attributes when configuring the IvyPublication. The status and branch attributes can be set via the descriptor property (see IvyModuleDescriptorSpec). The descriptor property can also be used to add additional custom elements as children of the <info> element.
 
-Overriding the default identity values is easy: simply specify the groupId, artifactId or version attributes when configuring the MavenPublication.
+覆盖默认的identity值很简单：仅需在配置IvyPublication指定organisation, module 或 revision的属性。status和branch属性可以通过descriptor属性来设置。descriptor属性也可以用于添加其他的自定义元素，比如 <info>元素的子元素。
 
-Example 66.4. customizing the publication identity
+Example 65.4. customizing the publication identity
+
+例65.4. 自定义发布identity
 
 build.gradle
-
 ```
 publishing {
     publications {
-        maven(MavenPublication) {
-            groupId 'org.gradle.sample'
-            artifactId 'project1-sample'
-            version '1.1'
+        ivy(IvyPublication) {
+            organisation 'org.gradle.sample'
+            module 'project1-sample'
+            revision '1.1'
+            descriptor.status = 'milestone'
+            descriptor.branch = 'testing'
+            descriptor.extraInfo 'http://my.namespace', 'myElement', 'Some value'
 
             from components.java
         }
@@ -176,264 +177,354 @@ publishing {
 }
 ```
 
-某些仓库无法处理所有的字符。例如,当在Windows上发布filesystem-backed库时，':'字符不能用作标识符。
+Certain repositories are not able to handle all supported characters. For example, the ':' character cannot be used as an identifier when publishing to a filesystem-backed repository on Windows.
 
-Certain repositories will not be able to handle all supported characters. For example, the ':' character cannot be used as an identifier when publishing to a filesystem-backed repository on Windows.
+某些repositories不能处理所有支持的字符。例如，':' 字符在Windows上的系统备份文件存储库中就不能作为标识符。
 
-Maven限制‘groupId’和‘artifactId必须在有限字符集([A-Za-z0-9_ \ \ -。]+)内，Gradle与maven一样实施这一限制。“版本”(与“扩展”和“分类”一样),Gradle将处理任何有效的Unicode字符。
+Gradle will handle any valid Unicode character for organisation, module and revision (as well as artifact name, extension and classifier). The only values that are explicitly prohibited are '\', '/' and any ISO control character. The supplied values are validated early during publication.
 
-Maven restricts 'groupId' and 'artifactId' to a limited character set ([A-Za-z0-9_\\-.]+) and Gradle enforces this restriction. For 'version' (as well as artifact 'extension' and 'classifier'), Gradle will handle any valid Unicode character.
+Gradle会处理在organisation,module和revision (以及产物的name, extension 和classifier)中任何有效的Unicode字符。唯一被明确禁止的是'\', '/'和任何ISO控制字符。所有提供的值会在发布前期校验。
 
-唯有Unicode值明确禁止“\”,“/”和任何ISO控制字符。提供的值也是在早期发布时已验证的。
+## **65.2.4. Modifying the generated module descriptor**
 
-The only Unicode values that are explicitly prohibited are '\', '/' and any ISO control character. Supplied values are validated early in publication.
+65.2.4. 修改生成的组件描述符文件
 
-## **66.2.4. 修改生成的POM文件**
+At times, the module descriptor file generated from the project information will need to be tweaked before publishing. The “ivy-publish” plugin provides a hook to allow such modification.
 
-66.2.4. Modifying the generated POM
+有时可能需要在发布前调整由项目信息生成的组件描述符文件。“ivy-publish”插件就提供了一个允许修改的hook。
 
-生成的POM文件需要在发布前调整，“maven-publish”提供了hook极致允许如下的修改。
+Example 65.5. Customizing the module descriptor file
 
-The generated POM file may need to be tweaked before publishing. The “maven-publish” plugin provides a hook to allow such modification.
-
-Example 66.5. Modifying the POM file
+例65.5.  自定义组件descriptor文件
 
 build.gradle
-
 ```
 publications {
-    mavenCustom(MavenPublication) {
-        pom.withXml {
-            asNode().appendNode('description',
-                                'A demonstration of maven POM customization')
+    ivyCustom(IvyPublication) {
+        descriptor.withXml {
+            asNode().info[0].appendNode('description',
+                                        'A demonstration of ivy descriptor customization')
         }
     }
 }
 ```
 
-这个例子我们为POM添加了‘description’元素，按照这种hook方式我们在修改任何POM文件。例如，你能在构建过程中替换版本号。
+In this example we are simply adding a 'description' element to the generated Ivy dependency descriptor, but this hook allows you to modify any aspect of the generated descriptor. For example, you could replace the version range for a dependency with the actual version used to produce the build.
 
-In this example we are adding a 'description' element for the generated POM. With this hook, you can modify any aspect of the POM. For example, you could replace the version range for a dependency with the actual version used to produce the build.
+在这个例子中我们仅仅添加一个元素'description'到生成的Ivy依赖descriptor中。但是这个hook允许你修改已生成descriptor的任何方面。例如，你可以替换版本范围为一个相关的实际版本来生成构建。
 
-更多信息请查看API文档中的MavenPom.withXml()方法
+See IvyModuleDescriptorSpec.withXml() in the API documentation for more information.
+可查看API文档中的IvyModuleDescriptorSpec.withXml()了解更多信息
 
-See MavenPom.withXml() in the API documentation for more information.
+It is possible to modify virtually any aspect of the created descriptor should you need to. This means that it is also possible to modify the descriptor in such a way that it is no longer a valid Ivy module descriptor, so care must be taken when using this feature.
 
-你可以修改并创建任意的POM文件。这意味这你可以修改一个无效的POM文件，所以你在使用的时候一定要注意这点。
+实际上只要需要它可以用来修改已创建的descriptor的任何方面。这意味着它也可以修改descriptor导致它不再是个有效的组件描述符，所以采取这一功能时必须要小心。
 
-It is possible to modify virtually any aspect of the created POM should you need to. This means that it is also possible to modify the POM in such a way that it is no longer a valid Maven Pom, so care must be taken when using this feature.
+The identifier (organisation, module, revision) of the published module is an exception; these values cannot be modified in the descriptor using the `withXML` hook.
 
-(groupId, artifactId, version)这些标示符是一个例外，在POM文件里这些值不能使用withXML来修改。
+已发布的组件标识符 (organisation, module, revision)是个特例；这个值在descriptor中不能使用 `withXML`修改。
 
-The identifier (groupId, artifactId, version) of the published module is an exception; these values cannot be modified in the POM using the `withXML` hook.
+## **65.2.5. Publishing multiple modules***
 
-### **66.2.5. 发布多样化模块**
-
-66.2.5. Publishing multiple modules
-
-有时从我们Gradle构建中发布多样化模块相当有用，不用去创建单独的Gradle子工程。下面是一个发布独立API和Jar包的例子：
+65.2.5. 发布多个组件
 
 Sometimes it's useful to publish multiple modules from your Gradle build, without creating a separate Gradle subproject. An example is publishing a separate API and implementation jar for your library. With Gradle this is simple:
 
-Example 66.6. Publishing multiple modules from a single project
+有时候在Gradle构建时发布多个组件是很有用的，而不需创建一个单独的Gradle子项目。有个例子是 为你的库发布一个单独的API和实现jar。使用Gradle很简单：
+
+Example 65.6. Publishing multiple modules from a single project
 
 build.gradle
-
 ```
 task apiJar(type: Jar) {
     baseName "publishing-api"
     from sourceSets.main.output
     exclude '**/impl/**'
 }
-
 publishing {
     publications {
-        impl(MavenPublication) {
-            groupId 'org.gradle.sample.impl'
-            artifactId 'project2-impl'
-            version '2.3'
+        impl(IvyPublication) {
+            organisation 'org.gradle.sample.impl'
+            module 'project2-impl'
+            revision '2.3'
 
             from components.java
         }
-        api(MavenPublication) {
-            groupId 'org.gradle.sample'
-            artifactId 'project2-api'
-            version '2'
-
-            artifact apiJar
+        api(IvyPublication) {
+            organisation 'org.gradle.sample'
+            module 'project2-api'
+            revision '2'
         }
     }
 }
 ```
-如果一个项目定义了多个发布那么Gradle将发布他们到已定义的仓库。如上所述每个发布必须被给予一个唯一的身份。
 
 If a project defines multiple publications then Gradle will publish each of these to the defined repositories. Each publication must be given a unique identity as described above.
 
-## **66.3. 仓库**
+如果一个项目定义了多个发布产品那么Gradle将发布每个产品到定义的库中。每个发布品必须要指明一个唯一的标识符，如上面描述的那样。
 
-66.3. Repositories
-
-发布产物将会被发布到仓库中，发布仓库通过PublishingExtension.getRepositories()容器定义。
+## **65.3. Repositories**
 
 Publications are published to repositories. The repositories to publish to are defined by the PublishingExtension.getRepositories() container.
 
-Example 66.7. Declaring repositories to publish to
+发布品被发布到存储库中。要发布的库是由PublishingExtension.getRepositories()容器定义的。
+Example 65.7. Declaring repositories to publish to
 
 build.gradle
-
 ```
-publishing {
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url "$buildDir/repo"
-        }
+repositories {
+    ivy {
+        // change to point to your repo, e.g. http://my.org/repo
+        url "$buildDir/repo"
     }
 }
 ```
 
-DSL描述发布仓库的依赖性,RepositoryHandler。然而,仅有MavenArtifactRepository仓库可以用于发布。
+The DSL used to declare repositories for publishing is the same DSL that is used to declare repositories for dependencies (RepositoryHandler). However, in the context of Ivy publication only the repositories created by the ivy() methods can be used as publication destinations. You cannot publish an IvyPublication to a Maven repository for example.
 
-The DSL used to declare repositories for publication is the same DSL that is used to declare repositories to consume dependencies from, RepositoryHandler. However, in the context of Maven publication only MavenArtifactRepository repositories can be used for publication.
+用来声明发布库的DSL和用来声明依赖 (RepositoryHandler)的库是一样的。然而，在Ivy发布内容里只有被ivy()方法创建的库才会被用作发布目标库。例如你不能发布一个IvyPublication到一个Maven库中。
 
-## **66.4. 执行发布**
+## **65.4. Performing a publish**
 
-66.4. Performing a publish
+The “ivy-publish” plugin automatically creates a PublishToIvyRepository task for each IvyPublication and IvyArtifactRepository combination in the publishing.publications and publishing.repositories containers respectively.
 
-maven-publish插件为在 publishing.publications与publishing中每个MavenPublication与MavenArtifactRepository的结合自动创建PublishToMavenRepository任务。
+“ivy-publish”插件自动的为每个在publishing.publications 和 publishing.repositories容器中的IvyPublication 和IvyArtifactRepository的结合创建了一个PublishToIvyRepository任务。
 
-The “maven-publish” plugin automatically creates a PublishToMavenRepository task for each MavenPublication and MavenArtifactRepository combination in the publishing.publications and publishing.repositories containers respectively.
+The created task is named “publish«PUBNAME»PublicationTo«REPONAME»Repository”, which is “publishIvyJavaPublicationToIvyRepository” for this example. This task is of type PublishToIvyRepository.
 
-被创建的任务命名为“publish«PUBNAME»PublicationTo«REPONAME»Repository”
+创建的任务名字为“publish«PUBNAME»PublicationTo«REPONAME»Repository”，对于这个例子也就是“publishIvyJavaPublicationToIvyRepository”。这个任务是PublishToIvyRepository类型。
 
-The created task is named “publish«PUBNAME»PublicationTo«REPONAME»Repository”.
-
-Example 66.8. Publishing a project to a Maven repository
+Example 65.8. Choosing a particular publication to publish
 
 build.gradle
-
 ```
 apply plugin: 'java'
-apply plugin: 'maven-publish'
+apply plugin: 'ivy-publish'
 
 group = 'org.gradle.sample'
 version = '1.0'
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        ivyJava(IvyPublication) {
             from components.java
         }
     }
-}
-publishing {
     repositories {
-        maven {
+        ivy {
             // change to point to your repo, e.g. http://my.org/repo
             url "$buildDir/repo"
         }
     }
 }
-
 ```
+
+Output of gradle publishIvyJavaPublicationToIvyRepository
+```
+> gradle publishIvyJavaPublicationToIvyRepository
+:generateDescriptorFileForIvyJavaPublication
+:compileJava UP-TO-DATE
+:processResources UP-TO-DATE
+:classes UP-TO-DATE
+:jar
+:publishIvyJavaPublicationToIvyRepository
+
+BUILD SUCCESSFUL
+
+Total time: 1 secs
+```
+
+### **65.4.1. The “publish” lifecycle task**
+
+The “publish” plugin (that the “ivy-publish” plugin implicitly applies) adds a lifecycle task that can be used to publish all publications to all applicable repositories named “publish”.
+
+“publish” 插件（“ivy-publish”隐含使用的）添加了一个声明周期任务，使用它可以发布所有发布产物到所有名字为“publish”的库中。
+In more concrete terms, executing this task will execute all PublishToIvyRepository tasks in the project. This is usually the most convenient way to perform a publish.
+
+更具体而言，执行这项任务将会执行项目中的所有PublishToIvyRepository任务。通常这个是执行发布最方便的方式。
+
+Example 65.9. Publishing all publications via the “publish” lifecycle task
 
 Output of gradle publish
-
 ```
 > gradle publish
-:generatePomFileForMavenJavaPublication
-:compileJava
+:generateDescriptorFileForIvyJavaPublication
+:compileJava UP-TO-DATE
 :processResources UP-TO-DATE
-:classes
+:classes UP-TO-DATE
 :jar
-:publishMavenJavaPublicationToMavenRepository
+:publishIvyJavaPublicationToIvyRepository
 :publish
 
 BUILD SUCCESSFUL
 
 Total time: 1 secs
 ```
-在这个例子里：“publishMavenJavaPublicationToMavenRepository”任务被创建，类型为PublishToMavenRepository。该任务会连接到发布生命周期中。执行“gradle publish” 构建POM文件，所有的构建产物将会发布，把他们传到仓库中去。
 
-In this example, a task named “publishMavenJavaPublicationToMavenRepository” is created, which is of type PublishToMavenRepository. This task is wired into the publish lifecycle task. Executing “gradle publish” builds the POM file and all of the artifacts to be published, and transfers them to the repository.
+## **65.5. Generating the Ivy module descriptor file without publishing**
 
-## **66.5. 发布到Maven本地**
+65.5.不用发布生成Ivy组件描述文件
 
-66.5. Publishing to Maven Local
+At times it is useful to generate the Ivy module descriptor file (normally ivy.xml) without publishing your module to an Ivy repository. Since descriptor file generation is performed by a separate task, this is very easy to do.
 
-为了与本地maven集成，发布模块到本地就比较有用了。在maven的规则里，所有的模块都是被安装进去得，maven-publish插件将自动创建PublishToMavenLocal任务为每个在publishing.publications容器内的MavenPublication。这些任务与publishToMavenLocal的生命周期相关联。你不需要在publishing.repositories里配置mavenLocal。
+有时候在没有发布组件到Ivy库时生成Ivy组件描述文件（通常是ivy.xml）很有用，因为描述文件生成是由一个单独的任务执行的，这很容易做到。
 
-For integration with a local Maven installation, it is sometimes useful to publish the module into the local .m2 repository. In Maven parlance, this is referred to as 'installing' the module. The “maven-publish” plugin makes this easy to do by automatically creating a PublishToMavenLocal task for each MavenPublication in the publishing.publications container. Each of these tasks is wired into the publishToMavenLocal lifecycle task. You do not need to have `mavenLocal` in your `publishing.repositories` section.
+The “ivy-publish” plugin creates one GenerateIvyDescriptor task for each registered IvyPublication, named “generateDescriptorFileFor«PUBNAME»Publication”, which will be “generateDescriptorFileForIvyJavaPublication” for the previous example of the “ivyJava” publication.
 
-被创建的任务将被命名为“publish«PUBNAME»PublicationToMavenLocal”.
+“ivy-publish” 插件为每个注册的IvyPublication创建了一个GenerateIvyDescriptor任务，名字类如“generateDescriptorFileFor«PUBNAME»Publication”, 对于之前“ivyJava” 的例子它的名字会是“generateDescriptorFileForIvyJavaPublication”
+You can specify where the generated Ivy file will be located by setting the destination property on the generated task. By default this file is written to “build/publications/«PUBNAME»/ivy.xml”.
 
-The created task is named “publish«PUBNAME»PublicationToMavenLocal”.
+你可以通过设置任务中的目的属性指明Ivy文件的生成路径。默认情况文件会被写入到“build/publications/«PUBNAME»/ivy.xml”。
 
-Example 66.9. Publish a project to the Maven local repository
-
-Output of gradle publishToMavenLocal
-
-```
-> gradle publishToMavenLocal
-:generatePomFileForMavenJavaPublication
-:compileJava
-:processResources UP-TO-DATE
-:classes
-:jar
-:publishMavenJavaPublicationToMavenLocal
-:publishToMavenLocal
-
-BUILD SUCCESSFUL
-
-Total time: 1 secs
-```
-例子里得任务结果命名为publishMavenJavaPublicationToMavenLocal，任务与publishToMavenLocal生命周期联系。执行gradle publishToMavenLocal构建POM文件，所有的产物都会被发布，也会安装到maven本地仓库中。
-
-The resulting task in this example is named “publishMavenJavaPublicationToMavenLocal”. This task is wired into the publishToMavenLocal lifecycle task. Executing “gradle publishToMavenLocal” builds the POM file and all of the artifacts to be published, and “installs” them into the local Maven repository.
-
-## **66.6. 不发布生成POM文件**
-
-66.6. Generating the POM file without publishing
-
-有时不需要实际发布而未一个模块生成POM文件很有必要，自从POM可以被单独的任务生成后，这样所就变得相当的简单。
-
-At times it is useful to generate a Maven POM file for a module without actually publishing. Since POM generation is performed by a separate task, it is very easy to do so.
-
-生成POM的任务是GenerateMavenPom类型，基于发布 “generatePomFileFor«PUBNAME»Publication”的一个名字。所以在下面的例子里，发布被命名为“mavenCustom”，任务被命名为“generatePomFileForMavenCustomPublication”.
-
-The task for generating the POM file is of type GenerateMavenPom, and it is given a name based on the name of the publication: “generatePomFileFor«PUBNAME»Publication”. So in the example below, where the publication is named “mavenCustom”, the task will be named “generatePomFileForMavenCustomPublication”.
-
-Example 66.10. Generate a POM file without publishing
+Example 65.10. Generating the Ivy module descriptor file
 
 build.gradle
 ```
 model {
-    tasks.generatePomFileForMavenCustomPublication {
-        destination = file("$buildDir/generated-pom.xml")
+    tasks.generateDescriptorFileForIvyCustomPublication {
+        destination = file("$buildDir/generated-ivy.xml")
     }
 }
-```
-
-Output of gradle generatePomFileForMavenCustomPublication
-
-```
-> gradle generatePomFileForMavenCustomPublication
-:generatePomFileForMavenCustomPublication
+Output of gradle generateDescriptorFileForIvyCustomPublication
+> gradle generateDescriptorFileForIvyCustomPublication
+:generateDescriptorFileForIvyCustomPublication
 
 BUILD SUCCESSFUL
 
 Total time: 1 secs
 ```
-所有发布模式的细节都在考虑范围内,包括组件的,定制的构件,以及pom.withXml下的任何修改。
 
-All details of the publishing model are still considered in POM generation, including components`, custom artifacts, and any modifications made via pom.withXml.
+The “ivy-publish” plugin leverages some experimental support for late plugin configuration, and the GenerateIvyDescriptor task will not be constructed until the publishing extension is configured. The simplest way to ensure that the publishing plugin is configured when you attempt to access the GenerateIvyDescriptor task is to place the access inside a model block, as the example above demonstrates.
 
-“maven-publish”插件为了后期插件的配置做一些实验,与任何GenerateMavenPom任务才能构建出版扩展配置。最简单的方式,当您试图访问GenerateMavenPom任务时，以确保发布插件配置是在一个block里访问,就好像上面的例子一样。
+“ivy-publish”插件利用一些实验支持插件配置，GenerateIvyDescriptor任务不会构建直到发布扩展被配置好。当你试图访问GenerateIvyDescriptor任务时候，确认发布插件配置好的最简单方法是将访问放在一个模型块中，就像上面例子演示的一样。
 
-The “maven-publish” plugin leverages some experimental support for late plugin configuration, and any GenerateMavenPom tasks will not be constructed until the publishing extension is configured. The simplest way to ensure that the publishing plugin is configured when you attempt to access the GenerateMavenPom task is to place the access inside a model block, as the example above demonstrates.
+The same applies to any attempt to access publication-specific tasks like PublishToIvyRepository. These tasks should be referenced from within a model block.
 
-这同样适用于任何试图访问publication-specific任务，例如PublishToMavenRepository。这些任务应该一个block中被引用。
+同样适用于任何像PublishToIvyRepository一样企图访问publication-specific的任务，这些任务应在模型块中被引用。
 
-The same applies to any attempt to access publication-specific tasks like PublishToMavenRepository. These tasks should be referenced from within a model block.
+## **65.6. Complete example**
 
-百度搜索[无线学院](http://wirelesscollege.cn)
+The following example demonstrates publishing with a multi-project build. Each project publishes a Java component and a configured additional source artifact. The descriptor file is customized to include the project description for each project.
+
+下面的例子演示了多项目构建的演示发布。每个项目发布了一个java组件和一个配置好的另外的源产物。项目描述文件中包含了每个项目的项目描述。
+
+Example 65.11. Publishing a Java module
+
+build.gradle
+```
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'ivy-publish'
+
+    version = '1.0'
+    group = 'org.gradle.sample'
+
+    repositories {
+        mavenCentral()
+    }
+    task sourceJar(type: Jar) {
+        from sourceSets.main.java
+        classifier "source"
+    }
+}
+
+project(":project1") {
+    description = "The first project"
+
+    dependencies {
+       compile 'junit:junit:4.12', project(':project2')
+    }
+}
+
+project(":project2") {
+    description = "The second project"
+
+    dependencies {
+       compile 'commons-collections:commons-collections:3.1'
+    }
+}
+
+subprojects {
+    publishing {
+        repositories {
+            ivy {
+                // change to point to your repo, e.g. http://my.org/repo
+                url "${rootProject.buildDir}/repo"
+            }
+        }
+        publications {
+            ivy(IvyPublication) {
+                from components.java
+                artifact(sourceJar) {
+                    type "source"
+                    conf "runtime"
+                }
+                descriptor.withXml {
+                    asNode().info[0].appendNode('description', description)
+                }
+            }
+        }
+    }
+}
+```
+
+The result is that the following artifacts will be published for each project:
+
+结果是每个项目将会发布以下的产物
+
+The Ivy module descriptor file: “ivy-1.0.xml”.
+
+Ivy 组件描述文件：“ivy-1.0.xml”
+
+The primary “jar” artifact for the Java component: “project1-1.0.jar”.
+
+java组件主要的jar产物: “project1-1.0.jar”.
+
+The source “jar” artifact that has been explicitly configured: “project1-1.0-source.jar”.
+
+明确配置的源码jar产物： “project1-1.0-source.jar”.
+
+When project1 is published, the module descriptor (i.e. the ivy.xml file) that is produced will look like:
+
+当项目发布后，组件描述（比如the ivy.xml文件）生成像这样：
+
+Note that «PUBLICATION-TIME-STAMP» in this example Ivy module descriptor will be the timestamp of when the descriptor was generated.
+
+Example 65.12. Example generated ivy.xml
+
+output-ivy.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+  <info organisation="org.gradle.sample" module="project1" revision="1.0" status="integration" publication="«PUBLICATION-TIME-STAMP»">
+    <description>The first project</description>
+  </info>
+  <configurations>
+    <conf name="default" visibility="public" extends="runtime"/>
+    <conf name="runtime" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="project1" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="project1" type="source" ext="jar" conf="runtime" m:classifier="source" xmlns:m="http://ant.apache.org/ivy/maven"/>
+  </publications>
+  <dependencies>
+    <dependency org="junit" name="junit" rev="4.12" conf="runtime-&gt;default"/>
+    <dependency org="org.gradle.sample" name="project2" rev="1.0" conf="runtime-&gt;default"/>
+  </dependencies>
+</ivy-module>
+
+## **65.7. Future features**
+
+The “ivy-publish” plugin functionality as described above is incomplete, as the feature is still incubating. In upcoming Gradle releases, the functionality will be expanded to include (but not limited to):
+
+上面所述的“ivy-publish”插件功能上是不完整的，因为还在开发优化中。在未来的Gradle版本中，功能会扩展包含（但不限制在）：
+Convenient customization of module attributes (module, organisation etc.)
+
+Convenient customization of dependencies reported in module descriptor.
+Multiple discrete publications per project
+
+模块属性（模块，组织等）方便的定制
+
+模块描述符中依赖的方便定制。
+
+每个项目中发布多个离散发布品

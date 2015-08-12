@@ -1,182 +1,225 @@
-# **第六十章 组织构建逻辑**
+# **Chapter 58. Writing Custom Plugins**
 
-Chapter 60. Organizing Build Logic 
+Gradle插件能打包可重用的构建逻辑，它能够在许多不同的项目和构建中使用。Gradle允许你实现自己定制的插件，所以你可以重用你自己的构建逻辑，并且可以与人共享。
 
-Gradle提供了多种组织构建逻辑的方式。首先你可以把你的构建逻辑直接放到一个任务的动作中。如果多个任务使用共同的逻辑你可以把逻辑抽取出来成一个方法。如果多个项目共用一个逻辑你可以把这个逻辑定义成一个方法并放到父工程里边。如果构建逻辑太复杂不易于抽取出方法，你应该把你的逻辑封装成一个类来执行你的方法。Gradle可以非常简单的实现。把你的类放到一个目录里然后Gradle会自动编译他们并把他们添加到构建脚本的classpath里。
+A Gradle plugin packages up reusable pieces of build logic, which can be used across many different projects and builds. Gradle allows you to implement your own custom plugins, so you can reuse your build logic, and share it with others.
 
-Gradle offers a variety of ways to organize your build logic. First of all you can put your build logic directly in the action closure of a task. If a couple of tasks share the same logic you can extract this logic into a method. If multiple projects of a multi-project build share some logic you can define this method in the parent project. If the build logic gets too complex for being properly modeled by methods then you likely should implement your logic with classes to encapsulate your logic. [25] Gradle makes this very easy. Just drop your classes in a certain directory and Gradle automatically compiles them and puts them in the classpath of your build script. 
+你可以用任何你喜欢的语言去实现定制插件，被提供的是最终编译成的字节码。对于这个例子，我们将要使用Groovy最为实现语言。如果你想要，你可以使用java或者Scala替代。
 
-下面对所有组织构建逻辑的方法做一个总结：
+You can implement a custom plugin in any language you like, provided the implementation ends up compiled as bytecode. For the examples here, we are going to use Groovy as the implementation language. You could use Java or Scala instead, if you want.
 
-Here is a summary of the ways you can organise your build logic:
+## **58.1. Packaging a plugin**
 
-•   POGOs. 这种方法你可以直接在构建脚本中声明并且使用普通的旧的Groovy对象。构建脚本是用Groovy写的，毕竟Groovy提供了大量的方法去组织代码。
+有许多你可以放插件源码的位置。
 
-•   POGOs. You can declare and use plain old Groovy objects (POGOs) directly in your build script. The build script is written in Groovy, after all, and Groovy provides you with lots of excellent ways to organize code. 
+There are several places where you can put the source for the plugin.
 
-•   继承属性和方法。在一些工程中，子工程继承父工程的一些属性和方法。
+Build script
 
-•   Inherited properties and methods. In a multi-project build, sub-projects inherit the properties and methods of their parent project.
+你可以直接在构建脚本里包含插件源码。这类的好处是:插件是自动编译和包含在构建脚本类路径里,你无须做任何事。然而,在构建脚本外插件是不可见的,所以你不能在定义的构建脚本外重用插件。
 
-•   配置注入。在一些工程里，一个工程（通常是根工程）可以注入属性和方法到另外的工程。
+You can include the source for the plugin directly in the build script. This has the benefit that the plugin is automatically compiled and included in the classpath of the build script without you having to do anything. However, the plugin is not visible outside the build script, and so you cannot reuse the plugin outside the build script it is defined in.
 
-•   Configuration injection. In a multi-project build, a project (usually the root project) can inject properties and methods into another project.
+buildSrc project
 
-•   源码。把你的构建逻辑的源码放到一个目录下然后Gradle就会自动编译并且把他们添加到构建脚本的classpath里。
+你可以把插件的源代码放在目录rootProjectDir/buildSrc/src/main/groovy中。Gradle将注意编译和测试插件，使其可以在构建脚本类路径中执行。插件对于构建中使用的每个构建脚本都是可见的。然而,在构建外它是不可见的。所以你不能重用构建外的插件。
 
-•   buildSrc project. Drop the source for your build classes into a certain directory and Gradle automatically compiles them and includes them in the classpath of your build script. 
+You can put the source for the plugin in the rootProjectDir/buildSrc/src/main/groovy directory. Gradle will take care of compiling and testing the plugin and making it available on the classpath of the build script. The plugin is visible to every build script used by the build. However, it is not visible outside the build, and so you cannot reuse the plugin outside the build it is defined in.
 
-•   共享脚本。定义公共的配置在另外的脚本，并且应用这个脚本到多个工程，也可以跨越多个项目。
+见59章、组织构建逻辑 可了解更多关于buildSrc project的详细信息.
 
-•   Shared scripts. Define common configuration in an external build, and apply the script to multiple projects, possibly across different builds. 
+See Chapter 59, Organizing Build Logic for more details about the buildSrc project.
 
-•   自定义任务。把构建逻辑放到一个自定义任务中并在多个项目重用这个任务。
+Standalone project
 
-•   Custom tasks. Put your build logic into a custom task, and reuse that task in multiple places.
+你可以为你的插件创建一个单独的项目。这个项目可以生成和发布一个jar文件，你可以在多种构建中使用和共享。一般来说，这个jar文件可能会包含一些自定义的插件或绑定若干相关联的任务类或一些这两者的结合到一个单独的库文件中。
 
-•   自定义插件。把你的构建逻辑到一个自定义插件中，并且在多个项目中使用这个插件。这个插件必须在你的构建脚本的classpath中。你可以用构建源码的方法打包这个插件并把它包含在一个额外的目录里。
+You can create a separate project for your plugin. This project produces and publishes a JAR which you can then use in multiple builds and share with others. Generally, this JAR might include some custom plugins, or bundle several related task classes into a single library. Or some combination of the two.
+在我们的实例中，为了简单化我们将会以构建脚本中的插件开始。之后我们将看下创建一个独立的项目。
+In our examples, we will start with the plugin in the build script, to keep things simple. Then we will look at creating a standalone project.
 
-•   Custom plugins. Put your build logic into a custom plugin, and apply that plugin to multiple projects. The plugin must be in the classpath of your build script. You can achieve this either by using build sources or by adding an external library that contains the plugin. 
+58.2. Writing a simple plugin
 
-•   执行一个另外的构建。从当前项目执行一个另外Gradle的构建。
+要创建一个自定义插件,您需要编写一个插件的实现。当项目使用插件时，Gradle实例化插件并调用插件实例的Plugin.apply()方法。项目对象作为参数传递,该插件可以使用它配置项目。下面的示例包含一个greeting插件,添加一个hello任务到项目里。
 
-•   Execute an external build. Execute another Gradle build from the current build.
+To create a custom plugin, you need to write an implementation of Plugin. Gradle instantiates the plugin and calls the plugin instance's Plugin.apply() method when the plugin is used with a project. The project object is passed as a parameter, which the plugin can use to configure the project however it needs to. The following sample contains a greeting plugin, which adds a hello task to the project.
 
-•   额外的lib目录。直接在你的构建文件中使用额外的lib目录。
+例58.1  自定义插件
 
-•   External libraries. Use external libraries directly in your build file. 
-
-## **60.1. 继承属性和方法**
-
-60.1. Inherited properties and methods
-
-一个项目构建脚本中定义的任何方法和属性也被所有的子项目可见。你可以利用这配置公共的配置，并且可以把方法抽取出来封装成一个方法并并子项目使用。
-
-Any method or property defined in a project build script is also visible to all the sub-projects. You can use this to define common configurations, and to extract build logic into methods which can be reused by the sub-projects. 
-
-例子60.1. 继承属性和方法
-
-Example 60.1. Using inherited properties and methods
+Example 58.1. A custom plugin
 
 build.gradle
 ```
-// Define an extra property
-ext.srcDirName = 'src/java'
+apply plugin: GreetingPlugin
 
-// Define a method
-def getSrcDir(project) {
-    return project.file(srcDirName)
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.task('hello') << {
+            println "Hello from the GreetingPlugin"
+        }
+    }
 }
-child/build.gradle
-task show << {
-    // Use inherited property
-    println 'srcDirName: ' + srcDirName
-
-    // Use inherited method
-    File srcDir = getSrcDir(project)
-    println 'srcDir: ' + rootProject.relativePath(srcDir)
-}
-
-Output of gradle -q show
-> gradle -q show
-srcDirName: src/java
-srcDir: child/src/java
-
 ```
 
-## **60.2. 注入配置**
+Output of gradle -q hello
+```
+> gradle -q hello
+Hello from the GreetingPlugin
+```
 
-60.2. Injected configuration
+需要注意的是,一个给定插件会为应用它的每个项目创建一个新实例。还要注意,Plugin类是一个泛型类型。这个例子使他接收到Plugin类型作为类型参数。采取不同的类型参数写出特别的定制插件看似可以实现,但这将是不太可能的(除非有人找出更有创造性的事情要做)。
 
-你可以使用57.1节Section 57.1, “Cross project configuration” 和  57.2节 “Subproject configuration”中介绍的配置注入的方法把属性和方法注入到多个工程里。这相对继承来说是一个更好的选择因为其一注入是在构建脚本中执行这样你就可以注入不同的逻辑到不同的项目中，其二你可以多个配置例如仓库，插件，任务等等。下面的例子显示它是如何起作用的。
+One thing to note is that a new instance of a given plugin is created for each project it is applied to. Also note that the Plugin class is a generic type. This example has it receiving the Plugin type as a type parameter. It's possible to write unusual custom plugins that take different type parameters, but this will be unlikely (until someone figures out more creative things to do here).
 
-You can use the configuration injection technique discussed in Section 57.1, “Cross project configuration” and Section 57.2, “Subproject configuration” to inject properties and methods into various projects. This is generally a better option than inheritance, for a number of reasons: The injection is explicit in the build script, You can inject different logic into different projects, And you can inject any kind of configuration such as repositories, plug-ins, tasks, and so on. The following sample shows how this works. 
+## **58.3. Getting input from the build**
 
-例子60.2 注入属性和方法
+大多数插件都需要从构建脚本获取一些配置。这样做的一个方法是使用扩展对象。Gradle项目都有一个关联的ExtensionContainer对象,帮助跟踪传递给插件的所有设置和属性。您可以捕获用户的输入,告诉关于你的插件扩展容器。捕获输入,只需添加一个Java Bean的使用类到扩展容器的列表。Groovy是插件很好的语言选择,因为普通老的Groovy对象包含Java Bean要求的所有getter和setter方法。
 
-Example 60.2. Using injected properties and methods
+Most plugins need to obtain some configuration from the build script. One method for doing this is to use extension objects. The Gradle Project has an associated ExtensionContainer object that helps keep track of all the settings and properties being passed to plugins. You can capture user input by telling the extension container about your plugin. To capture input, simply add a Java Bean compliant class into the extension container's list of extensions. Groovy is a good language choice for a plugin because plain old Groovy objects contain all the getter and setter methods that a Java Bean requires.
+
+让我们添加一个简单的扩展对象到项目中。这里我们添加一个greeting扩展对象到项目里，它允许你配置greeting
+
+Let's add a simple extension object to the project. Here we add a greeting extension object to the project, which allows you to configure the greeting.
+
+例58.2.  自定义插件扩展
+
+Example 58.2. A custom plugin extension
 
 build.gradle
 ```
-subprojects {
-    // Define a new property
-    ext.srcDirName = 'src/java'
+apply plugin: GreetingPlugin
 
-    // Define a method using a closure as the method body
-    ext.srcDir = { file(srcDirName) }
+greeting.message = 'Hi from Gradle'
 
-    // Define a task
-    task show << {
-        println 'project: ' + project.path
-        println 'srcDirName: ' + srcDirName
-        File srcDir = srcDir()
-        println 'srcDir: ' + rootProject.relativePath(srcDir)
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        // Add the 'greeting' extension object
+        project.extensions.create("greeting", GreetingPluginExtension)
+        // Add a task that uses the configuration
+        project.task('hello') << {
+            println project.greeting.message
+        }
     }
 }
 
-// Inject special case configuration into a particular project
-project(':child2') {
-    ext.srcDirName = "$srcDirName/legacy"
+class GreetingPluginExtension {
+    def String message = 'Hello from GreetingPlugin'
 }
-child1/build.gradle
-// Use injected property and method. Here, we override the injected value
-srcDirName = 'java'
-def dir = srcDir()
-Output of gradle -q show
-> gradle -q show
-project: :child1
-srcDirName: java
-srcDir: child1/java
-project: :child2
-srcDirName: src/java/legacy
-srcDir: child2/src/java/legacy
+```
+```
+Output of gradle -q hello
+> gradle -q hello
+Hi from Gradle
 ```
 
-## **60.3. 用额外的构建脚本配置项目**
+在这个例子中，GreetingPluginExtension是一个普通的老的Groovy对象，它含有一个message的字段。扩展对象被添加到插件列表中，名字为greeting。这个对象随后成为了项目的属性，名字和在扩展对象名字一样。
 
-60.3. Configuring the project using an external build script
+In this example, GreetingPluginExtension is a plain old Groovy object with a field called message. The extension object is added to the plugin list with the name greeting. This object then becomes available as a project property with the same name as the extension object.
 
-你可以使用的额外的脚本配置当前的项目。Gradle所有的构建语言都可以在额外的脚本获得。你甚至可以在这个额外的配置文件中使用其他项目的脚本。
+通常,你需要给一个单独的插件指定若干个相关的属性。Gradle为每个扩展对象添加一个配置闭包块,所以你可以把设置分组。下面的例子展示了是如何工作的
 
-You can configure the current project using an external build script. All of the Gradle build language is available in the external script. You can even apply other scripts from the external script. 
+Oftentimes, you have several related properties you need to specify on a single plugin. Gradle adds a configuration closure block for each extension object, so you can group settings together. The following example shows you how this works.
 
-例子60.3.  使用额外的构建脚本配置项目
+例58.3.  带有配置闭包的自定义插件
 
-Example 60.3. Configuring the project using an external build script
+Example 58.3. A custom plugin with configuration closure
 
 build.gradle
 ```
-apply from: 'other.gradle'
-other.gradle
-println "configuring $project"
-task hello << {
-    println 'hello from other script'
+apply plugin: GreetingPlugin
+
+greeting {
+    message = 'Hi'
+    greeter = 'Gradle'
 }
-Output of gradle -q hello
-> gradle -q hello
-configuring root project 'configureProjectUsingScript'
-hello from other script
+
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.extensions.create("greeting", GreetingPluginExtension)
+        project.task('hello') << {
+            println "${project.greeting.message} from ${project.greeting.greeter}"
+        }
+    }
+}
+
+class GreetingPluginExtension {
+    String message
+    String greeter
+}
 ```
 
-60.4. 在项目中添加源码
+Output of gradle -q hello
+```
+> gradle -q hello
+Hi from Gradle
+```
 
-60.4. Build sources in the buildSrc project
+在这个例子中，很多设置使用greeting闭包被分组。构建脚本中闭包块的名字需要与扩展对象名字匹配。那么当闭包快被执行的时候，根据标准Groovy闭包委托特性，在扩展对象的字段将会被映射到闭包变量中。
 
-当你运行Gradle，它会检查buildSrc目录是否存在，若存在Gradle会自动编译并测试源码并把路径添加到构建脚本的classpath里。你不需要提供另外的方法，这可以是一个你添加任务和插件的很好的地方。
+In this example, several settings can be grouped together within the greeting closure. The name of the closure block in the build script (greeting) needs to match the extension object name. Then, when the closure is executed, the fields on the extension object will be mapped to the variables within the closure based on the standard Groovy closure delegate feature.
 
-When you run Gradle, it checks for the existence of a directory called buildSrc. Gradle then automatically compiles and tests this code and puts it in the classpath of your build script. You don't need to provide any further instruction. This can be a good place to add your custom tasks and plugins. 
+## **58.4. Working with files in custom tasks and plugins**
 
-对多个项目的构建可以只有一个buildSrc目录，但是必须是在项目的根目录下。
+当开发自定义任务和插件,灵活地接受输入配置文件地址是个好办法。要做到这一点,您可以利用Project.file()方法尽可能晚地分解值到文件中。
 
-For multi-project builds there can be only one buildSrc directory, which has to be in the root project directory. 
+When developing custom tasks and plugins, it's a good idea to be very flexible when accepting input configuration for file locations. To do this, you can leverage the Project.file() method to resolve values to files as late as possible.
 
-下面的脚本就是Gradle默认应用到buildSrc项目的脚本。
+例58.4   延迟评估文件属性
 
-Listed below is the default build script that Gradle applies to the buildSrc project:
+Example 58.4. Evaluating file properties lazily
 
-图60.1. 默认的buildSrc构建脚本
+build.gradle
 
-Figure 60.1. Default buildSrc build script
+```
+class GreetingToFileTask extends DefaultTask {
+
+    def destination
+
+    File getDestination() {
+        project.file(destination)
+    }
+
+    @TaskAction
+    def greet() {
+        def file = getDestination()
+        file.parentFile.mkdirs()
+        file.write "Hello!"
+    }
+}
+
+task greet(type: GreetingToFileTask) {
+    destination = { project.greetingFile }
+}
+
+task sayGreeting(dependsOn: greet) << {
+    println file(greetingFile).text
+}
+
+ext.greetingFile = "$buildDir/hello.txt"
+```
+
+Output of gradle -q sayGreeting
+```
+> gradle -q sayGreeting
+Hello!
+```
+
+在这个例子中,我们配置了greeting任务目标属性作为一个闭包,这是用Project.file()方法评估在最后一刻将闭包返回值转化为一个文件对象。您会注意到,在上面的示例中,我们在任务中配置好投入使用后才指定greetingFile的属性值。这种延迟评估的关键性好处在于当设置一个文件的属性的时候可接受任何值，然后在读取属性的时候分解值。
+
+In this example, we configure the greet task destination property as a closure, which is evaluated with the Project.file() method to turn the return value of the closure into a file object at the last minute. You will notice that in the example above we specify the greetingFile property value after we have configured to use it for the task. This kind of lazy evaluation is a key benefit of accepting any value when setting a file property, then resolving that value when reading the property.
+
+## **58.5. A standalone project**
+
+现在我们将插件移到一个独立的项目,这样我们可以发布,并与他人分享。这个项目是一个简单的Groovy项目,可以产生一个包含插件类的jar包。这里是项目中一个简单的构建脚本。它适用于Groovy插件,并添加Gradle API作为编译时依赖项。
+
+Now we will move our plugin to a standalone project, so we can publish it and share it with others. This project is simply a Groovy project that produces a JAR containing the plugin classes. Here is a simple build script for the project. It applies the Groovy plugin, and adds the Gradle API as a compile-time dependency.
+
+例58.5  一个自定义插件的构建
+
+Example 58.5. A build for a custom plugin
+
+build.gradle
+
 ```
 apply plugin: 'groovy'
 
@@ -186,190 +229,222 @@ dependencies {
 }
 ```
 
-这意味着你可以只把你的源码放到这个目录下并且执行for a Java/Groovy project 转换（见表格23.4 “Table 23.4, “Java plugin - default project layout”）
+注意：这个实例代码能够在gradle根目录下的samples/customPlugin/plugin找到。
 
-This means that you can just put your build source code in this directory and stick to the layout convention for a Java/Groovy project (see Table 23.4, “Java plugin - default project layout”). 
+Note: The code for this example can be found at samples/customPlugin/plugin in the ‘-all’ distribution of Gradle.
 
-如果你需要更普遍的适应性，你可以提供你自己的build.gradle文件。Gradle会不管是否有一个指定的脚本都会使用默认的构建脚本。这意味你只需要声明你需要的额外的元素。下面的例子。我们注意到这个例子不需要声明Gradle API的依赖，这个会被默认的脚本声明。
+那么Gradle是怎样发现Plugin执行的？答案是你需要在jar中的META-INF/gradle-plugins目录中提供一个属性文件用来匹配你插件的id.
 
-If you need more flexibility, you can provide your own build.gradle. Gradle applies the default build script regardless of whether there is one specified. This means you only need to declare the extra things you need. Below is an example. Notice that this example does not need to declare a dependency on the Gradle API, as this is done by the default build script: 
+So how does Gradle find the Plugin implementation? The answer is you need to provide a properties file in the jar's META-INF/gradle-plugins directory that matches the id of your plugin.
 
-例子60.4. 自定义源码构建脚本
+例58.6   连接自定义插件
 
-Example 60.4. Custom buildSrc build script
+Example 58.6. Wiring for a custom plugin
 
-buildSrc/build.gradle
-```
-repositories {
-    mavenCentral()
-}
+src/main/resources/META-INF/gradle-plugins/org.samples.greeting.properties
+implementation-class=org.gradle.GreetingPlugin
 
-dependencies {
-    testCompile 'junit:junit:4.12'
-}
-```
+注意属性文件名匹配插件id且放在源文件夹中，实现类属性指明Plugin实现类。
 
-这个buildSrc项目可以被多个项目构建，类似任何一个常规的其他项目。然而，所有实际运行的项目的classpath都必须在在该根项目的依赖里。你可以往任何你想产出的项目中添加这个配置。
+Notice that the properties filename matches the plugin id and is placed in the resources folder, and that the implementation-class property identifies the Plugin implementation class.
 
-The buildSrc project can be a multi-project build, just like any other regular multi-project build. However, all of the projects that should be on the classpath of the actual build must be runtime dependencies of the root project in buildSrc. You can do this by adding this to the configuration of each project you wish to export: 
+### **58.5.1. Creating a plugin id**
 
-例子60.5.    向根项目的buildSrc里添加子项目
+插件id是完全受限，与java包的方式类似（即反向域名）。这有助于避免冲突且提供了使用类似所有制方式分组插件的方法。
 
-Example 60.5. Adding subprojects to the root buildSrc project
+Plugin ids are fully qualified in a manner similar to Java packages (i.e. a reverse domain name). This helps to avoid collisions and provides a way to group plugins with similar ownership.
 
-buildSrc/build.gradle
-```
-rootProject.dependencies {
-  runtime project(path)
-}
-```
+你的插件id应该是一个组件的结合，它能反映所提供插件的命名空间及名称(合理的指向你或你的组织)。例如,如果你有一个Github账户名为“foo”和你的插件名为“bar”,一个合适的插件id名可能就是com.github.foo.bar。类似地,如果你的插件在baz组织开发,插件id可能是org.baz.bar。
 
-注：该例子的源码可以在samples/multiProjectBuildSrc目录里找到。
+Your plugin id should be a combination of components that reflect namespace (a reasonable pointer to you or your organization) and the name of the plugin it provides. For example if you had a Github account named “foo” and your plugin was named “bar”, a suitable plugin id might be com.github.foo.bar. Similarly, if the plugin was developed at the baz organization, the plugin id might be org.baz.bar.
 
-Note: The code for this example can be found at samples/multiProjectBuildSrc in the ‘-all’ distribution of Gradle.
+插件id应遵从如下规则：
 
-## **60.5. 从一个构建里运行另一个Gradle构建**
+Plugin ids should conform to the following:
 
-60.5. Running another Gradle build from a build
+可能包含任何字母数字字符,'.', 和 '-'。
 
-你可以使用GradleBuild任务，你既可以要么使用buildFile属性去指定执行哪个构建，也可以使用任务属性去指定执行哪些任务。
+必须包含至少一个'.' 用来分隔插件名中的命名空间
 
-You can use the GradleBuild task. You can use either of the dir or buildFile properties to specify which build to execute, and the tasks property to specify which tasks to execute. 
+命名空间按照惯例使用小字母反向域名惯例
 
-例子60.6. 从一个构建执行另一个构建
+按照惯例名字只使用小写字母
 
-Example 60.6. Running another build from a build
+org.gradle和com.gradleware命名空间不能被使用
 
-build.gradle
-```
-task build(type: GradleBuild) {
-    buildFile = 'other.gradle'
-    tasks = ['hello']
-}
-other.gradle
-task hello << {
-    println "hello from the other build."
-}
-Output of gradle -q build
-> gradle -q build
-hello from the other build.
-```
+不能以'.'开头或结尾
 
-60.6.构建脚本额外的依赖
+不能包含连续的'.'字符（比如'..'）
 
-60.6. External dependencies for the build script
+May contain any alphanumeric character, '.', and '-'.
 
-如果你的构建脚本需要使用额外包，你可以自己把它们添加到构建脚本的classpath里，你使用buildscript()方法来完成这个，会把构建脚本声明的闭环当做参数传递过去。
+Must contain at least one '.' character separating the namespace from the name of the plugin.
 
-If your build script needs to use external libraries, you can add them to the script's classpath in the build script itself. You do this using the buildscript() method, passing in a closure which declares the build script classpath. 
+Conventionally use a lowercase reverse domain name convention for the namespace.
 
-例子60.7. 为构建脚本声明另外的依赖
+Conventionally use only lowercase characters in the name.
 
-Example 60.7. Declaring external dependencies for the build script
+org.gradle and com.gradleware namespaces may not be used.
+
+Cannot start or end with a '.' character.
+
+Cannot contain consecutive '.' characters (i.e. '..').
+
+尽管插件Id和包名称存在着常规的相似性，但是包名称通常比插件id有必要更具体些。例如，添加 “gradle”作为你插件id的组件看起来是合理的，但由于插件id仅用于Gradle插件，这样做是多余的。一般情况下，一个命名空间指明了所有权，一个名字是一个好插件需要的所有。
+
+Although there are conventional similarities between plugin ids and package names, package names are generally more detailed than is necessary for a plugin id. For instance, it might seem reasonable to add “gradle” as a component of your plugin id, but since plugin ids are only used for Gradle plugins, this would be superfluous. Generally, a namespace that identifies ownership and a name are all that are needed for a good plugin id.
+
+### **58.5.2. Publishing your plugin**
+
+如果在你组织发布插件内部使用，你可以像发布其他代码构建产物一样发布它。可以看下ivy和maven发布构建产物的章节
+
+If you are publishing your plugin internally for use within your organization, you can publish it like any other code artifact. See the ivy and maven chapters on publishing artifacts.
+
+如果你有兴趣发布插件使其能够在Gradle社区被广泛使用,你可以发布到Gradle插件门户中。这个网站提供搜索和收集Gradle社区提供的插件信息。看看这里的说明关于如何使你的插件发布到这个网站上。
+
+If you are interested in publishing your plugin to be used by the wider Gradle community, you can publish it to the Gradle plugin portal. This site provides the ability to search for and gather information about plugins contributed by the Gradle community. See the instructions here on how to make your plugin available on this site.
+
+### **58.5.3. Using your plugin in another project**
+
+为在构建脚本时使用某插件,您需要添加插件类到构建脚本的类路径中。要做到这一点,你需要用一个“buildscript { }”块,如20.4节所述,“使用构建脚本块应用插件”。下面的例子显示当载有插件的JAR包已经发布到一个本地存储库时，你该如何做到这一点:
+
+To use a plugin in a build script, you need to add the plugin classes to the build script's classpath. To do this, you use a “buildscript { }” block, as described in Section 20.4, “Applying plugins with the buildscript block”. The following example shows how you might do this when the JAR containing the plugin has been published to a local repository:
+
+例58.7  在其他项目中使用自定义插件
+
+Example 58.7. Using a custom plugin in another project
 
 build.gradle
 ```
 buildscript {
     repositories {
-        mavenCentral()
+        maven {
+            url uri('../repo')
+        }
     }
     dependencies {
-        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+        classpath group: 'org.gradle', name: 'customPlugin',
+                  version: '1.0-SNAPSHOT'
     }
 }
+apply plugin: 'org.samples.greeting'
 ```
 
-传递到buildscript()方法闭环配置了一个ScriptHandler实例。你通过添加依赖到classpath配置来声明构建脚本的classpath。这和你声明java编译classpath是相同的方法。你可以使用章节51.4. Section 51.4, “How to declare your dependencies”中的任意一种依赖形式。
+或者，如果你的插件被发布到插件门户上，你可以使用孵化插件DSL（见20.5节,“使用DSL应用插件”)来应用插件
+Alternatively, if your plugin is published to the plugin portal, you can use the incubating plugins DSL (see Section 20.5, “Applying plugins with the plugins DSL”) to apply the plugin:
 
-The closure passed to the buildscript() method configures a ScriptHandler instance. You declare the build script classpath by adding dependencies to the classpath configuration. This is the same way you declare, for example, the Java compilation classpath. You can use any of the dependency types described in Section 51.4, “How to declare your dependencies”, except project dependencies.
-
-已经声明了构建脚本的classpath，你可以使用你构建脚本中的类像你使用classpath中的任何一个类一样。下面的例子是对上面例子的补充，使用构建脚本classpath中的类。
-
-Having declared the build script classpath, you can use the classes in your build script as you would any other classes on the classpath. The following example adds to the previous example, and uses classes from the build script classpath.
-
-例子60.8.  一个带额外的依赖的构建脚本
-
-Example 60.8. A build script with external dependencies
+Example 58.8. Applying a community plugin with the plugins DSL
 
 build.gradle
 ```
-import org.apache.commons.codec.binary.Base64
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
-    }
+plugins {
+    id "com.jfrog.bintray" version "0.4.1"
 }
-
-task encode << {
-    def byte[] encodedString = new Base64().encode('hello world\n'.getBytes())
-    println new String(encodedString)
-}
-Output of gradle -q encode
-> gradle -q encode
-aGVsbG8gd29ybGQK
 ```
 
-对多项目的构建，一个项目构建脚本中声明的依赖对其他子项目都是可见的。
+### **58.5.4. Writing tests for your plugin**
 
-For multi-project builds, the dependencies declared in the a project's build script, are available to the build scripts of all sub-projects. 
+当你测试你插件执行时候，可以使用ProjectBuilder类来创建Project实例使用
 
-60.7. Ant可选的依赖
+You can use the ProjectBuilder class to create Project instances to use when you test your plugin implementation.
 
-60.7. Ant optional dependencies
+例58.9 测试自定义插件
 
-对于额外的依赖没有被ant可选的任务处理的原因我们也不是很理解。但是你可以轻易的用其他方式完成这件事情。
+Example 58.9. Testing a custom plugin
 
-For reasons we don't fully understand yet, external dependencies are not picked up by Ant's optional tasks. But you can easily do it in another way. [26] 
+```
+src/test/groovy/org/gradle/GreetingPluginTest.groovy
+class GreetingPluginTest {
+    @Test
+    public void greeterPluginAddsGreetingTaskToProject() {
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'org.samples.greeting'
 
-例子60.9.  Ant 可选依赖
+        assertTrue(project.tasks.hello instanceof GreetingTask)
+    }
+}
+```
 
-Example 60.9. Ant optional dependencies
+58.5.5. Using the Java Gradle Plugin development plugin
+
+您可以使用孵化Java Gradle插件开发插件来消除一些在你构建脚本中的样本声明并提供一些基本的插件元数据的验证。这个插件会自动应用java插件，添加gradleApi()依赖到编译配置,并执行插件元数据验证作为jar任务执行的一部分。
+
+You can use the incubating Java Gradle Plugin development plugin to eliminate some of the boilerplate declarations in your build script and provide some basic validations of plugin metadata. This plugin will automatically apply the Java plugin, add the gradleApi() dependency to the compile configuration, and perform plugin metadata validations as part of the jar task execution.
+
+例58.10  使用Java Gradle Plugin Development插件
+
+Example 58.10. Using the Java Gradle Plugin Development plugin
 
 build.gradle
 ```
-configurations {
-    ftpAntTask
-}
+apply plugin: 'java-gradle-plugin'
+```
 
-dependencies {
-    ftpAntTask("org.apache.ant:ant-commons-net:1.9.4") {
-        module("commons-net:commons-net:1.4.1") {
-            dependencies "oro:oro:2.0.8:jar"
-        }
+## **58.6. Maintaining multiple domain objects**
+
+Gradle提供了一些实用程序类维护对象的集合,它们与Gradle构建语言融合得很好。
+
+Gradle provides some utility classes for maintaining collections of objects, which work well with the Gradle build language.
+
+例58.11 管理域对象
+
+Example 58.11. Managing domain objects
+
+build.gradle
+
+```
+apply plugin: DocumentationPlugin
+
+books {
+    quickStart {
+        sourceFile = file('src/docs/quick-start')
+    }
+    userGuide {
+
+    }
+    developerGuide {
+
     }
 }
 
-task ftp << {
-    ant {
-        taskdef(name: 'ftp',
-                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
-                classpath: configurations.ftpAntTask.asPath)
-        ftp(server: "ftp.apache.org", userid: "anonymous", password: "me@myorg.com") {
-            fileset(dir: "htdocs/manual")
+task books << {
+    books.each { book ->
+        println "$book.name -> $book.sourceFile"
+    }
+}
+
+class DocumentationPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        def books = project.container(Book)
+        books.all {
+            sourceFile = project.file("src/docs/$name")
         }
+        project.extensions.books = books
+    }
+}
+
+class Book {
+    final String name
+    File sourceFile
+
+    Book(String name) {
+        this.name = name
     }
 }
 ```
 
-这也是一个客户端模块的很好的例子。Maven 中央仓库中的POM 文件没有为ant-commons-net任务这个用例提供正确的信息。
+Output of gradle -q books
+```
+> gradle -q books
+developerGuide -> /home/user/gradle/samples/userguide/organizeBuildLogic/customPluginWithDomainObjectContainer/src/docs/developerGuide
+quickStart -> /home/user/gradle/samples/userguide/organizeBuildLogic/customPluginWithDomainObjectContainer/src/docs/quick-start
+userGuide -> /home/user/gradle/samples/userguide/organizeBuildLogic/customPluginWithDomainObjectContainer/src/docs/userGuide
+````
 
-This is also a good example for the usage of client modules. The POM file in Maven Central for the ant-commons-net task does not provide the right information for this use case.
+Project.container()方法创建NamedDomainObjectContainer实例,有很多有用管理和配置对象的方法。为了使用一种类型在任何project.container方法中,它必须公开一个名字是“name”的属性作为唯一的,且为常量的对象的名称。project.container(类)容器方法的变体创建新实例,试图调用类的构造函数，这个构造函数只有一个字符串参数并期望为对象的名字。请点击上面的链接查看project.container方法变量允许自定义实例化策略。
 
-## **60.8. 总结**
+The Project.container() methods create instances of NamedDomainObjectContainer, that have many useful methods for managing and configuring the objects. In order to use a type with any of the project.container methods, it MUST expose a property named “name” as the unique, and constant, name for the object. The project.container(Class) variant of the container method creates new instances by attempting to invoke the constructor of the class that takes a single string argument, which is the desired name of the object. See the above link for project.container method variants that allow custom instantiation strategies.
 
-60.8. Summary
+Previous|Contents|Next
 
-Gradle提供了多种用户组织构建逻辑的方法。你可以选择适合你的需求的方式和不你不需要的方面的一个平衡点，避免冗余和难以维护。我们的经验是每个非常复杂的自定义构建在不同的构建之间很少被分享。其他的构建工具都是分割构建逻辑到单独的工程。Gradle省去了这方面你不必要的开销。
-
-Gradle offers you a variety of ways of organizing your build logic. You can choose what is right for your domain and find the right balance between unnecessary indirections, and avoiding redundancy and a hard to maintain code base. It is our experience that even very complex custom build logic is rarely shared between different builds. Other build tools enforce a separation of this build logic into a separate project. Gradle spares you this unnecessary overhead and indirection. 
-
-________________________________________
-
-[25] Which might range from a single class to something very complex. 
-
-[26] In fact, we think this is a better solution. Only if your buildscript and Ant's optional task need the same library would you have to define it twice. In such a case it would be nice if Ant's optional task would automatically pick up the classpath defined in the “gradle.settings” file. 
-
+百度搜索[无线学院](http://wirelesscollege.cn)

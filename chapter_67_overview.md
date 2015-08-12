@@ -1,424 +1,439 @@
-# **第66章 基于模型配置的规则**
+# **第66章 Maven发布**
 
-Chapter 66. Rule based model configuration
+Chapter 66. Maven Publishing (new)
 
-本章描述的是Gradle3.0版本下一代Gradle构建体系。我们会在Gradle2.X版本的技术上进行开发，使其支持本地Binaries构建。
+本章描述的新孵化的Maven发布功能是由“maven-publish”插件提供支持的。最终通过上传任务，新发布支持将取代你的发布。
 
-This chapter describes and documents what is essentially the foundation for the Gradle 3.0 and the next generation of Gradle builds. It is being incrementally developed during the Gradle 2.x stream and is in use for Gradle's support for building native binaries.
+This chapter describes the new incubating Maven publishing support provided by the “maven-publish” plugin. Eventually this new publishing support will replace publishing via the Upload task.
 
-之前讨论的所有技术，包括DSL,API都会被进一步开发（例如：not considered stable and subject to change - see Appendix C, The Feature Lifecycle）。早期我们提及的一些新功能，在孵化期间会让大家更早得了解到，测试到这些新功能，以至于我们得到一个更好用的Gradle。
+如果你正在查找原始的maven发布文档去支持使用上传任务，那么请参阅章Chapter 52, Publishing artifacts。
+本章描述了如何发布构建产物到一个Apache Maven仓库。模块可以使用理解maven仓库格式的maven、gradle和其他工具发布到Maven仓库,(见依赖管理51章)。
 
-All of the mechanisms, DSL, API, and techniques discussed here are incubating (i.e. not considered stable and subject to change - see Appendix C, The Feature Lifecycle). Exposing new features early, during incubation, allows early testing and the incorporation of real world feedback ultimately resulting in a better Gradle.
+If you are looking for documentation on the original Maven publishing support using the Upload task please see Chapter 52, Publishing artifacts.
+This chapter describes how to publish build artifacts to an Apache Maven Repository. A module published to a Maven repository can be consumed by Maven, Gradle (see Chapter 51, Dependency Management) and other tools that understand the Maven repository format.
 
-下面的构建脚本是基于构建规则的一个例子
+## **66.1.  “maven-publish” 插件**
 
-The following build script is an example of a rule based build.
+66.1. The “maven-publish” Plugin
 
-Example 66.1. an example of a simple rule based build
+“maven-publish”插件提供了发布为maven格式的能力。
+
+The ability to publish in the Maven format is provided by the “maven-publish” plugin.
+
+“publishing”插件在项目中创建一个扩展名为“publishing”的PublishingExtension类型。这个扩展提供了一个发布容器以及一个资源仓库。“maven-publish”插件与MavenPublication plublications 以及MavenArtifactRepository仓库协同工作。
+
+The “publishing” plugin creates an extension on the project named “publishing” of type PublishingExtension. This extension provides a container of named publications and a container of named repositories. The “maven-publish” plugin works with MavenPublication publications and MavenArtifactRepository repositories.
+
+Example 66.1. Applying the 'maven-publish' plugin
+
+build.gradle
+```
+apply plugin: 'maven-publish'
+```
+
+应用“maven-publish”插件
+
+Applying the “maven-publish” plugin does the following:
+
+"publish"插件可以自动创建pom。(see Section 66.2, “Publications”).
+
+Applies the “publishing” plugin
+Establishes a rule to automatically create a GenerateMavenPom task for each MavenPublication added (see Section 66.2, “Publications”).
+
+自动发布以及自动创建maven仓库。(see Section 66.2, “Publications”)(see Section 66.3, “Repositories”).
+
+Establishes a rule to automatically create a PublishToMavenRepository task for the combination of each MavenPublication added (see Section 66.2, “Publications”), with each MavenArtifactRepository added (see Section 66.3, “Repositories”).
+
+自动发布到maven本地仓库。(seeSection 66.2, “Publications”).
+
+Establishes a rule to automatically create a PublishToMavenLocal task for each MavenPublication added (seeSection 66.2, “Publications”).
+
+## **发布**
+
+66.2. Publications
+
+如果您不熟悉项目产物和配置，您应该阅读52章，52章介绍了这些发布产物的概念。这一章使用不同的方式描述了“发布产物”是什么。这里描述的发布功能最终将会被取代。发布对象描述的结构/配置会被创建。
+
+If you are not familiar with project artifacts and configurations, you should read the Chapter 52, Publishing artifacts that introduces these concepts. This chapter also describes “publishing artifacts” using a different mechanism than what is described in this chapter. The publishing functionality described here will eventually supersede that functionality.
+Publication objects describe the structure/configuration of a publication to be created. 
+
+通过任务我们可以把产物发布到仓库,发布对象配置决定了究竟要发布什么。所有项目的发布都是在PublishingExtension.getPublications()容器中定义的。在项目中每个发布都有一个唯一的名字。
+
+Publications are published to repositories via tasks, and the configuration of the publication object determines exactly what is published. All of the publications of a project are defined in the PublishingExtension.getPublications() container. Each publication has a unique name within the project.
+
+如果让“maven-publish”插件产生效果，MavenPublication必须添加到发布集中。这个发布决定了那些在POM文件中定义的附件将会被发布出去。可以通过添加组件，自定义附件以及修改POM文件来决定发布配置。
+
+For the “maven-publish” plugin to have any effect, a MavenPublication must be added to the set of publications. This publication determines which artifacts are actually published as well as the details included in the associated POM file. A publication can be configured by adding components, customizing artifacts, and by modifying the generated POM file directly.
+
+### **66.2.1. 发布组件**
+
+66.2.1. Publishing a Software Component
+
+组件从gradle项目发布到maven仓库其实很简单，我们来看看那些支持组件发布的一些插件：
+
+The simplest way to publish a Gradle project to a Maven repository is to specify a SoftwareComponent to publish. The components presently available for publication are:
+
+Table 66.1. Software Components
+
+|Name	|Provided By	|Artifacts	|Dependencies|
+|--
+|java	|Chapter 23, The Java Plugin|	Generated jar file	|Dependencies from 'runtime' configuration|
+|web	|Chapter 26, The War Plugin|	Generated war file	|No dependencies|
+
+在下面的例子里，演示了附件以及运行时依赖是如何在java组件中配置的
+
+In the following example, artifacts and runtime dependencies are taken from the `java` component, which is added by the Java Plugin.
+
+Example 66.2. Adding a MavenPublication for a Java component
 
 build.gradle
 
 ```
-@Managed
-interface Person {
-  void setFirstName(String n); String getFirstName()
-  void setLastName(String n); String getLastName()
-}
-
-class PersonRules extends RuleSource {
-  @Model void person(Person p) {}
-
-  @Mutate void setFirstName(Person p) {
-    p.firstName = "John"
-  }
-
- @Mutate void createHelloTask(CollectionBuilder<Task> tasks, Person p) {
-    tasks.create("hello") {
-      doLast {
-        println "Hello $p.firstName $p.lastName!"
-      }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
     }
-  }
-}
-
-apply plugin: PersonRules
-
-model {
-  person {
-    lastName = "Smith"
-  }
 }
 ```
-注意：例子中的代码在Gradle正式发行版的samples/modelRules/basicRuleSourcePlugin 目录下能够找到。
 
-Note: The code for this example can be found at samples/modelRules/basicRuleSourcePlugin in the ‘-all’ distribution of Gradle.
+### **66.2.2 发布自定义产物**
 
-Gradle hello的输出结果
+66.2.2. Publishing custom artifacts
 
-Output of gradle hello
+可以在发布中显式的配置产物。附件通常为原始文件,或者为AbstractArchiveTask实例(例如Jar,Zip)。
+
+It is also possible to explicitly configure artifacts to be included in the publication. Artifacts are commonly supplied as raw files, or as instances of AbstractArchiveTask (e.g. Jar, Zip).
+
+对于每一个定制的产物,可以指定要使用的扩展和类型来发布。注意,构建产物可以为空，但是必须要有扩展名。
+
+For each custom artifact, it is possible to specify the extension and classifier values to use for publication. Note that only one of the published artifacts can have an empty classifier, and all other artifacts must have a unique classifier/extension combination.
+
+可以按照如下来配置自定义产物：
+
+Configure custom artifacts as follows:
+
+Example 66.3. Adding additional artifact to a MavenPublication
+
+build.gradle
 
 ```
-> gradle hello
-:hello
-Hello John Smith!
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+```
+
+如果想了解更多关于如何自定义产物可以查看MavenPublicationAPI文档。
+
+See the MavenPublication class in the API documentation for more information about how artifacts can be customized.
+
+### **66.2.3. 在POM文件里标注值**
+
+66.2.3. Identity values in the generated POM
+
+生成的POM文件的属性将包含来源于以下项目属性的标注值:
+
+The attributes of the generated POM file will contain identity values derived from the following project properties:
+
+```
+groupId - Project.getGroup()
+artifactId - Project.getName()
+version - Project.getVersion()
+```
+
+覆盖默认值很简单:当配置MavenPublication artifactId或版本属性，简单地指定groupId即可。
+
+Overriding the default identity values is easy: simply specify the groupId, artifactId or version attributes when configuring the MavenPublication.
+
+Example 66.4. customizing the publication identity
+
+build.gradle
+
+```
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'org.gradle.sample'
+            artifactId 'project1-sample'
+            version '1.1'
+
+            from components.java
+        }
+    }
+}
+```
+
+某些仓库无法处理所有的字符。例如,当在Windows上发布filesystem-backed库时，':'字符不能用作标识符。
+
+Certain repositories will not be able to handle all supported characters. For example, the ':' character cannot be used as an identifier when publishing to a filesystem-backed repository on Windows.
+
+Maven限制‘groupId’和‘artifactId必须在有限字符集([A-Za-z0-9_ \ \ -。]+)内，Gradle与maven一样实施这一限制。“版本”(与“扩展”和“分类”一样),Gradle将处理任何有效的Unicode字符。
+
+Maven restricts 'groupId' and 'artifactId' to a limited character set ([A-Za-z0-9_\\-.]+) and Gradle enforces this restriction. For 'version' (as well as artifact 'extension' and 'classifier'), Gradle will handle any valid Unicode character.
+
+唯有Unicode值明确禁止“\”,“/”和任何ISO控制字符。提供的值也是在早期发布时已验证的。
+
+The only Unicode values that are explicitly prohibited are '\', '/' and any ISO control character. Supplied values are validated early in publication.
+
+## **66.2.4. 修改生成的POM文件**
+
+66.2.4. Modifying the generated POM
+
+生成的POM文件需要在发布前调整，“maven-publish”提供了hook极致允许如下的修改。
+
+The generated POM file may need to be tweaked before publishing. The “maven-publish” plugin provides a hook to allow such modification.
+
+Example 66.5. Modifying the POM file
+
+build.gradle
+
+```
+publications {
+    mavenCustom(MavenPublication) {
+        pom.withXml {
+            asNode().appendNode('description',
+                                'A demonstration of maven POM customization')
+        }
+    }
+}
+```
+
+这个例子我们为POM添加了‘description’元素，按照这种hook方式我们在修改任何POM文件。例如，你能在构建过程中替换版本号。
+
+In this example we are adding a 'description' element for the generated POM. With this hook, you can modify any aspect of the POM. For example, you could replace the version range for a dependency with the actual version used to produce the build.
+
+更多信息请查看API文档中的MavenPom.withXml()方法
+
+See MavenPom.withXml() in the API documentation for more information.
+
+你可以修改并创建任意的POM文件。这意味这你可以修改一个无效的POM文件，所以你在使用的时候一定要注意这点。
+
+It is possible to modify virtually any aspect of the created POM should you need to. This means that it is also possible to modify the POM in such a way that it is no longer a valid Maven Pom, so care must be taken when using this feature.
+
+(groupId, artifactId, version)这些标示符是一个例外，在POM文件里这些值不能使用withXML来修改。
+
+The identifier (groupId, artifactId, version) of the published module is an exception; these values cannot be modified in the POM using the `withXML` hook.
+
+### **66.2.5. 发布多样化模块**
+
+66.2.5. Publishing multiple modules
+
+有时从我们Gradle构建中发布多样化模块相当有用，不用去创建单独的Gradle子工程。下面是一个发布独立API和Jar包的例子：
+
+Sometimes it's useful to publish multiple modules from your Gradle build, without creating a separate Gradle subproject. An example is publishing a separate API and implementation jar for your library. With Gradle this is simple:
+
+Example 66.6. Publishing multiple modules from a single project
+
+build.gradle
+
+```
+task apiJar(type: Jar) {
+    baseName "publishing-api"
+    from sourceSets.main.output
+    exclude '**/impl/**'
+}
+
+publishing {
+    publications {
+        impl(MavenPublication) {
+            groupId 'org.gradle.sample.impl'
+            artifactId 'project2-impl'
+            version '2.3'
+
+            from components.java
+        }
+        api(MavenPublication) {
+            groupId 'org.gradle.sample'
+            artifactId 'project2-api'
+            version '2'
+
+            artifact apiJar
+        }
+    }
+}
+```
+如果一个项目定义了多个发布那么Gradle将发布他们到已定义的仓库。如上所述每个发布必须被给予一个唯一的身份。
+
+If a project defines multiple publications then Gradle will publish each of these to the defined repositories. Each publication must be given a unique identity as described above.
+
+## **66.3. 仓库**
+
+66.3. Repositories
+
+发布产物将会被发布到仓库中，发布仓库通过PublishingExtension.getRepositories()容器定义。
+
+Publications are published to repositories. The repositories to publish to are defined by the PublishingExtension.getRepositories() container.
+
+Example 66.7. Declaring repositories to publish to
+
+build.gradle
+
+```
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "$buildDir/repo"
+        }
+    }
+}
+```
+
+DSL描述发布仓库的依赖性,RepositoryHandler。然而,仅有MavenArtifactRepository仓库可以用于发布。
+
+The DSL used to declare repositories for publication is the same DSL that is used to declare repositories to consume dependencies from, RepositoryHandler. However, in the context of Maven publication only MavenArtifactRepository repositories can be used for publication.
+
+## **66.4. 执行发布**
+
+66.4. Performing a publish
+
+maven-publish插件为在 publishing.publications与publishing中每个MavenPublication与MavenArtifactRepository的结合自动创建PublishToMavenRepository任务。
+
+The “maven-publish” plugin automatically creates a PublishToMavenRepository task for each MavenPublication and MavenArtifactRepository combination in the publishing.publications and publishing.repositories containers respectively.
+
+被创建的任务命名为“publish«PUBNAME»PublicationTo«REPONAME»Repository”
+
+The created task is named “publish«PUBNAME»PublicationTo«REPONAME»Repository”.
+
+Example 66.8. Publishing a project to a Maven repository
+
+build.gradle
+
+```
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+group = 'org.gradle.sample'
+version = '1.0'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "$buildDir/repo"
+        }
+    }
+}
+
+```
+
+Output of gradle publish
+
+```
+> gradle publish
+:generatePomFileForMavenJavaPublication
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:jar
+:publishMavenJavaPublicationToMavenRepository
+:publish
 
 BUILD SUCCESSFUL
 
 Total time: 1 secs
 ```
+在这个例子里：“publishMavenJavaPublicationToMavenRepository”任务被创建，类型为PublishToMavenRepository。该任务会连接到发布生命周期中。执行“gradle publish” 构建POM文件，所有的构建产物将会发布，把他们传到仓库中去。
 
-本章致力于解释Gradle以后会往哪个方向发展，为什么要这么发展。
+In this example, a task named “publishMavenJavaPublicationToMavenRepository” is created, which is of type PublishToMavenRepository. This task is wired into the publish lifecycle task. Executing “gradle publish” builds the POM file and all of the artifacts to be published, and transfers them to the repository.
 
-The rest of this chapter is dedicated to explaining what is going on in this build script, and why Gradle is moving in this direction.
+## **66.5. 发布到Maven本地**
 
-## **66.1背景**
+66.5. Publishing to Maven Local
 
-66.1. Background
+为了与本地maven集成，发布模块到本地就比较有用了。在maven的规则里，所有的模块都是被安装进去得，maven-publish插件将自动创建PublishToMavenLocal任务为每个在publishing.publications容器内的MavenPublication。这些任务与publishToMavenLocal的生命周期相关联。你不需要在publishing.repositories里配置mavenLocal。
 
-Gradle以为领域模式为核心主旨。聚焦领域模式比执行模式会有更多得优势（例如前一代的Ant构建工具）。强大得领域模型引导结构上的意图。（从怎么做到做什么）.它会让人们更加理解Gradle的构建，因为这个构建将会更有意义。
+For integration with a local Maven installation, it is sometimes useful to publish the module into the local .m2 repository. In Maven parlance, this is referred to as 'installing' the module. The “maven-publish” plugin makes this easy to do by automatically creating a PublishToMavenLocal task for each MavenPublication in the publishing.publications container. Each of these tasks is wired into the publishToMavenLocal lifecycle task. You do not need to have `mavenLocal` in your `publishing.repositories` section.
 
-Gradle embraces domain modelling as core tenet. Focusing on the domain model as opposed to the execution model (like prior generation build tools such as Apache Ant) has many advantages. A strong domain model communicates the intent (i.e. the what) over the mechanics (i.e. the how). This allows humans to understand builds at a level that is meaningful to them.
+被创建的任务将被命名为“publish«PUBNAME»PublicationToMavenLocal”.
 
-与帮助其他人一样，强大得领域模型也会帮助尽职尽责的机器们。围绕领域模型插件能够更好的协作。（例如：插件可以按照约定表达一些关于java应用的事情）。模型将会代替Gradle如何做更明智的选择。
+The created task is named “publish«PUBNAME»PublicationToMavenLocal”.
 
-As well as helping humans, a strong domain model also helps the dutiful machines. Plugins can more effectively collaborate around a strong domain model (e.g. plugins can say something about Java applications, such as providing conventions). Very importantly, by having a model of the what instead of the how Gradle can make intelligent choices on just how to do the how.
+Example 66.9. Publish a project to the Maven local repository
 
-“基于模型配置的规则”趋势可以被概括为可以让Gradle能力更加丰富，拥有更强大更有效的方式方法。也会让今天的Gradle模型更健壮更简单。
+Output of gradle publishToMavenLocal
 
-The move towards “Rule based model configuration” can be summarised as improving Gradle's ability to model richer domains in a more effective way. It also makes expressing the kinds of models present in today's Gradle more robust and simpler.
+```
+> gradle publishToMavenLocal
+:generatePomFileForMavenJavaPublication
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:jar
+:publishMavenJavaPublicationToMavenLocal
+:publishToMavenLocal
 
-## **66.2 为什么要改变**
+BUILD SUCCESSFUL
 
-66.2. Motivations for change
+Total time: 1 secs
+```
+例子里得任务结果命名为publishMavenJavaPublicationToMavenLocal，任务与publishToMavenLocal生命周期联系。执行gradle publishToMavenLocal构建POM文件，所有的产物都会被发布，也会安装到maven本地仓库中。
 
-Domain modelling 在Gradle里并不新鲜。java插件的SourceSet concept就是一个Domain modelling的例子，就好像本地插件套装内的NativeBinary模型一样。
+The resulting task in this example is named “publishMavenJavaPublicationToMavenLocal”. This task is wired into the publishToMavenLocal lifecycle task. Executing “gradle publishToMavenLocal” builds the POM file and all of the artifacts to be published, and “installs” them into the local Maven repository.
 
-Domain modelling in Gradle is not new. The Java plugin's SourceSet concept is an example of domain modelling, as is the modelling of NativeBinary in the Native plugin suite.
+## **66.6. 不发布生成POM文件**
 
-Gradle与其他构件工具的一个明显区别就是Gradle的embrace modelling比其他模型更加开放也更容易协作。从根本上讲Gradle是一个模型化软件构建工具，通过task来实行model例如编译任务。不同领域插件提供了其他插件能够与之交流的模型们。例如（java，c++，android插件）。
+66.6. Generating the POM file without publishing
 
-One distinguishing characteristic of Gradle compared to other build tools that also embrace modelling is that Gradle's model is open and collaborative. Gradle is fundamentally a tool for modelling software construction and then realizing the model, via tasks such as compilation etc.. Different domain plugins (e.g. Java, C++, Android) provide models that other plugins can collaborate with and build upon.
+有时不需要实际发布而未一个模块生成POM文件很有必要，自从POM可以被单独的任务生成后，这样所就变得相当的简单。
 
-Gradle采用先进的技术来实现它的模型。（例如：我们知道构建中的一些事情），下一代Gradle将会采用相同的技术，让它自己来构建这个模型。通过定义构建Task可以有效的了解依赖关系以及输入输出，Gradle将能够在cache，并发，应用其他的优化方式去工作。使用任务图谱是一个长期的idea，必要的解决了软件的复杂程度。任务图谱定义了gradle必须执行的规则，而Rule based model configuration与任务图谱采用了相同的思想。
+At times it is useful to generate a Maven POM file for a module without actually publishing. Since POM generation is performed by a separate task, it is very easy to do so.
 
-While Gradle has long employed sophisticated techniques when it comes to realizing the model (i.e. what we know as building things), the next generation of Gradle builds will employ some of the same techniques to building of the model itself. By defining build tasks as effectively a graph of dependent functions with explicit inputs and outputs, Gradle is able to order, cache, parallelize and apply other optimizations to the work. Using a “graph of tasks” for the production of software is a long established idea, and necessary given the complexity of software production. The task graph effectively defines the rules of execution the Gradle must follow. The term “Rule based model configuration” refers to applying the same concepts to building the model that builds the task graph.
+生成POM的任务是GenerateMavenPom类型，基于发布 “generatePomFileFor«PUBNAME»Publication”的一个名字。所以在下面的例子里，发布被命名为“mavenCustom”，任务被命名为“generatePomFileForMavenCustomPublication”.
 
-另外一个关键动机就是性能，当前Gradle对限制了并行式构建，新的模型将会实现并行构建，这样Gradle在不管构建大项目还是小项目上都会更加有效。
+The task for generating the POM file is of type GenerateMavenPom, and it is given a name based on the name of the publication: “generatePomFileFor«PUBNAME»Publication”. So in the example below, where the publication is named “mavenCustom”, the task will be named “generatePomFileForMavenCustomPublication”.
 
-Another key motivation is performance and scale. Aspects of the current approach that Gradle takes to modelling the build prevent pervasive parallelism and limit scalability. The new model is being designed with the requirements of modern software delivery in mind, where immediate responsiveness is critical for projects large and small.
-
-## **66.3 概念**
-
-66.3. Concepts
-
-本章需要讲解rule based model configuration的关键概念，下述子章节讲解具体实施时的理念。
-
-This section outlines the key concepts of rule based model configuration. Subsequent sections in this chapter will show the concepts in action.
-
-
-### **66.3.1. The “model space”**
-
-model space这个术语的意思是地址化规则的正式模型。
-
-The term “model space” is used to refer to the formal model, addressable by rules.
-
-model space是模式已经存在的模型，项目对象就是项目根目录下地一些资源描述文件，例如project.repositories,project.task等等.构建脚本有效的添加配置这些对象。在大部分时候project space对于gradle是不透明的，它仅仅是Gradle能够识别的一种对象图谱罢了。
-
-An analog with existing model is effectively the “project space”. The Project object is effectively the root of a graph of objects (e.g project.repositories, project.tasks etc.). A build script is effectively adding and configuring objects of this graph. For the most part, the “project space” is opaque to Gradle. It is an arbitrary graph of objects that Gradle only partially understands.
-
-每一个工程都有自己的模型，这与project space是不同得。model space 的关键特点是Gradle更加了解他，也能更好的使用他。
-
-Each project also has its own model space, which is distinct from the project space. A key characteristic of the “model space” is that Gradle knows much more about it (which is knowledge that can be put to good use). 
-
-模型中的对象是managed，Gradle将会定义多种相关规则，让我们更好的理解他们的关系。
-
-The objects in the model space are “managed”, to a greater extent than objects in the project space. The origin, structure, state, collaborators and relationships of objects in the model space are first class constructs. This is effectively the characteristic that functionally distinguishes the model space from the project space: the objects of the model space are defined in ways that Gradle can understand them intimately, as opposed to an object that is the result of running relatively opaque code. A “rule” is effectively a building block of this definition.
-
-model space将会代替project space，未来只会有space，然而这中间的过渡还是对我们有帮助的。
-
-The model space will eventually replace the project space, in so far as it will be the only “space”. However, during the transition the distinction is helpful.
-
-### **66.3.2. Model paths**
-
-model path是通过model space来定义的，通常情况下task就代表这是个任务，但是如果任务得名字是hello，那么她得model path就会被定义为task.hello
-
-A model path identifies a path through a model space, to an element. A common representation is a period-delimited set of names. The model path "tasks" is the path to the element that is the task container. Assuming a task who's name is hello, the path "tasks.hello" is the path to this task.
-
-未完持续（官网就这么写的）
-TBD - more needed here.
-
-### **66.3.3. Rules**
-
-model space也定义了一系列的规则，规则就相当于抽象场景里得功能，他们产生模型元素，也取决于模型元素。每个规则都有一个单独的主题，以及0或者更多得输入。当输入是有效不变的情况下，只有主题能够被规则所改变。
-
-The model space is defined in terms of “rules”. A rule is just a function (in the abstract sense) that either produces a model element, or acts upon a model element. Every rule has a single subject and zero or more inputs. Only the subject can be changed by a rule, while the inputs are effectively immutable.
-
-Gradle担保所有的输入都能够在规则执行之前被全部识别。在这个过程中，识别到这个元素并且有效的执行它。并且能够保证你所有的依赖关系。（原文说的好啰嗦，使用任务图谱，执行模型啥得，最后就是这一句话，保证所有依赖关系）
-
-Gradle guarantees that all inputs are fully “realized“ before the rule executes. The process of “realizing” a model element is effectively executing all the rules for which it is the subject, transitioning it to its final state. There is a strong analogy here to Gradle's task graph and task execution model. Just as tasks depend on each other and Gradle ensures that dependencies are satisfied before executing a task, rules effectively depend on each other (i.e. a rule depends on all rules who's subject is one of the inputs) and Gradle ensures that all dependencies are satisfied before executing the rule.
-
-模型元素通常被其他的模型元素们所定义，例如编译任务配置为source set配置所定义。在这个场景下，编译任务就是规则的主题，source set就是输入。如此机遇source set 输入内一个规则就能够配置一个任务的主题，从而我们不用关心它是如何被配置的，谁配置的，什么时候配置的。
-
-Model elements are very often defined in terms of other model elements. For example, a compile task's configuration can be defined in terms of the configuration of the source set that it is compiling. In this scenario, the compile task would be the subject of a rule and the source set an input. Such a rule could configure the task subject based on the source set input without concern for how it was configured, who it was configured by or when the configuration was specified.
-
-有不同的方法和形式来处理规则。围绕着本章接下来的具体例子来解释不同机制和规则。
-
-There are several ways to declare rules, and in several forms. An explanation of the different forms and mechanisms along with concrete examples is forthcoming in this chapter.
-
-### **66.3.4. Managed model elements**
-
-当前任何java对象都是modelspace的一部分，然而在“managed”与“unmanaged”对象之间是有区别的。
-
-Currently, any kind of Java object can be part of the model space. However, there is a difference between “managed” and “unmanaged” objects.
-
-managed对象在初始化的时候就是透明的不变的。透明就是结构能够通过规则容易理解，包括model space中的属性。请查看Managed annotation获取创建managed model objects的更多得信息。
-
-A “managed” object is transparent and enforces immutability once realized. Being transparent means that its structure is understood by the rule infrastructure and as such each of its properties are also individual elements in the model space. Please see the Managed annotation for more information on creating managed model objects.
-
-unmanaged对象在model space中就是不透明的。也不执行不变性。随着时间的推移，更多得机制将会对定义managed模型元素有效，最终会以某种方式被managed。
-
-An “unmanaged” object is opaque to the the model space and does not enforce immutability. Over time, more mechanisms will be available for defining managed model elements culminating in all model elements being managed in some way.
-
-### **66.3.5. References, binding and scopes**
-
-前面提到，一个规则有一个主题，一个0个或者多个输入。在Gradle执行前规则的主题和输入被作为引用reference和绑定bound。
-每条规则都可以有效的宣布主题和input作为引用，如何实现取决于规则的形式，例如，规则可以由RuleSource作为引用参数。
-
-As previously mentioned, a rule has a subject and zero or more inputs. The rule's subject and inputs are declared as “references” and are “bound” to model elements before execution by Gradle. Each rule must effectively forward declare the subject and inputs as references. Precisely how this is done depends on the form of the rule. For example, the rules provided by a RuleSource declare references as method parameters.
-
-引用要么是“by-path” 要么是 “by-type”
-A reference is either “by-path” or “by-type”.
-
-“by-type” reference就是通过类型来识别模型元素，例如，一个指向TaskContainer的引用在project space内可以有效的识别为task元素。通过类型绑定可以找到它。
-
-A “by-type” reference identifies a particular model element by its type. For example, a reference to the TaskContainer effectively identifies the "tasks" element in the project model space. The model space is not exhaustively searched for candidates for by-type binding. The search space for a by-type binding is determined by the “scope” of the rule (discussed later).
-
-“by-path” reference就是通过在model space内的path来识别一个元素，By-path references 通常对于规则目标来说是相对的，但这不影响它绑定什么引用，元素通过路径被识别，但是通过类型来引用，否则就会“binding failure”
-
-A “by-path” reference identifies a particular model element by its path in model space. By-path references are always relative to the rule scope; there is currently no way to path “out” of the scope. All by-path references also have an associated type, but this does not influence what the reference binds to. The element identified by the path must however by type compatible with the reference, or a fatal “binding failure” will occur.
-
-#### **66.3.5.1. Binding scope**
-
-规则是通过“scope”来绑定的，它决定了引用绑定。大多数的规则在项目目标上绑定，然而，规则也可以被图标内被目标化。CollectionBuilder.named()方法就是一个例子。一个被目标化规则的机制。规则在构建脚本中用{}来宣布，或者通过根空间RuleSource插件作为目标。在默认的scope中被考虑。
-
-Rules are bound within a “scope”, which determines how references bind. Most rules are bound at the project scope (i.e. the root of the model graph for the project). However, rules can be scoped to a node within the graph. The CollectionBuilder.named() method is an example, of a mechanism for applying scoped rules. Rules declared in the build script using the model {} block, or via a RuleSource applied as a plugin use the root of the model space as the scope. This can be considered the default scope.
-
-By-path references对于rule scope总是相对的，当scope是root的时候，影响绑定到图谱上的任何元素，当不是root得时候，scope的孩子被引用给by-path。
-
-By-path references are always relative to the rule scope. When the scope is the root, this effectively allows binding to any element in the graph. When it is not, the children of the scope can be referred to by-path.
-
-当绑定by-type引用时，下面元素你需要考虑。
-
-When binding by-type references, the following elements are considered:
-
-目标元素自己
-
-The scope element itself.
-
-目标元素直属元素
-
-The immediate children of the scope element.
-
-modle space直属元素
-
-The immediate children of the model space (i.e. project space) root.
-
-通常规则都会在root下被定义，仅仅root直属的孩子受到规则影响。
-
-For the common case, where the rule is effectively scoped to the root, only the immediate children of the root need to be considered.
-
-## **66.4. Rule sources**
-
-一种定义规则的方式是通过RuleSource的子类。类型作为插件实现以同样得方式被应用。
-
-One way to define rules, is via a RuleSource subclass. Such types can be applied in the same manner (to project objects) as Plugin implementations (i.e. via Project.apply()).
-
-Example 66.2. applying a rule source plugin
+Example 66.10. Generate a POM file without publishing
 
 build.gradle
 ```
-@Managed
-interface Person {
-  void setFirstName(String n); String getFirstName()
-  void setLastName(String n); String getLastName()
-}
-
-class PersonRules extends RuleSource {
-  @Model void person(Person p) {}
-
-  @Mutate void setFirstName(Person p) {
-    p.firstName = "John"
-  }
-
- @Mutate void createHelloTask(CollectionBuilder<Task> tasks, Person p) {
-    tasks.create("hello") {
-      doLast {
-        println "Hello $p.firstName $p.lastName!"
-      }
+model {
+    tasks.generatePomFileForMavenCustomPublication {
+        destination = file("$buildDir/generated-pom.xml")
     }
-  }
 }
 ```
 
-apply plugin: PersonRules
+Output of gradle generatePomFileForMavenCustomPublication
 
-Rule source插件可以以同样的方式与其他类型的插件打包和分发(见58章,编写自定义插件)。
-规则的不同的方法来源是离散的,独立的规则。他们的订单,或者the fact属于同一类,无关紧要。
-
-Rule source plugins can be packaged and distributed in the same manner as other types of plugins (see Chapter 58, Writing Custom Plugins).
-
-The different methods of the rule source are discrete, independent rules. Their order, or the fact that they belong to the same class, are irrelevant.
-
-Example 66.3. a model creation rule
-
-build.gradle
 ```
-@Model void person(Person p) {}
+> gradle generatePomFileForMavenCustomPublication
+:generatePomFileForMavenCustomPublication
+
+BUILD SUCCESSFUL
+
+Total time: 1 secs
 ```
+所有发布模式的细节都在考虑范围内,包括组件的,定制的构件,以及pom.withXml下的任何修改。
 
-这条规则声明有一个模型元素为“person”路径(方法名定义的)“persion”类型。这是管理模型类型规则的形式类型。在这里,person对象是规则主题。方法可能会有方法体,实例。它也可能有更多的参数,也会规则的输入。
+All details of the publishing model are still considered in POM generation, including components`, custom artifacts, and any modifications made via pom.withXml.
 
-This rule declares the there is a model element at path "person" (defined by the method name), of type Person. This is the form of the Model type rule for Managed types. Here, the person object is the rule subject. The method could potentially have a body, that mutated the person instance. It could also potentially have more parameters, that would be the rule inputs.
+“maven-publish”插件为了后期插件的配置做一些实验,与任何GenerateMavenPom任务才能构建出版扩展配置。最简单的方式,当您试图访问GenerateMavenPom任务时，以确保发布插件配置是在一个block里访问,就好像上面的例子一样。
 
-Example 66.4. a model mutation rule
+The “maven-publish” plugin leverages some experimental support for late plugin configuration, and any GenerateMavenPom tasks will not be constructed until the publishing extension is configured. The simplest way to ensure that the publishing plugin is configured when you attempt to access the GenerateMavenPom task is to place the access inside a model block, as the example above demonstrates.
 
-build.gradle
-```
-@Mutate void setFirstName(Person p) {
-  p.firstName = "John"
-}
-```
+这同样适用于任何试图访问publication-specific任务，例如PublishToMavenRepository。这些任务应该一个block中被引用。
 
-这个变异规则变异了persion对象。该方法的第一个参数是主题。在这里,按类型引用作为参数没有路径注释。它也可能有更多的参数,将规则的输入。
-
-This Mutate rule mutates the person object. The first parameter to the method is the subject. Here, a by-type reference is used as no Path annotation is present on the parameter. It could also potentially have more parameters, that would be the rule inputs.
-
-Example 66.5. creating a task
-
-build.gradle
-```
-@Mutate void createHelloTask(CollectionBuilder<Task> tasks, Person p) {
-   tasks.create("hello") {
-     doLast {
-       println "Hello $p.firstName $p.lastName!"
-     }
-   }
- }
- ```
-
-这种变异规则通过变异的任务集合有效地增加了一个任务。这里的主题是“任务”节点,这是可用的CollectionBuilder任务。唯一的输入元素是我们的人。作为人被用作输入在这里,它将一直在执行该规则被识别到。也就是说,任务容器有效取决于元素的人。如果有其他配置规则元素的人,可能在构建脚本中指定或其他插件,也将保证执行。
-
-This Mutate rule effectively adds a task, by mutating the tasks collection. The subject here is the "tasks" node, which is available as a CollectionBuilder of Task. The lone input is our person element. As the person is being used as an input here, it will have been realised before executing this rule. That is, the task container effectively depends on the person element. If there are other configuration rules for the person element, potentially specified in a build script or other plugin, the will also be guaranteed to have been executed.
-
-在这个例子中persion是托管类型,任何试图修改参数的人在这个方法会导致一个异常被抛出。在他们的生命周期在适当的点管理对象实施不变性。
-
-As Person is a Managed type in this example, any attempt to modify the person parameter in this method would result in an exception being thrown. Managed objects enforce immutability at the appropriate point in their lifecycle.
-
-更多信息,请参见RuleSource文档约束规则来源如何必须实现和更多类型的规则。
-
-Please see the documentation for RuleSource for more information on constraints on how rule sources must be implemented and for more types of rules.
-
-66.5. The “model DSL”
-It is also possible to declare rules directly in the build script using the “model DSL”.
-
-Example 66.6. the model dsl
-
-build.gradle
-```
-model {
-  person {
-    lastName = "Smith"
-  }
-}
-```
-
-Continuing with the example so far of the model element "person" of type Person being present, the above DSL snippet effectively adds a mutation rule for the person that sets its lastName property.
-
-The general form of the model DSL is:
-```
-model {
-  «model-path-to-subject» {
-    «imperative code»
-  }
-}
-```
-Where there may be multiple blocks.
-
-It is also possible to create Managed type elements at the root level.
-
-The general form of a creation rule is:
-```
-model {
-  «element-name»(«element-type») {
-    «imperative code»
-  }
-}
-```       
-The following model rule is creating the person element:
-
-Example 66.7. a DSL creation rule
-
-build.gradle
-```
-person(Person) {
-  firstName = "John"
-}
-```
-Note: The code for this example can be found at samples/modelRules/modelDsl in the ‘-all’ distribution of Gradle.
-
-模型DSL当前是被限制的，只可以申报创建和一般突变规则。也只能通过by-path来引用主题,DSL是不可能为规则有输入的。这些限制将在未来Gradle版本解决。
-
-The model DSL is currently quite limited. It is only possible to declare creation and general mutation rules. It is also only possible to refer to the subject by-path and it is not possible for the rule to have inputs. These are all limitations that will be addressed in future Gradle versions.
-
-## **66.6. The model report**
-
-构建中的模型任务按照树形结构显示model space。他可在查看元素绑定的时候被使用。
-
-The built-in model task displays the model space as a tree. It can be used to see what the potential elements to bind to are.
-
-Example 66.8. model task output
-
-Output of gradle model
-```
-> gradle model
-:model
-
-------------------------------------------------------------
-Root project
-------------------------------------------------------------
-
-model
-    person
-        firstName
-        lastName
-```
-
-当前报告仅仅展示了model space的结构，未来Gradle版本将显示节点的类型和值。未来版本讲提供更丰富更互动性的探索model space的方法。
-
-Currently the report only shows the structure of the model space. In future Gradle versions it will also display the types and values of the nodes. Future versions will also provide richer and more interactive ways of exploring the model space.
-
-## **限制与未来方向**
-66.7. Limitations and future direction
-
-Rule based model configuration是Gradle的未来，这个领域才刚刚开始，但是也在积极的发展。早期的实验已经证明，这种方法更有效，能够提供更丰富的诊断和援助并且更具可扩展性。然而，还是有很多得限制。
-
-Rule based model configuration is the future of Gradle. This area is fledgling, but under very active development. Early experiments have demonstrated that this approach is more efficient, able to provide richer diagnostics and authoring assistance and is more extensible. However, there are currently many limitations.
-
-
-大多数的发展到目前为止都集中在证明该方法的有效性，以及构建的内部规则执行引擎和力学模型图.用户面临(e.g the DSL, rule source classes)这些尚未优化的简洁性和易用性问题。同样地,许多必要的配置模式和结构还不能够通过API表达。
-
-The majority of the development to date has been focused on proving the efficacy of the approach, and building the internal rule execution engine and model graph mechanics. The user facing aspects (e.g the DSL, rule source classes) are yet to be optimized for conciseness and general usability. Likewise, many necessary configuration patterns and constructs are not yet able to be expressed via the API.
-
-结合的更好的语法,更丰富的配置结构工具和更多的表达能力,将使更多的工具构建工程师和用户在新的方式中都理解,修改和扩展构建。
-
-In conjunction with the addition of better syntax, a richer toolkit of configuration constructs and generally more expressive power, more tooling will be added that will enable build engineers and users alike to comprehend, modify and extend builds in new ways.
-
-基于固有的自然规则为基础的方法,它与今天的Gradle建设构建模型相比更有效。然而,在未来它还将利用并行性,来节省配置和执行时间。此外,由于增加透明度模型，Gradle将能够进一步通过缓存和预处理机制减少构建时间。超出一般工具的构建性能,这将大大提高当使用Gradle等工具作为ide的体验性。
-
-Due to the inherent nature of the rule based approach, it is more efficient at constructing the build model than today's Gradle. However, in the future Gradle will also leverage the parallelism that this approach enables both at configuration and execution time. Moreover, due to increased transparency of the model Gradle will be able to further reduce build times by caching and pre-computing the build model. Beyond improved general build performance, this will greatly improve the experience when using Gradle from tools such as IDEs.
-
-Gradle的这个方面正在积极开发中,它将迅速被应用。请务必查看Gradle对应版本的文档以便您使用和观看的Gradle在未来版本的发行说明中的变化。
-
-As this area of Gradle is under active development, it will be changing rapidly. Please be sure to consult the documentation of Gradle corresponding to the version you are using and to watch for changes announced in the release notes for future versions.
+The same applies to any attempt to access publication-specific tasks like PublishToMavenRepository. These tasks should be referenced from within a model block.
 
 百度搜索[无线学院](http://wirelesscollege.cn)
