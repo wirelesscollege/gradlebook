@@ -3,6 +3,7 @@
 Chapter 49. The Build Dashboard Plugin
 
 Build Dashboard Plugin目前正在开发中。值得注意的是在以后的Gradle版本中DSL与其他配置可能会变化。
+
 The build dashboard plugin is currently incubating. Please be aware that the DSL and other configuration may change in later Gradle versions.
 
 buildDashboard 插件可以产生一个HTML面板，由它提供给所有构建报告的访问入口
