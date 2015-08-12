@@ -46,9 +46,9 @@ init脚本的一个主要限制是它不能访问buildSrc 项目中的类（见5
 
 One main limitation of init scripts is that they cannot access classes in the buildSrc project (see Section 59.4, “Build sources in the buildSrc project” for details of this feature).
 
-## **60.2 使用初始化脚本**
+## **61.2 使用初始化脚本**
 
-60.2. Using an init script
+61.2. Using an init script
 
 这是几种init脚本的使用方法：
 
@@ -74,9 +74,9 @@ There are several ways to use an init script:
 
 If more than one init script is found they will all be executed, in the order specified above. Scripts in a given directory are executed in alphabetical order. This allows, for example, a tool to specify an init script on the command line and the user to put one in their home directory for defining the environment and both scripts will run when Gradle is executed.
 
-## **60.3 编写一个init脚本**
+## **61.3 编写一个init脚本**
 
-60.3. Writing an init script
+61.3. Writing an init script
 
 init脚本是一个Groovy脚本，它类似于Gradle构建脚本。每一个init脚本都有一个与之关联的Gradle实例，任何属性的参考和方法的调用在init脚本中将委托给这个Gradle实例。
 
@@ -86,15 +86,15 @@ Similar to a Gradle build script, an init script is a Groovy script. Each init s
 
 Each init script also implements the Script interface.
 
-### **60.3.1 init脚本配置项目**
+### **61.3.1 init脚本配置项目**
 
-60.3.1. Configuring projects from an init script
+61.3.1. Configuring projects from an init script
 
 你可以使用init脚本配置项目的构建，在多项目构建时可用类似的方式去配置项目。下面的示例展示了一个init脚本在项目评估前如何去执行额外的配置，这个示例使用此功能去配置一个仅适用于特定环境的额外库。
 
 You can use an init script to configure the projects in the build. This works in a similar way to configuring projects in a multi-project build. The following sample shows how to perform extra configuration from an init script before the projects are evaluated. This sample uses this feature to configure an extra repository to be used only for certain environments.
 
-例60.1 在项目评估前，使用init脚本去执行额外配置。
+例61.1 在项目评估前，使用init脚本去执行额外配置。
 
 Example 60.1. Using init script to perform extra configuration before projects are evaluated
 
@@ -120,9 +120,9 @@ All repos:
 [MavenLocal, MavenRepo]
 ```
 
-## **60.4 init脚本的外部依赖**
+## **61.4 init脚本的外部依赖**
 
-60.4. External dependencies for the init script
+61.4. External dependencies for the init script
 
 在59.6节 “构建脚本的外部依赖”中解释了如何将外部依赖关系添加到构建脚本。init脚本也可以声明依赖，你可以通过initscript() 方法传递一个封闭该声明的init脚本类路径。
 
