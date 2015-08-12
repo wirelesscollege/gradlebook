@@ -52,7 +52,7 @@ The Build Dashboard plugin does not require any particular project layout.
 Build Dashboard插件没有定义任何依赖项配置。
 The Build Dashboard plugin does not define any dependency configurations.
 
-## **49.5. Configuration**
+## **49.5. 配置**
 
 ## **49.5. Configuration**
 
