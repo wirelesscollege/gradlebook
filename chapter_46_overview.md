@@ -1,4 +1,4 @@
-# **第四十五章 Java lib发布插件**
+# **第46章 Java lib发布插件**
 
 Chapter 45. The Java Library Distribution Plugin
 
