@@ -1,6 +1,6 @@
-# **第39章. ANTLR插件**
+# **第四十章. ANTLR插件**
 
-Chapter 39. The ANTLR Plugin
+Chapter 40. The ANTLR Plugin
 
 ANTLR插件对Java 插件进行了扩展，并支持生成解析器。
 
@@ -10,34 +10,34 @@ ANTLR插件支持ANTLR版本 2,3,4
 
 The ANTLR plugin supports ANTLR version 2, 3 and 4. 
 
-## **39.1. 用法**
+## **40.1. 用法**
 
-39.1. Usage
+40.1. Usage
 
 在build脚本中使用ANTLR插件，如下：
 
 To use the ANTLR plugin, include the following in your build script:
 
-例39.1 使用ANTLR 插件
+例40.1 使用ANTLR 插件
 
-Example 39.1. Using the ANTLR plugin
+Example 40.1. Using the ANTLR plugin
 
 build.gradle
 ```
 apply plugin: 'antlr'
 ```
 
-## **39.2. Tasks**
+## **40.2. Tasks**
 
-39.2. Tasks
+40.2. Tasks
 
 ANTLR 插件为项目添加了许多任务，如下图所示：
 
 The ANTLR plugin adds a number of tasks to your project, as shown below.
 
-表39.1. ANTLR 插件 -tasks
+表40.1. ANTLR 插件 -tasks
 
-Table 39.1. ANTLR plugin - tasks
+Table 40.1. ANTLR plugin - tasks
 
 |Task name	|Depends on	|Type |Description|
 |--
@@ -49,9 +49,9 @@ ANTLR插件需要添加如下的依赖任务
 
 The ANTLR plugin adds the following dependencies to tasks added by the Java plugin.
 
-表39.2. ANTLR插件-额外的任务依赖关系
+表40.2. ANTLR插件-额外的任务依赖关系
 
-Table 39.2. ANTLR plugin - additional task dependencies
+Table 40.2. ANTLR plugin - additional task dependencies
 
 |Task name|	Depends on|
 |--
@@ -59,13 +59,13 @@ Table 39.2. ANTLR plugin - additional task dependencies
 |compileTestJava	|generateTestGrammarSource|
 |compileSourceSetJava|	generateSourceSetGrammarSource|
 
-## **39.3. 项目布局**
+## **40.3. 项目布局**
 
-39.3. Project layout
+40.3. Project layout
 
-表39.3 ANTLR 插件-项目布局
+表40.3 ANTLR 插件-项目布局
 
-Table 39.3. ANTLR plugin - project layout
+Table 40.3. ANTLR plugin - project layout
 
 |Directory	|Meaning|
 |--
@@ -73,17 +73,17 @@ Table 39.3. ANTLR plugin - project layout
 |src/test/antlr |	Test ANTLR grammar files.|
 |src/sourceSet/antlr 	|ANTLR grammar files for the given source set.|
 
-## **39.4. 依赖管理**
+## **40.4. 依赖管理**
 
-39.4. Dependency management
+40.4. Dependency management
 
 ANTLR插件添加了一个使用ANTLR提供ANTLR实现的依赖结构。下面的示例演示了如何使用ANTLR版本 3。
 
 The ANTLR plugin adds an antlr dependency configuration which provides the ANTLR implementation to use. The following example shows how to use ANTLR version 3. 
 
-例39.2 声明ANTLR版本
+例40.2 声明ANTLR版本
 
-Example 39.2. Declare ANTLR version
+Example 40.2. Declare ANTLR version
 
 build.gradle
 ```
@@ -100,38 +100,38 @@ dependencies {
 
 If no dependency is declared, antlr:antlr:2.7.7 will be used as the default. To use a different ANTLR version add the appropriate dependency to the antlr dependency configuration as above. 
 
-## **39.5. Convention 属性**
+## **40.5. Convention 属性**
 
-39.5. Convention properties
+40.5. Convention properties
 
 ANTLR插件没有添加任何convention属性
 
 The ANTLR plugin does not add any convention properties.
 
-## **39.6. Source set 属性**
+## **40.6. Source set 属性**
 
-39.6. Source set properties
+40.6. Source set properties
 
 ANTLR插件为项目中每个源文件添加以下属性：
 
 The ANTLR plugin adds the following properties to each source set in the project.
 
-Table 39.4. ANTLR plugin - source set properties
+Table 40.4. ANTLR plugin - source set properties
 
 |Property name|	Type	|Default value|	Description|
 |--
 |antlr 	|SourceDirectorySet (read-only) |Not null 	|The ANTLR grammar files of this source set. Contains all .g files found in the ANTLR source directories, and excludes all other types of files. |
 |antlr.srcDirs 	|Set<File>. Can set using anything described in Section 15.5, “Specifying a set of input files”.| [projectDir/src/name/antlr] 	|The source directories containing the ANTLR grammar files of this source set. |
 
-## **39.7. 控制ANTLR进程**
+## **40.7. 控制ANTLR进程**
 
-39.7. Controlling the ANTLR generator process
+40.7. Controlling the ANTLR generator process
 
 ANTLR 工具在交叉进程中被执行，为了防止内存溢出，你需要为ANTLR进程设置heap size，这个值就是AntlrTask能够使用的最大heapsize值。
 
 The ANTLR tool is executed in a forked process. This allows fine grained control over memory settings for the ANTLR process. To set the heap size of a ANTLR process, the maxHeapSize property of AntlrTask can be used. 
 
-Example 39.3. setting custom max heap size for ANTLR
+Example 40.3. setting custom max heap size for ANTLR
 
 build.gradle
 
