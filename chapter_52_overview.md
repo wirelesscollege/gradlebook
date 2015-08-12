@@ -1,10 +1,10 @@
-# **第50章.依赖管理**
+# **第52章.依赖管理**
 
-Chapter 50. Dependency Management
+Chapter 52. Dependency Management
 
-# **50.1.介绍**
+# **52.1.介绍**
 
-50.1. Introduction
+52.1. Introduction
 
 依赖管理是每次构建的一个关键功能,并且Gradle强调提供一类既易于理解又能兼容多种方法的依赖管理.如果你熟练使用Maven或Ivy的方法,你会很高兴地得知,Gradle除完全兼容这两种方法之外还支持足够灵活的完全自定义方法.
 
@@ -42,9 +42,9 @@ Integration with existing dependency management infrastructure: Gradle is compat
 
 With hundreds of thousands of interdependent open source components each with a range of versions and incompatibilities, dependency management has a habit of causing problems as builds grow in complexity. When a build's dependency tree becomes unwieldy, your build tool shouldn't force you to adopt a single, inflexible approach to dependency management. A proper build system has to be designed to be flexible, and Gradle can handle any situation.
 
-### **50.1.1.灵活的依赖管理的迁移**
+### **52.1.1.灵活的依赖管理的迁移**
 
-50.1.1. Flexible dependency management for migrations
+52.1.1. Flexible dependency management for migrations
 
 依赖管理能将一个构建系统迁移到另一个上.如果你是从像Ant或Maven的工具来迁移Gradle,你可能会面临一些困难的情况.例如,一种常用的模式是与存储在文件系统版本少jar文件的Ant项目.其他构建系统需要更换批发这种方法的迁移之前.随着Gradle,你能适应新的构建,以相关性或依赖性的元数据中的任何现有的来源.这使得以Gradle增量迁移比其他容易得多.在大多数大型项目,打造迁移和任何变化发展过程是渐进,因为大多数企业不能停止一切并迁移到依赖管理的构建工具的想法.
 
@@ -54,9 +54,9 @@ Dependency management can be particularly challenging during a migration from on
 
 Even if your project is using a custom dependency management system or something like an Eclipse .classpath file as master data for dependency management, it is very easy to write a Gradle plugin to use this data in Gradle. For migration purposes this is a common technique with Gradle. (But, once you've migrated, it might be a good idea to move away from a .classpath file and use Gradle's dependency management features directly.)
 
-### **50.1.2.依赖管理和Java**
+### **52.1.2.依赖管理和Java**
 
-50.1.2. Dependency management and Java
+52.1.2. Dependency management and Java
 
 讽刺的是,对于拥有丰富开源组件库的一种语言,Java没有库或版本的概念。在Java中,没有标准的方式告诉JVM,您使用的Hibernate版本是3.0.5 ,以及foo-1.0.jar取决于bar-2.0.jar。这导致对外的解决方案通常基于构建工具。目前最受欢迎的是Maven和Ivy。虽然Maven提供了一个完整的构建系统,Ivy仅仅关注依赖关系管理。
 
@@ -66,9 +66,9 @@ It is ironic that in a language known for its rich library of open source compon
 
 Both tools rely on descriptor XML files, which contain information about the dependencies of a particular jar. Both also use repositories where the actual jars are placed together with their descriptor files, and both offer resolution for conflicting jar versions in one form or the other. Both have emerged as standards for solving dependency conflicts, and while Gradle originally used Ivy under the hood for its dependency management. Gradle has replaced this direct dependency on Ivy with a native Gradle dependency resolution engine which supports a range of approaches to dependency resolution including both POM and Ivy descriptor files.
 
-## **50.2. 依赖管理最佳实践**
+## **52.2. 依赖管理最佳实践**
 
-50.2. Dependency Management Best Practices
+52.2. Dependency Management Best Practices
 
 由于Gradle有很强的依赖关系管理的想法,该工具为您提供了两个选择:按照推荐的最佳实践或支持任何类型你能想到的模式。本节概述了Gradle项
 目推荐的管理依赖性最佳实践。
@@ -79,9 +79,9 @@ While Gradle has strong opinions on dependency management, the tool gives you a 
 
 No matter what the language, proper dependency management is important for every project. From a complex enterprise application written in Java depending on hundreds of open source libraries to the simplest Clojure application depending on a handful of libraries, approaches to dependency management vary widely and can depend on the target technology, the method of application deployment, and the nature of the project. Projects bundled as reusable libraries may have different requirements than enterprise applications integrated into much larger systems of software and infrastructure. Despite this wide variation of requirements, the Gradle project recommends that all projects follow this set of core rules:
 
-### **50.2.1. 把版本放在文件名中（jar文件版本化）**
+### **52.2.1. 把版本放在文件名中（jar文件版本化）**
 
-50.2.1. Put the Version in the Filename (Version the jar)
+52.2.1. Put the Version in the Filename (Version the jar)
 
 一个库的版本必须是文件名的一部分。然而版本的jar通常是在Manifest文件中,当你检查项目时它不是显而易见的。如果有人让你看20个jar文件,你更喜欢哪种?文件名称像commons-beanutils-1.3.jar还是文件名像spring.jar的文件?如果依赖文件名使用版本号可以使您快速识别依赖版本。
 
@@ -95,9 +95,9 @@ jar包以版本命名增加了项目的表现力且使得更加容易维护。�
 
 Versions in jar names increase the expressiveness of your project and make them easier to maintain. This practice also reduces the potential for error.
 
-### **50.2.2.管理传递依赖关系**
+### **52.2.2.管理传递依赖关系**
 
-50.2.2. Manage transitive dependencies
+52.2.2. Manage transitive dependencies
 
 传递依赖管理技术,可使您的项目依赖于库,反过来这个库,依赖于其他库。这个递归传递依赖模式形成一个依赖关系树,其包括项目的一级依赖性,二级依赖性,等等。如果你不塑造依赖模型作为有层次包含一级和二级依赖的树，那样很容易很快就失去控制成为一个组装的非结构化的依赖树。考虑Gradle项目本身,它只有几个直接,一级的依赖关系,当它编译时它需要一百多依赖类路径。规模更大、使用Spring,Hibernate,和其他库的企业项目,以及成百上千的内部项目,可以导致非常大的依赖关系树。
 
@@ -110,7 +110,7 @@ While you could try to manage this problem manually, you will quickly find that 
 NOTE:In one project, we found a mystery LDAP related jar in the classpath. No code referenced this jar and there was no connection to the project. No one could figure out what the jar was for, until it was removed from the build and the application suffered massive performance problems whenever it attempted to authenticate to LDAP. This mystery jar was a necessary transitive, fourth-level dependency that was easy to miss because no one had bothered to use managed transitive dependencies.
 Gradle offers you different ways to express first-level and transitive dependencies. With Gradle you can mix and match approaches; for example, you could store your jars in an SCM without XML descriptor files and still use transitive dependency management.
 
-50.2.3. Resolve version conflicts
+52.2.3. Resolve version conflicts
 
 Conflicting versions of the same jar should be detected and either resolved or cause an exception. If you don't use transitive dependency management, version conflicts are undetected and the often accidental order of the classpath will determine what version of a dependency will win. On a large project with many developers changing dependencies, successful builds will be few and far between as the order of dependencies may directly affect whether a build succeeds or fails (or whether a bug appears or disappears in production).
 
@@ -129,7 +129,7 @@ Configuring any dependency (transitive or not) as forced. This approach is usefu
 Dependency resolve rules are an incubating feature introduced in Gradle 1.4 which give you fine-grained control over the version selected for a particular dependency.
 To deal with problems due to version conflicts, reports with dependency graphs are also very helpful. Such reports are another feature of dependency management.
 
-50.2.4. Use Dynamic Versions and Changing Modules
+52.2.4. Use Dynamic Versions and Changing Modules
 
 There are many situations when you want to use the latest version of a particular dependency, or the latest in a range of versions. This can be a requirement during development, or you may be developing a library that is designed to work with a range of dependency versions. You can easily depend on these constantly changing dependencies by using a dynamic version. A dynamic version can be either a version range (e.g. 2.+) or it can be a placeholder for the latest version available (e.g. latest.integration).
 
@@ -139,9 +139,9 @@ The main difference between a dynamic version and a changing module is that when
 
 By default, Gradle caches dynamic versions and changing modules for 24 hours. You can override the default cache modes using command line options. You can change the cache expiry times in your build using the resolution strategy (see Section 50.9.3, “Fine-tuned control over dependency caching”).
 
-## **50.3. 依赖配置**
+## **52.3. 依赖配置**
 
-50.3. Dependency configurations
+52.3. Dependency configurations
 
 Gradle依赖被分组到配置.配置有一个名称,其他一些特性,并且它们可以彼此扩展.许多Gradle插件添加预定义的配置到你的项目.Java插件,例如,增加了一些配置来表示它需要的各种classpaths.详细信息参见第22.5节-“依赖管理”.当然,你可以在此之上添加自定义配置.有许多用例为自定义配置.这是非常方便的,例如添加不需要的依赖进行构建,需要或测试软件（如随你的发行版发布额外的JDBC驱动程序）.
 
@@ -155,9 +155,9 @@ A project's configurations are managed by a configurations object. The closure y
 
 To define a configuration:
 
-示例 50.1. 定义一个配置
+示例 52.1. 定义一个配置
 
-Example 50.1. Definition of a configuration
+Example 52.1. Definition of a configuration
 
 build.gradle
 
@@ -170,8 +170,8 @@ configurations {
 访问一个配置:
 To access a configuration:
 
-示例 50.2. 访问一个配置
-Example 50.2. Accessing a configuration
+示例 52.2. 访问一个配置
+Example 52.2. Accessing a configuration
 
 build.gradle
 
@@ -184,9 +184,9 @@ println configurations['compile'].name
 
 To configure a configuration:
 
-示例 50.3. 配置一个配置
+示例 52.3. 配置一个配置
 
-Example 50.3. Configuration of a configuration
+Example 52.3. Configuration of a configuration
 
 build.gradle
 ```
@@ -205,17 +205,17 @@ configurations.compile {
 }
 ```
 
-## **50.4. 如何声明你的依赖**
+## **52.4. 如何声明你的依赖**
 
-50.4. How to declare your dependencies
+52.4. How to declare your dependencies
 
 你可以声明几种不同类型的依赖
 
 There are several different types of dependencies that you can declare:
 
-表 50.1. 依赖类型
+表 52.1. 依赖类型
 
-Table 50.1. Dependency types
+Table 52.1. Dependency types
 
 |Type	|Description|
 |--
@@ -226,17 +226,17 @@ Table 50.1. Dependency types
 |Gradle API dependency	|A dependency on the API of the current Gradle version. You use this kind of dependency when you are developing custom Gradle plugins and task types.|
 |Local Groovy dependency|	A dependency on the Groovy version used by the current Gradle version. You use this kind of dependency when you are developing custom Gradle plugins and task types.|
 
-### **50.4.1. 外部模块依赖**
+### **52.4.1. 外部模块依赖**
 
-50.4.1. External module dependencies
+52.4.1. External module dependencies
 
 外部模块依赖关系是最常见的依赖关系.它们是指外部库中的一个模块.
 
 External module dependencies are the most common dependencies. They refer to a module in an external repository.
 
-示例 50.4. 模块依赖
+示例 52.4. 模块依赖
 
-Example 50.4. Module dependencies
+Example 52.4. Module dependencies
 
 build.gradle
 
@@ -271,9 +271,9 @@ Gradle provides different notations for module dependencies. There is a string n
 
 If you declare a module dependency, Gradle looks for a module descriptor file (pom.xml or ivy.xml) in the repositories. If such a module descriptor file exists, it is parsed and the artifacts of this module (e.g. hibernate-3.0.5.jar) as well as its dependencies (e.g. cglib) are downloaded. If no such module descriptor file exists, Gradle looks for a file called hibernate-3.0.5.jar to retrieve. In Maven, a module can have one and only one artifact. In Gradle and Ivy, a module can have multiple artifacts. Each artifact can have a different set of dependencies.
 
-#### **50.4.1.1. 依赖模块与多依赖产物**
+#### **52.4.1.1. 依赖模块与多依赖产物**
 
-50.4.1.1. Depending on modules with multiple artifacts
+52.4.1.1. Depending on modules with multiple artifacts
 
 如前所述,一个Maven模块只有一个依赖产物.因此,当你的项目依赖一个Maven模块,它的依赖产物是很明显的.用Gradle或Ivy,情况就不同了.Ivy的依赖描述文件（ivy.xml）可声明多个依赖产物.关于了解更多信息,请参见Ivy reference的ivy.xml.在Gradle中,当你在一个Ivy模块上声明一个依赖,你实际上就声明了一个默认配置模块的依赖.所以实际的依赖产物(通常是jar)是你依赖的产物与缺省配置相关联的模块.这里有一些情况是很重要的:
 
@@ -291,17 +291,17 @@ The desired artifact belongs to a configuration other than default. That configu
 
 There are other situations where it is necessary to fine-tune dependency declarations. Please see the DependencyHandler class in the API documentation for examples and a complete reference for declaring dependencies.
 
-#### **50.4.1.2. 依赖产物的表示法**
+#### **52.4.1.2. 依赖产物的表示法**
 
-50.4.1.2. Artifact only notation
+52.4.1.2. Artifact only notation
 
 如上所说,如果没有找到模块描述文件,Gradle默认下载的jar名称的模块.但有时,即使库中包含模块描述文件,你仅要下载依赖产物的jar文件,不要其他依赖.[14]且有时你想要从一个库中下载没有模块属性的zip文件,Gradle提供一个关于那些用例-简单的前缀要与下载的扩展名“@”符号的构建产物表示法:
 
 As said above, if no module descriptor file can be found, Gradle by default downloads a jar with the name of the module. But sometimes, even if the repository contains module descriptors, you want to download only the artifact jar, without the dependencies. [14] And sometimes you want to download a zip from a repository, that does not have module descriptors. Gradle provides an artifact only notation for those use cases - simply prefix the extension that you want to be downloaded with '@' sign:
 
-示例 50.5. 依赖产物的表示法
+示例 52.5. 依赖产物的表示法
 
-Example 50.5. Artifact only notation
+Example 52.5. Artifact only notation
 
 build.gradle
 ```
@@ -315,17 +315,17 @@ dependencies {
 
 An artifact only notation creates a module dependency which downloads only the artifact file with the specified extension. Existing module descriptors are ignored.
 
-#### **50.4.1.3. 分类**
+#### **52.4.1.3. 分类**
 
-50.4.1.3. Classifiers
+52.4.1.3. Classifiers
 
 Maven依赖管理有分类的概念.[15]Gradle也支持.从Maven库检索分类依赖你可以这样写:
 
 The Maven dependency management has the notion of classifiers. [15] Gradle supports this. To retrieve classified dependencies from a Maven repository you can write:
 
-示例 50.6. 依赖分类
+示例 52.6. 依赖分类
 
-Example 50.6. Dependency with classifier
+Example 52.6. Dependency with classifier
 
 build.gradle
 ```
@@ -341,9 +341,9 @@ As can be seen in the first line above, classifiers can be used together with th
 
 It is easy to iterate over the dependency artifacts of a configuration:
 
-示例 50.7. 遍历一个配置
+示例 52.7. 遍历一个配置
 
-Example 50.7. Iterating over a configuration
+Example 52.7. Iterating over a configuration
 
 build.gradle
 ```
@@ -365,17 +365,17 @@ jta-1.1.jar
 slf4j-api-1.6.1.jar
 ```
 
-### **50.4.2. 客户端模块依赖**
+### **52.4.2. 客户端模块依赖**
 
-50.4.2. Client module dependencies
+52.4.2. Client module dependencies
 
 客户端模块的依赖关系允许你在构建脚本中直接声明可传递的依赖.它们是一个外部库中的替换模块描述。
 
 Client module dependencies allow you to declare transitive dependencies directly in the build script. They are a replacement for a module descriptor in an external repository.
 
-示例 50.8. 客户端模块依赖 - 可传递依赖
+示例 52.8. 客户端模块依赖 - 可传递依赖
 
-Example 50.8. Client module dependencies - transitive dependencies
+Example 52.8. Client module dependencies - transitive dependencies
 
 build.gradle
 ```
