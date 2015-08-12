@@ -27,7 +27,7 @@ build.gradle
 apply plugin: 'build-announcements'
 ```
 
-如果你想在哪里调整公告，就可以配置announce 插件来改变本地通知
+如果你想调整公告的位置，就可以配置announce 插件来改变本地通知
 
 That's it. If you want to tweak where the announcements go, you can configure the announce plugin to change the local announcer. 
 
