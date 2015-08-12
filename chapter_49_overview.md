@@ -28,7 +28,7 @@ build.gradle
 apply plugin: 'build-dashboard'
 ```
 
-应用插件将buildDashboard 任务加入到你的项目里，此任务可以为所有构建中项目使用报告接口的任务生成报告。它通常只应用于根项目。buildDashboard 项目不依赖于任何其他任务，而是独立地作为构建运行的一部分执行生成报告任务。要想生成buildDashboard ，仅仅需要在执行任务列表中包含此任务即可。例如，“gradle buildDashboard build”将会为所有作为构建任务附属的任务报告创建一个面板。
+在项目中添加buildDashboard task来使用此插件，buildDashboard task可以为此构建中所有项目的接口任务生成报告。它通常只应用于根项目。buildDashboard task不依赖于任何其他任务，而是独立地作为构建运行的一部分执行生成报告任务。要想生成buildDashboard ，仅仅需要在任务执行列表中包含此任务即可。例如，“gradle buildDashboard build” 将会为所有依赖build task 的reporting tasks 生成一个dashboard。
 
 Applying the plugin adds the buildDashboard task to your project. The task aggregates the reports for all tasks that implement theReporting interface from all projects in the build. It is typically only applied to the root project.
 The buildDashboard task does not depend on any other tasks. It will only aggregate the reporting tasks that are independently being executed as part of the build run. To generate the build dashboard, simply include this task in the list of tasks to execute. For example, “gradle buildDashboard build” will generate a dashboard for all of the reporting tasks that are dependents of the build task.
