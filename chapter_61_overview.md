@@ -237,7 +237,7 @@ repository: STANDARD_ENTERPRISE_REPO ('https://repo.gradle.org/gradle/repo')
 
 The plugin in the init script ensures that only a specified repository is used when running the build.
 
-当init脚本中应用插件时，Gradle会实例化插件并调用插件实例的Plugin.apply()方法。该Gradle对象被作为参数传递，其可以被用来配置一个构建的所有方面。当然，这个应用插件可以解析为一个外部的依赖，详情参见61.4节“init脚本的外部依赖”。
+当init脚本中应用插件时，Gradle会实例化插件并调用插件实例的Plugin.apply()方法。该Gradle对象被作为参数传递，其可以被用来配置一个构建的所有方面。当然，这个应用插件可以解析为一个外部的依赖，详情参见60.4节“init脚本的外部依赖”。
 
 When applying plugins within the init script, Gradle instantiates the plugin and calls the plugin instance's Plugin.apply() method. The gradle object is passed as a parameter, which can be used to configure all aspects of a build. Of course, the applied plugin can be resolved as an external dependency as described in Section 60.4, “External dependencies for the init script”
 
