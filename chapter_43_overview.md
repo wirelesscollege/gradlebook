@@ -2,7 +2,7 @@
 
 Chapter 43. The Build Announcements Plugin
 
-build announcements插件正在开发中，值得注意的是在以后的Gradle版本中DSL与其他配置可以会变化。
+build announcements插件正在开发中，值得注意的是在以后的Gradle版本中DSL与其他配置可能会变化。
 
 build announcements插件在重要事件上使用announce插件发送本地通知
 
