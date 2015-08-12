@@ -1,6 +1,6 @@
- # **第55章  构建生命周期**
+ # **第58章  构建生命周期**
 
-Chapter 55. The Build Lifecycle
+Chapter 58. The Build Lifecycle
 
 我们早前说过，Gradle的核心就是一个基于依赖的编程语言。对于Gradle而言，这意味着你可以定义任务和任务之间的依赖关系，并保证这些任务按照他们的依赖顺序执行，且每个任务只执行一次。这些任务形成了一个有向无环图，它是一个执行任务后会创建一个依赖关系图的构建工具，Gradle构建完整的依赖图之前需要执行完所有的任务。这是Gradle的核心部分，能够使一般不可能实现的功能得以实现。
 
@@ -10,9 +10,9 @@ We said earlier that the core of Gradle is a language for dependency based progr
 
 Your build scripts configure this dependency graph. Therefore they are strictly speaking build configuration scripts.
 
-## **55.1. 构建阶段**
+## **58.1. 构建阶段**
 
-55.1. Build phases
+58.1. Build phases
 
 Gradle构建有三个不同的阶段。
 
@@ -42,9 +42,9 @@ Gradle确定的任务集，在配置的阶段创建和配置，并执行。该�
 
 Gradle determines the subset of the tasks, created and configured during the configuration phase, to be executed. The subset is determined by the task name arguments passed to the gradle command and the current directory. Gradle then executes each of the selected tasks.
 
-## **55.2. 设置文件**
+## **58.2. 设置文件**
 
-55.2. Settings file
+58.2. Settings file
 
 除了构建脚本文件外，Gradle还定义了一个设置文件。这个设置文件是由Gradle命名约定来确定的。它的默认名称是settings.gradle.在本章的后面我们将讲解Gradle是如何寻找一个配置文件的。
 
@@ -54,9 +54,9 @@ Beside the build script files, Gradle defines a settings file. The settings file
 
 The settings file is executed during the initialization phase. A multiproject build must have a settings.gradle file in the root project of the multiproject hierarchy. It is required because the settings file defines which projects are taking part in the multi-project build (see Chapter 56, Multi-project Builds). For a single-project build, a settings file is optional. Besides defining the included projects, you might need it to add libraries to your build script classpath (see Chapter 59, Organizing Build Logic). Let's first do some introspection with a single project build:
 
-例：55.1 单项目构建
+例：58.1 单项目构建
 
-Example 55.1. Single project build
+Example 58.1. Single project build
 
 settings.gradle
 ```
@@ -102,37 +102,37 @@ Total time: 1 secs
 
 For a build script, the property access and method calls are delegated to a project object. Similarly property access and method calls within the settings file is delegated to a settings object. Look at the Settings class in the API documentation for more information.
 
-## **55.3. 多项目构建**
+## **58.3. 多项目构建**
 
-55.3. Multi-project builds
+58.3. Multi-project builds
 
  多项目构建即gradle在单一执行的时候构建多个项目。你需要在设置文件中声明参与了多项目构建的项目。有更多关于多项目构建主题的相关章节（详情见56章，多项目构建）。
 
 A multi-project build is a build where you build more than one project during a single execution of Gradle. You have to declare the projects taking part in the multiproject build in the settings file. There is much more to say about multi-project builds in the chapter dedicated to this topic (see Chapter 56, Multi-project Builds).
 
-### **55.3.1 项目位置**
+### **58.3.1 项目位置**
 
-55.3.1. Project locations
+58.3.1. Project locations
 
 多项目构建总是用一个根树表示，树中的每一个元素都代表一个项目。项目的路径表示了这个项目在多项目构建树中的位置，在大多数情况下，项目路径是与文件系统中的项目的实际位置是一致的，然而，这种行为是可配置的。项目树是在settings.gradle文件中创建的。一般默认情况下设置文件位置也是根项目位置，不过，你可以在设置文件中自定义根项目位置。
 
 Multi-project builds are always represented by a tree with a single root. Each element in the tree represents a project. A project has a path which denotes the position of the project in the multi-project build tree. In most cases the project path is consistent with the physical location of the project in the file system. However, this behavior is configurable. The project tree is created in thesettings.gradle file. By default it is assumed that the location of the settings file is also the location of the root project. But you can redefine the location of the root project in the settings file.
 
-### **55.3.2 构建树**
+### **58.3.2 构建树**
 
-55.3.2. Building the tree
+58.3.2. Building the tree
 
 在设置文件中你可以使用一组方法来构建项目树，即分层和平面布局方法，使用这组方法可以让你得到特别的支持。
 
 In the settings file you can use a set of methods to build the project tree. Hierarchical and flat physical layouts get special support.
 
-55.3.2.1 分层布局
+58.3.2.1 分层布局
 
-55.3.2.1. Hierarchical layouts
+58.3.2.1. Hierarchical layouts
 
-例 55.2 分层布局
+例 58.2 分层布局
 
-Example 55.2. Hierarchical layout
+Example 58.2. Hierarchical layout
 
 settings.gradle
 
@@ -142,13 +142,13 @@ include 'project1', 'project2:child', 'project3:child1'
 
 The include method takes project paths as arguments. The project path is assumed to be equal to the relative physical file system path. For example, a path 'services:api' is mapped by default to a folder 'services/api' (relative from the project root). You only need to specify the leaves of the tree. This means that the inclusion of the path 'services:hotels:api' will result in creating 3 projects: 'services', 'services:hotels' and 'services:hotels:api'.
 
-55.3.2.2  平面布局
+58.3.2.2  平面布局
 
-55.3.2.2. Flat layouts
+58.3.2.2. Flat layouts
 
-例 55.3 平面布局
+例 58.3 平面布局
 
-Example 55.3. Flat layout
+Example 58.3. Flat layout
 
 settings.gradle
 ```
@@ -158,17 +158,17 @@ includeFlat 'project3', 'project4'
 
 The includeFlat method takes directory names as an argument. These directories need to exist as siblings of the root project directory. The location of these directories are considered as child projects of the root project in the multi-project tree.
 
-### **55.3.3  修改项目树的元素**
+### **58.3.3  修改项目树的元素**
 
-55.3.3. Modifying elements of the project tree
+58.3.3. Modifying elements of the project tree
 
 多项目树创建后在设置文件中创建一个叫项目描述的项，你可以在任意时间到设置文件中修改这些描述项。要访问一个描述符，你可以这样做：
 
 The multi-project tree created in the settings file is made up of so called project descriptors. You can modify these descriptors in the settings file at any time. To access a descriptor you can do:
 
-例 55.4  修改项目树的元素
+例 58.4  修改项目树的元素
 
-Example 55.4. Modification of elements of the project tree
+Example 58.4. Modification of elements of the project tree
 
 settings.gradle
 ```
@@ -180,9 +180,9 @@ println project(':projectA').name
 
 Using this descriptor you can change the name, project directory and build file of a project.
 
-例 55.5 修改项目树的元素
+例 58.5 修改项目树的元素
 
-Example 55.5. Modification of elements of the project tree
+Example 58.5. Modification of elements of the project tree
 
 settings.gradle
 ```
@@ -194,9 +194,9 @@ project(':projectA').buildFileName = 'projectA.gradle'
 
 Look at the ProjectDescriptor class in the API documentation for more information.
 
-## **55.4 初始化**
+## **58.4 初始化**
 
-55.4. Initialization
+58.4. Initialization
 
 如何知道Gradle是单项目还是多项目构建？你可以到设置文件目录中
 去触发多项目构建，这会是件很简单的事情。但是Gradle还允许任何参与构建的子项目执行构建。在Gradle中如果你要执行一个没有settings.gradle文件的项目，它会以下列方式去查找这个文件：
@@ -236,25 +236,25 @@ Gradle会为每个参与构建的项目创建一个项目对象。对于多项�
 
 Gradle creates a Project object for every project taking part in the build. For a multi-project build these are the projects specified in the Settings object (plus the root project). Each project object has by default a name equal to the name of its top level directory, and every project except the root project has a parent project. Any project may have child projects.
 
-## **55.5 单项目的配置和执行**
+## **58.5 单项目的配置和执行**
 
-55.5. Configuration and execution of a single project build
+58.5. Configuration and execution of a single project build
 
 对于单项目构建，初始化阶段后，工作流程非常简单。构建脚本执行会在初始化阶段创建项目对象，然后Gradle寻找名字等同于那些通过的传递作为命令行参数的任务。如果这些任务名字存在，它们可以按照通过的顺序独立执行构建。多项目的配置和执行在第56章（多项目构建）中进行讨论。
 
 For a single project build, the workflow of the after initialization phases are pretty simple. The build script is executed against the project object that was created during the initialization phase. Then Gradle looks for tasks with names equal to those passed as command line arguments. If these task names exist, they are executed as a separate build in the order you have passed them. The configuration and execution for multi-project builds is discussed in Chapter 56, Multi-project Builds.
 
-## **55.6构建脚本的生命周期响应**
+## **58.6构建脚本的生命周期响应**
 
-55.6. Responding to the lifecycle in the build script
+58.6. Responding to the lifecycle in the build script
 
 你的构建脚本可以接收通知作为构建过程，通过它的生命周期。这些通知一般采用两种形式：你可以实现一个特定的侦听器接口，或者你也可以提供一个闭合时通报解除的执行。下面使用的是闭合的例子，有关如何使用监听器接口的详细信息，请参阅相关的API文档。
 
 Your build script can receive notifications as the build progresses through its lifecycle. These notifications generally take two forms: You can either implement a particular listener interface, or you can provide a closure to execute when the notification is fired. The examples below use closures. For details on how to use the listener interfaces, refer to the API documentation.
 
-## ***55.6.1 项目评估***
+## ***58.6.1 项目评估***
 
-55.6.1. Project evaluation
+58.6.1. Project evaluation
 
 你可以在项目评估之前和之后马上收到通知 。这可以用来做的事情相同，一旦在构建脚本中的所有定义都得到了应用，或对于一些自定义日志记录或分析会进行额外的配置。
 
@@ -263,9 +263,9 @@ You can receive a notification immediately before and after a project is evaluat
 下面是一个给每个hasTests 属性值为true的项目添加一个测试任务的例子。
 Below is an example which adds a test task to each project which has a hasTests property value of true.
 
-例55.6   给每个具有一定的属性集项目添加测试任务
+例58.6   给每个具有一定的属性集项目添加测试任务
 
-Example 55.6. Adding of test task to each project which has certain property set
+Example 58.6. Adding of test task to each project which has certain property set
 
 build.gradle
 ```
@@ -292,9 +292,9 @@ Running tests for project ':projectA'
 This example uses method Project.afterEvaluate() to add a closure which is executed after the project is evaluated.
 It is also possible to receive notifications when any project is evaluated. This example performs some custom logging of project evaluation. Notice that the afterProject notification is received regardless of whether the project evaluates successfully or fails with an exception.
 
-例55.7 通知
+例58.7 通知
 
-Example 55.7. Notifications
+Example 58.7. Notifications
 
 build.gradle
 ```
@@ -316,9 +316,9 @@ Evaluation of project ':projectB' FAILED
 
 You can also add a ProjectEvaluationListener to the Gradle to receive these events.
 
-## **55.6.2  创建任务**
+## **58.6.2  创建任务**
 
-55.6.2. Task creation
+58.6.2. Task creation
 
 你可以在一个任务添加到项目后，马上接收到一个通知。在构建文件之前，这些可以被用来设置一些默认值或者添加行为任务。
 
@@ -328,9 +328,9 @@ You can receive a notification immediately after a task is added to a project. T
 
 The following example sets the srcDir property of each task as it is created.
 
-例 55.8 设置所有任务的某些属性
+例 58.8 设置所有任务的某些属性
 
-Example 55.8. Setting of certain property to all tasks
+Example 58.8. Setting of certain property to all tasks
 
 build.gradle
 ```
@@ -350,26 +350,26 @@ source dir is src/main/java
 
 You can also add an Action to a TaskContainer to receive these events.
 
-### **55.6.3  任务执行准备图**
+### **58.6.3  任务执行准备图**
 
-55.6.3. Task execution graph ready
+58.6.3. Task execution graph ready
 
 你在任务执行图完成后，可以马上接收到一个通知。我们已经在6.13章节，“通过DAG配置”中看到了这一点。你也可以添加一个TaskExecutionGraphListener 到 TaskExecutionGraph中去接收这些事件。
 
 You can receive a notification immediately after the task execution graph has been populated. We have seen this already in Section 6.13, “Configure by DAG”.
 You can also add a TaskExecutionGraphListener to the TaskExecutionGraph to receive these events.
 
-### **55.6.4 任务执行**
+### **58.6.4 任务执行**
 
-55.6.4. Task execution
+58.6.4. Task execution
 
 你可以在任何任务执行之前和之后马上接收到一个消息。以下示例展示了每个任务执行的开始和结束日志。注意，不管任务是否成功完成或失败的异常信息，afterTask 通知都会接收。
 
 You can receive a notification immediately before and after any task is executed.
 The following example logs the start and end of each task execution. Notice that the afterTask notification is received regardless of whether the task completes successfully or fails with an exception.
 
-例55.9  每个任务执行开始和结束的日志
-Example 55.9. Logging of start and end of each task execution
+例58.9  每个任务执行开始和结束的日志
+Example 58.9. Logging of start and end of each task execution
 
 build.gradle
 ```
