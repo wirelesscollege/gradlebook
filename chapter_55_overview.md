@@ -16,7 +16,7 @@ The signing plugin currently only provides support for generating PGP signatures
 
 To use the Signing plugin, include the following in your build script:
 
-例55.1 使用签名插件
+例55.1 使用Signing plugin
 
 Example 54.1. Using the Signing plugin
 
