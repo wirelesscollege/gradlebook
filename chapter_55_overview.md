@@ -72,10 +72,10 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 ```
-        
-## **55.3. Specifying what to sign**
+## **55.3. 指定签什么**     
+55.3. Specifying what to sign
 
-和配置怎样签署（即签署配置）一样，你同样需要指明签什么。The Signing plugin提供了DSL来指明需要签署的任务和/或配置
+和配置怎样签署（即签署配置）一样，你同样需要指明签什么。The Signing plugin提供了DSL来指明需要签署的任务and/or配置
 
 As well as configuring how things are to be signed (i.e. the signatory configuration), you must also specify what is to be signed. The Signing plugin provides a DSL that allows you to specify the tasks and/or configurations that should be signed.
 
