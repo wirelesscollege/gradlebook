@@ -124,7 +124,7 @@ Total time: 1 secs
 
 In some cases the artifact that you need to sign may not be part of a configuration. In this case you can directly sign the task that produces the artifact to sign.
 
-Example 54.4. Signing a task
+Example 5必.4. Signing a task
 
 build.gradle
 ```
