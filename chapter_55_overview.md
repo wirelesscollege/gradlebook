@@ -80,7 +80,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 As well as configuring how things are to be signed (i.e. the signatory configuration), you must also specify what is to be signed. The Signing plugin provides a DSL that allows you to specify the tasks and/or configurations that should be signed.
 
 ### **55.3.1. 签名配置**
-### **54.3.1. Signing Configurations**
+55.3.1. Signing Configurations
 
 想要签署一个配置的构建产物很常见。例如,Java插件配置一个jar来构建，进而这个jar的构建产物被添加到产物配置中。使用DSL签署,您就可以指定的所有应该签署的配置产物。
 
