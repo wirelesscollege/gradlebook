@@ -11,7 +11,7 @@ The signing plugin目前只支持生成PGP签名(Maven Central Repository要求�
 The signing plugin currently only provides support for generating PGP signatures (which is the signature format required for publication to the Maven Central Repository).## **54.1. Usage**
 
 ## **55.1. 用法**
-## **54.1. Usage**
+54.1. Usage
 
 在使用the Signing plugin时需包含如下内容到你的构建脚本中
 
