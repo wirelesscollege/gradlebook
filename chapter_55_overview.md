@@ -2,7 +2,7 @@
 
 Chapter 54. The Signing Plugin
 
-The signing plugin添加了为构建文件及产物做数字签名的功能。数字签名可以被用来证明谁构建了签名产物，以及其他的信息比如签名是什么时候生成的。
+The signing plugin的主要功能是为构建文件及产物做数字签名。数字签名可以被用来证明谁构建了签名产物，以及其他的信息比如签名是什么时候生成的。
 
 The signing plugin adds the ability to digitally sign built files and artifacts. These digital signatures can then be used to prove who built the artifact the signature is attached to as well as other information such as when the signature was generated.
 
