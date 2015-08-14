@@ -73,7 +73,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 }
 ```
         
-## **54.3. Specifying what to sign**
+## **55.3. Specifying what to sign**
 
 和配置怎样签署（即签署配置）一样，你同样需要指明签什么。The Signing plugin提供了DSL来指明需要签署的任务和/或配置
 
