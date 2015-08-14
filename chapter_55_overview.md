@@ -6,7 +6,7 @@ The signing plugin的主要功能是为构建文件及产物做数字签名。�
 
 The signing plugin adds the ability to digitally sign built files and artifacts. These digital signatures can then be used to prove who built the artifact the signature is attached to as well as other information such as when the signature was generated.
 
-The signing plugin目前只支持生成PGP签名(是一种被Maven Central Repository要求的出版所需的签名格式)。
+The signing plugin目前只支持生成PGP签名(Maven Central Repository要求的签名格式)。
 
 The signing plugin currently only provides support for generating PGP signatures (which is the signature format required for publication to the Maven Central Repository).
 
