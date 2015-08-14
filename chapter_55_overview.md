@@ -86,7 +86,9 @@ As well as configuring how things are to be signed (i.e. the signatory configura
 
 It is common to want to sign the artifacts of a configuration. For example, the Java plugin configures a jar to build and this jar artifact is added to the archives configuration. Using the Signing DSL, you can specify that all of the artifacts of this configuration should be signed.
 
-Example 54.2. Signing a configuration
+例55.2：配置签名
+
+Example 55.2. Signing a configuration
 
 build.gradle
 ```
