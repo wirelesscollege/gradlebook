@@ -118,7 +118,7 @@ BUILD SUCCESSFUL
 Total time: 1 secs
 ```
 
-### **54.3.2. Signing Tasks**
+### **55.3.2. Signing Tasks**
 
 在某些情况下您需要签署的产物可能不是配置的一部分。在这种情况下你可以直接签署产生此构建产物的任务。
 
