@@ -45,7 +45,7 @@ signing.keyId=24875D73
 signing.password=secret
 signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
 
-如果在用户gradle.properties文件中配置的环境信息是不可行的，那么你就需要无论如何找到信息源头，手动地设置项目属性。
+如果在用户gradle.properties文件中配置的环境信息是不可行的，那么无论如何都需要找到信息源头，手动地设置项目属性。
 
 If specifying this information in the user gradle.properties file is not feasible for your environment, you can source the information however you need to and set the project properties manually.
 
