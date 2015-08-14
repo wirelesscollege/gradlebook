@@ -198,7 +198,7 @@ When specifying what is to be signed via the Signing DSL, the resultant signatur
 
 When deploying signatures for your artifacts to a Maven repository, you will also want to sign the published POM file. The signing plugin adds a signing.signPom() (see:SigningExtension.signPom()) method that can be used in the beforeDeployment() block in your upload task configuration.
 
-Example 54.7. Signing a POM for deployment
+Example 55.7. Signing a POM for deployment
 
 build.gradle
 ```
