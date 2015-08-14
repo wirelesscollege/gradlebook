@@ -1,4 +1,6 @@
-# **Chapter 54. The Signing Plugin（签名插件）**
+# **第55章签名插件**
+
+Chapter 54. The Signing Plugin
 
 The signing plugin添加了为构建文件及产物做数字签名的功能。数字签名可以被用来证明谁构建了签名产物，以及其他的信息比如签名是什么时候生成的。
 
