@@ -144,7 +144,7 @@ This will create a task (of type Sign) in your project named “signStuffZip”,
 
 例55.5  签署一项任务输出
 
-Example 54.5. Signing a task output
+Example 55.5. Signing a task output
 
 Output of gradle signStuffZip
 ```
