@@ -38,7 +38,7 @@ In order to create PGP signatures, you will need a key pair (instructions on cre
 •	The passphrase used to protect your private key.
 ```
 
-这几项必须要提供signing.keyId, signing.secretKeyRingFile, 和 signing.password属性的值。考虑到这些值所特有和私有的属性，把他们放在用户gradle.properties文件里是个很好的做法（在“Gradle properties and system properties”20.2部分描述过）
+这几项必须要提供signing.keyId, signing.secretKeyRingFile, 和 signing.password属性的值。考虑到这些值所特有和私有的属性，把他们放在用户gradle.properties文件里是个很好的做法（参见20.2“Gradle properties and system properties”）
 
 These items must be supplied as the values of properties signing.keyId, signing.secretKeyRingFile, and signing.passwordrespectively. Given the personal and private nature of these values, a good practice is to store them in the user gradle.propertiesfile (described in Section 19.2, “Gradle properties and system properties”).
 signing.keyId=24875D73
