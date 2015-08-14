@@ -167,14 +167,14 @@ For a task to be “signable”, it must produce an archive of some type. Tasks 
 
 A common usage pattern is to only sign build artifacts under certain conditions. For example, you may not wish to sign artifacts for non release versions. To achieve this, you can specify that signing is only required under certain conditions.
 
-例54.6  有条件的签名
+例55.6  有条件的签名
 
-Example 54.6. Conditional signing
+Example 55.6. Conditional signing
 
 build.gradle
 ```
 version = '1.0-SNAPSHOT'
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT"5)
 
 signing {
     required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
@@ -192,7 +192,7 @@ In this example, we only want to require signing if we are building a release ve
 
 When specifying what is to be signed via the Signing DSL, the resultant signature artifacts are automatically added to the signatures and archives dependency configurations. This means that if you want to upload your signatures to your distribution repository along with the artifacts you simply execute the uploadArchives task as normal.
 
-## **54.5. Signing POM files**
+## **55.5. Signing POM files**
 
 当部署构建产物签名到Maven存储库中时，你也会想要将已发布的POM文件签名。将签名插件添加一个signing.signPom()（查看:SigningExtension.signPom()）方法，它用于你上传任务配置中的beforeDeployment()块中
 
