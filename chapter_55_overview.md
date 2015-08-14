@@ -101,7 +101,8 @@ signing {
 
 This will create a task (of type Sign) in your project named “signArchives”, that will build any archives artifacts (if needed) and then generate signatures for them. The signature files will be placed alongside the artifacts being signed.
 
-Example 54.3. Signing a configuration output
+例：55.3. 签名后输出
+Example 55.3. Signing a configuration output
 
 Output of gradle signArchives
 ````
