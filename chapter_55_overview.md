@@ -1,6 +1,6 @@
 # **第55章签名插件**
 
-Chapter 54. The Signing Plugin
+Chapter 55. The Signing Plugin
 
 The signing plugin的主要功能是为构建文件及产物做数字签名。数字签名可以被用来证明谁构建了签名产物，以及签名时间等等。
 
