@@ -27,7 +27,7 @@ apply plugin: 'signing'
 
 ## **54.2. Signatory credentials**
 
-为了创建PGP签名，你需要一个钥匙对（你可以在GnuPG HOWTOs中找到使用GnuPG tools 创建钥匙对时用到的那些指令/命令）。你需要给签名插件你的钥匙信息，这就意味着三件事：
+为了创建PGP签名，你需要一个钥匙对（你可以在GnuPG HOWTOs中找到使用GnuPG tools 创建钥匙对时用到的那些指令/命令）。你需要给Signing plugin你的钥匙信息，这就意味着三件事：
 
 In order to create PGP signatures, you will need a key pair (instructions on creating a key pair using the GnuPG tools can be found in the GnuPG HOWTOs). You need to provide the signing plugin with your key information, which means three things
 ```
