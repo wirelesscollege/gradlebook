@@ -12,8 +12,7 @@ The signing plugin currently only provides support for generating PGP signatures
 
 ## **55.1. 用法**
 55.1. Usage
-
-在使用the Signing plugin时需包含如下内容到你的构建脚本中
+在build脚本中使用Signing plugin插件，方法如下：
 
 To use the Signing plugin, include the following in your build script:
 
