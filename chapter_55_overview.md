@@ -24,8 +24,8 @@ build.gradle
 ```
 apply plugin: 'signing'
 ```
-## **54.2. Signatory credentials**
-## **54.2. Signatory credentials**
+## **55.2. Signatory credentials**
+## **55.2. Signatory credentials**
 
 为了创建PGP签名，你需要一个钥匙对（你可以在GnuPG HOWTOs中找到使用GnuPG tools 创建钥匙对时用到的那些指令/命令）。你需要给Signing plugin你的钥匙信息，这就意味着三件事：
 
