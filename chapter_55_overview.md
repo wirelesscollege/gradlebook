@@ -82,7 +82,7 @@ As well as configuring how things are to be signed (i.e. the signatory configura
 ### **55.3.1. 签名配置**
 55.3.1. Signing Configurations
 
-想要签署一个配置的构建产物很常见。例如,Java插件配置一个jar来构建，进而这个jar的构建产物被添加到产物配置中。使用DSL签署,您就可以指定的所有应该签署的配置产物。
+对配置产物进行签名是一件很常见的事。例如,Java插件配置一个jar来构建，进而这个jar的构建产物被添加到产物配置中。使用DSL签署,您就可以指定的所有应该签署的配置产物。
 
 It is common to want to sign the artifacts of a configuration. For example, the Java plugin configures a jar to build and this jar artifact is added to the archives configuration. Using the Signing DSL, you can specify that all of the artifacts of this configuration should be signed.
 
