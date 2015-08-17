@@ -155,7 +155,7 @@ The Application plugin adds the following tasks to the project.
 
 表45.2.应用插件 - 任务
 
-Table 44.2. Application plugin - tasks
+Table 45.2. Application plugin - tasks
 
 |任务名称		|依赖				|类型 				|描述|
 |--
