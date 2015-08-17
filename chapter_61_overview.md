@@ -240,7 +240,7 @@ So how does Gradle find the Plugin implementation? The answer is you need to pro
 
 例61.6   连接自定义插件
 
-Example 58.6. Wiring for a custom plugin
+Example 61.6. Wiring for a custom plugin
 
 src/main/resources/META-INF/gradle-plugins/org.samples.greeting.properties
 implementation-class=org.gradle.GreetingPlugin
