@@ -1,4 +1,4 @@
-# **第30章. FindBugs 插件**
+# **第31章. FindBugs 插件**
 FindBugs 插件使用FindBugs对项目的 Java 源文件执行质量检查，并从检查结果中生成报告。
 
 ## **30.1. 用法**
