@@ -10,14 +10,16 @@ Sonar runner插件集成了sonar ，它是一个检测代码质量的web-base平
 The Sonar Runner plugin provides integration with Sonar, a web-based platform for monitoring code quality. It is based on theSonar Runner, a Sonar client component that analyzes source code and build outputs, and stores all collected information in the Sonar database. Compared to using the standalone Sonar Runner, the Sonar Runner plugin offers the following benefits:
 
 自动化配置sonar Runner
-通过常规的Gradle任务执行Sonar Runner的功能，使得Gradle无所不能(开发者构建、CI 服务器等），我们不在需要手动的安装、下载、设置、和维护 Sonar Runner。
+
+通过常规的Gradle任务执行Sonar Runner的功能，使得Gradle处处可行(开发者构建、CI 服务器等），我们不在需要手动的安装、下载、设置、和维护 Sonar Runner。
 
 Automatic provisioning of Sonar Runner
 The ability to execute the Sonar Runner via a regular Gradle task makes it available anywhere Gradle is available (developer build, CI server, etc.), without the need to manually download, setup, and maintain a Sonar Runner installation.
 
 Gradle 构建脚本的动态配置
+
 按照我们的需求所有的Gradle's scripting功能都可以被用来配置Sonar Runner。
-  
+
 Dynamic configuration from Gradle build scripts
 All of Gradle's scripting features can be leveraged to configure Sonar Runner as needed.
 
@@ -39,6 +41,7 @@ The default version of the Sonar Runner used by the plugin is 2.3, which makes i
 36.2. Getting started
 
 用一个实例项目分析一下Sonar Runner插件的使用
+
 To get started, apply the Sonar Runner plugin to the project to be analyzed.
 
 Example 36.1 使用sonar 插件
