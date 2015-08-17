@@ -44,7 +44,7 @@ In our examples, we will start with the plugin in the build script, to keep thin
 
 To create a custom plugin, you need to write an implementation of Plugin. Gradle instantiates the plugin and calls the plugin instance's Plugin.apply() method when the plugin is used with a project. The project object is passed as a parameter, which the plugin can use to configure the project however it needs to. The following sample contains a greeting plugin, which adds a hello task to the project.
 
-例58.1  自定义插件
+例61.1  自定义插件
 
 Example 58.1. A custom plugin
 
@@ -71,7 +71,7 @@ Hello from the GreetingPlugin
 
 One thing to note is that a new instance of a given plugin is created for each project it is applied to. Also note that the Plugin class is a generic type. This example has it receiving the Plugin type as a type parameter. It's possible to write unusual custom plugins that take different type parameters, but this will be unlikely (until someone figures out more creative things to do here).
 
-## **58.3. Getting input from the build**
+## **61.3. Getting input from the build**
 
 大多数插件都需要从构建脚本获取一些配置。这样做的一个方法是使用扩展对象。Gradle项目都有一个关联的ExtensionContainer对象,帮助跟踪传递给插件的所有设置和属性。您可以捕获用户的输入,告诉关于你的插件扩展容器。捕获输入,只需添加一个Java Bean的使用类到扩展容器的列表。Groovy是插件很好的语言选择,因为普通老的Groovy对象包含Java Bean要求的所有getter和setter方法。
 
@@ -81,9 +81,9 @@ Most plugins need to obtain some configuration from the build script. One method
 
 Let's add a simple extension object to the project. Here we add a greeting extension object to the project, which allows you to configure the greeting.
 
-例58.2.  自定义插件扩展
+例61.2.  自定义插件扩展
 
-Example 58.2. A custom plugin extension
+Example 61.2. A custom plugin extension
 
 build.gradle
 ```
@@ -120,9 +120,9 @@ In this example, GreetingPluginExtension is a plain old Groovy object with a fie
 
 Oftentimes, you have several related properties you need to specify on a single plugin. Gradle adds a configuration closure block for each extension object, so you can group settings together. The following example shows you how this works.
 
-例58.3.  带有配置闭包的自定义插件
+例61.3.  带有配置闭包的自定义插件
 
-Example 58.3. A custom plugin with configuration closure
+Example 61.3. A custom plugin with configuration closure
 
 build.gradle
 ```
@@ -158,13 +158,13 @@ Hi from Gradle
 
 In this example, several settings can be grouped together within the greeting closure. The name of the closure block in the build script (greeting) needs to match the extension object name. Then, when the closure is executed, the fields on the extension object will be mapped to the variables within the closure based on the standard Groovy closure delegate feature.
 
-## **58.4. Working with files in custom tasks and plugins**
+## **61.4. Working with files in custom tasks and plugins**
 
 当开发自定义任务和插件,灵活地接受输入配置文件地址是个好办法。要做到这一点,您可以利用Project.file()方法尽可能晚地分解值到文件中。
 
 When developing custom tasks and plugins, it's a good idea to be very flexible when accepting input configuration for file locations. To do this, you can leverage the Project.file() method to resolve values to files as late as possible.
 
-例58.4   延迟评估文件属性
+例61.4   延迟评估文件属性
 
 Example 58.4. Evaluating file properties lazily
 
@@ -208,13 +208,13 @@ Hello!
 
 In this example, we configure the greet task destination property as a closure, which is evaluated with the Project.file() method to turn the return value of the closure into a file object at the last minute. You will notice that in the example above we specify the greetingFile property value after we have configured to use it for the task. This kind of lazy evaluation is a key benefit of accepting any value when setting a file property, then resolving that value when reading the property.
 
-## **58.5. A standalone project**
+## **61.5. A standalone project**
 
 现在我们将插件移到一个独立的项目,这样我们可以发布,并与他人分享。这个项目是一个简单的Groovy项目,可以产生一个包含插件类的jar包。这里是项目中一个简单的构建脚本。它适用于Groovy插件,并添加Gradle API作为编译时依赖项。
 
 Now we will move our plugin to a standalone project, so we can publish it and share it with others. This project is simply a Groovy project that produces a JAR containing the plugin classes. Here is a simple build script for the project. It applies the Groovy plugin, and adds the Gradle API as a compile-time dependency.
 
-例58.5  一个自定义插件的构建
+例61.5  一个自定义插件的构建
 
 Example 58.5. A build for a custom plugin
 
@@ -237,7 +237,7 @@ Note: The code for this example can be found at samples/customPlugin/plugin in t
 
 So how does Gradle find the Plugin implementation? The answer is you need to provide a properties file in the jar's META-INF/gradle-plugins directory that matches the id of your plugin.
 
-例58.6   连接自定义插件
+例61.6   连接自定义插件
 
 Example 58.6. Wiring for a custom plugin
 
@@ -248,7 +248,7 @@ implementation-class=org.gradle.GreetingPlugin
 
 Notice that the properties filename matches the plugin id and is placed in the resources folder, and that the implementation-class property identifies the Plugin implementation class.
 
-### **58.5.1. Creating a plugin id**
+### **61.5.1. Creating a plugin id**
 
 插件id是完全受限，与java包的方式类似（即反向域名）。这有助于避免冲突且提供了使用类似所有制方式分组插件的方法。
 
@@ -294,7 +294,7 @@ Cannot contain consecutive '.' characters (i.e. '..').
 
 Although there are conventional similarities between plugin ids and package names, package names are generally more detailed than is necessary for a plugin id. For instance, it might seem reasonable to add “gradle” as a component of your plugin id, but since plugin ids are only used for Gradle plugins, this would be superfluous. Generally, a namespace that identifies ownership and a name are all that are needed for a good plugin id.
 
-### **58.5.2. Publishing your plugin**
+### **61.5.2. Publishing your plugin**
 
 如果在你组织发布插件内部使用，你可以像发布其他代码构建产物一样发布它。可以看下ivy和maven发布构建产物的章节
 
@@ -304,13 +304,13 @@ If you are publishing your plugin internally for use within your organization, y
 
 If you are interested in publishing your plugin to be used by the wider Gradle community, you can publish it to the Gradle plugin portal. This site provides the ability to search for and gather information about plugins contributed by the Gradle community. See the instructions here on how to make your plugin available on this site.
 
-### **58.5.3. Using your plugin in another project**
+### **61.5.3. Using your plugin in another project**
 
 为在构建脚本时使用某插件,您需要添加插件类到构建脚本的类路径中。要做到这一点,你需要用一个“buildscript { }”块,如20.4节所述,“使用构建脚本块应用插件”。下面的例子显示当载有插件的JAR包已经发布到一个本地存储库时，你该如何做到这一点:
 
 To use a plugin in a build script, you need to add the plugin classes to the build script's classpath. To do this, you use a “buildscript { }” block, as described in Section 20.4, “Applying plugins with the buildscript block”. The following example shows how you might do this when the JAR containing the plugin has been published to a local repository:
 
-例58.7  在其他项目中使用自定义插件
+例61.7  在其他项目中使用自定义插件
 
 Example 58.7. Using a custom plugin in another project
 
@@ -342,15 +342,15 @@ plugins {
 }
 ```
 
-### **58.5.4. Writing tests for your plugin**
+### **61.5.4. Writing tests for your plugin**
 
 当你测试你插件执行时候，可以使用ProjectBuilder类来创建Project实例使用
 
 You can use the ProjectBuilder class to create Project instances to use when you test your plugin implementation.
 
-例58.9 测试自定义插件
+例61.9 测试自定义插件
 
-Example 58.9. Testing a custom plugin
+Example 61.9. Testing a custom plugin
 
 ```
 src/test/groovy/org/gradle/GreetingPluginTest.groovy
@@ -365,30 +365,30 @@ class GreetingPluginTest {
 }
 ```
 
-58.5.5. Using the Java Gradle Plugin development plugin
+61.5.5. Using the Java Gradle Plugin development plugin
 
 您可以使用孵化Java Gradle插件开发插件来消除一些在你构建脚本中的样本声明并提供一些基本的插件元数据的验证。这个插件会自动应用java插件，添加gradleApi()依赖到编译配置,并执行插件元数据验证作为jar任务执行的一部分。
 
 You can use the incubating Java Gradle Plugin development plugin to eliminate some of the boilerplate declarations in your build script and provide some basic validations of plugin metadata. This plugin will automatically apply the Java plugin, add the gradleApi() dependency to the compile configuration, and perform plugin metadata validations as part of the jar task execution.
 
-例58.10  使用Java Gradle Plugin Development插件
+例61.10  使用Java Gradle Plugin Development插件
 
-Example 58.10. Using the Java Gradle Plugin Development plugin
+Example 61.10. Using the Java Gradle Plugin Development plugin
 
 build.gradle
 ```
 apply plugin: 'java-gradle-plugin'
 ```
 
-## **58.6. Maintaining multiple domain objects**
+## **61.6. Maintaining multiple domain objects**
 
 Gradle提供了一些实用程序类维护对象的集合,它们与Gradle构建语言融合得很好。
 
 Gradle provides some utility classes for maintaining collections of objects, which work well with the Gradle build language.
 
-例58.11 管理域对象
+例61.11 管理域对象
 
-Example 58.11. Managing domain objects
+Example 61.11. Managing domain objects
 
 build.gradle
 
