@@ -37,7 +37,7 @@ Standalone project
 You can create a separate project for your plugin. This project produces and publishes a JAR which you can then use in multiple builds and share with others. Generally, this JAR might include some custom plugins, or bundle several related task classes into a single library. Or some combination of the two.
 在我们的实例中，为了简单化我们将会以构建脚本中的插件开始。之后我们将看下创建一个独立的项目。
 In our examples, we will start with the plugin in the build script, to keep things simple. Then we will look at creating a standalone project.
-
+## **61.2. 编写一个简单的插件**
 61.2. Writing a simple plugin
 
 要创建一个自定义插件,您需要编写一个插件的实现。当项目使用插件时，Gradle实例化插件并调用插件实例的Plugin.apply()方法。项目对象作为参数传递,该插件可以使用它配置项目。下面的示例包含一个greeting插件,添加一个hello任务到项目里。
