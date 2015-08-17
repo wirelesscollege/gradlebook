@@ -365,7 +365,7 @@ class GreetingPluginTest {
     }
 }
 ```
-### **61.5.4. Writing tests for your plugin**
+### **61.5.5. Using the Java Gradle Plugin development plugin**
 61.5.5. Using the Java Gradle Plugin development plugin
 
 您可以使用孵化Java Gradle插件开发插件来消除一些在你构建脚本中的样本声明并提供一些基本的插件元数据的验证。这个插件会自动应用java插件，添加gradleApi()依赖到编译配置,并执行插件元数据验证作为jar任务执行的一部分。
