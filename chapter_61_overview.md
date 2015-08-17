@@ -381,6 +381,7 @@ build.gradle
 apply plugin: 'java-gradle-plugin'
 ```
 ## **61.6. 维护多个domain objects**
+
 61.6. Maintaining multiple domain objects
 
 Gradle提供了一些实用程序类维护对象的集合,它们与Gradle构建语言融合得很好。
