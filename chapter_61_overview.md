@@ -26,9 +26,9 @@ buildSrc project
 
 You can put the source for the plugin in the rootProjectDir/buildSrc/src/main/groovy directory. Gradle will take care of compiling and testing the plugin and making it available on the classpath of the build script. The plugin is visible to every build script used by the build. However, it is not visible outside the build, and so you cannot reuse the plugin outside the build it is defined in.
 
-见59章、组织构建逻辑 可了解更多关于buildSrc project的详细信息.
+见62章、组织构建逻辑 可了解更多关于buildSrc project的详细信息.
 
-See Chapter 59, Organizing Build Logic for more details about the buildSrc project.
+See Chapter 62, Organizing Build Logic for more details about the buildSrc project.
 
 Standalone project
 
