@@ -167,7 +167,7 @@ When developing custom tasks and plugins, it's a good idea to be very flexible w
 
 例61.4   延迟评估文件属性
 
-Example 58.4. Evaluating file properties lazily
+Example 61.4. Evaluating file properties lazily
 
 build.gradle
 
