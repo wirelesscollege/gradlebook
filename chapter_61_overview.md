@@ -4,7 +4,7 @@ Gradle插件能打包可重用的构建逻辑，它能够在许多不同的项�
 
 A Gradle plugin packages up reusable pieces of build logic, which can be used across many different projects and builds. Gradle allows you to implement your own custom plugins, so you can reuse your build logic, and share it with others.
 
-你可以用任何你喜欢的语言去实现定制插件，被提供的是最终编译成的字节码。对于这个例子，我们将要使用Groovy最为实现语言。如果你想要，你可以使用java或者Scala替代。
+你可以用任何你喜欢的语言去实现定制插件，被提供的是最终编译成的字节码。对于这个例子，我们将要使用Groovy做为实现语言。如果你想要，你可以使用java或者Scala替代。
 
 You can implement a custom plugin in any language you like, provided the implementation ends up compiled as bytecode. For the examples here, we are going to use Groovy as the implementation language. You could use Java or Scala instead, if you want.
 
