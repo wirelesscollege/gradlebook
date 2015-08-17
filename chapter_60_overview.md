@@ -2,10 +2,6 @@
 
 #   60章  编写自定义任务
 
-
-
-
-
 Gradle支持两种类型的任务。一种类型是一种你可以使用闭包动作定义的简单任务。我们在第六章 构建脚本基础中看到了这些。对于这种任务类型，闭包动作判断任务的动作。这种任务类型有利于实现构建脚本中一次性的任务
 
 Gradle supports two types of task. One such type is the simple task, where you define the task with an action closure. We have seen these in Chapter 6, Build Script Basics. For this type of task, the action closure determines the behaviour of the task. This type of task is good for implementing one-off tasks in your build script.
