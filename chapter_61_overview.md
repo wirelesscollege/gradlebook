@@ -8,7 +8,7 @@ A Gradle plugin packages up reusable pieces of build logic, which can be used ac
 
 You can implement a custom plugin in any language you like, provided the implementation ends up compiled as bytecode. For the examples here, we are going to use Groovy as the implementation language. You could use Java or Scala instead, if you want.
 
-## **58.1. Packaging a plugin**
+## **61.1. Packaging a plugin**
 
 有许多你可以放插件源码的位置。
 
@@ -38,7 +38,7 @@ You can create a separate project for your plugin. This project produces and pub
 在我们的实例中，为了简单化我们将会以构建脚本中的插件开始。之后我们将看下创建一个独立的项目。
 In our examples, we will start with the plugin in the build script, to keep things simple. Then we will look at creating a standalone project.
 
-58.2. Writing a simple plugin
+61.2. Writing a simple plugin
 
 要创建一个自定义插件,您需要编写一个插件的实现。当项目使用插件时，Gradle实例化插件并调用插件实例的Plugin.apply()方法。项目对象作为参数传递,该插件可以使用它配置项目。下面的示例包含一个greeting插件,添加一个hello任务到项目里。
 
