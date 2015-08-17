@@ -1,6 +1,8 @@
-# **Chapter 60. Writing Custom Task Classes**
 
-#   60章  编写自定义任务
+
+#   第60章  编写自定义任务
+** Chapter 60. Writing Custom Task Classes**
+
 
 Gradle支持两种类型的任务。一种类型是一种你可以使用闭包动作定义的简单任务。我们在第六章 构建脚本基础中看到了这些。对于这种任务类型，闭包动作判断任务的动作。这种任务类型有利于实现构建脚本中一次性的任务
 
