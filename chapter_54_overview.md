@@ -6,7 +6,7 @@ Chapter 54. The Maven Plugin
 
 This chapter is a work in progress.
 
-maven插件可以添加项目依赖到maven仓库.
+maven插件添加了部署产物到maven仓库的功能.
 
 The Maven plugin adds support for deploying artifacts to Maven repositories.
 
