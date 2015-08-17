@@ -1,4 +1,10 @@
-# **Chapter 57. Writing Custom Task Classes**
+# **Chapter 60. Writing Custom Task Classes**
+
+#   60章  编写自定义任务
+
+
+
+
 
 Gradle支持两种类型的任务。一种类型是一种你可以使用闭包动作定义的简单任务。我们在第六章 构建脚本基础中看到了这些。对于这种任务类型，闭包动作判断任务的动作。这种任务类型有利于实现构建脚本中一次性的任务
 
@@ -16,7 +22,7 @@ The behaviour and properties of an enhanced task is defined by the task's class.
 
 Implementing your own custom task class in Gradle is easy. You can implement a custom task class in pretty much any language you like, provided it ends up compiled to bytecode. In our examples, we are going to use Groovy as the implementation language, but you could use, for example, Java or Scala. In general, using Groovy is the easiest option, because the Gradle API is designed to work well with Groovy.
 
-## **57.1. Packaging a task class**
+## **60.1. Packaging a task class**
 
 你可以把任务类的源代码放在很多地方。
 
@@ -33,9 +39,9 @@ buildSrc project
 
 You can put the source for the task class in the rootProjectDir/buildSrc/src/main/groovy directory. Gradle will take care of compiling and testing the task class and making it available on the classpath of the build script. The task class is visible to every build script used by the build. However, it is not visible outside the build, and so you cannot reuse the task class outside the build it is defined in. Using the buildSrc project approach separates the task declaration - that is, what the task should do - from the task implementation - that is, how the task does it.
 
-见59章、组织构建逻辑 可了解更多关于buildSrc project的详细信息.
+见62章、组织构建逻辑 可了解更多关于buildSrc project的详细信息.
 
-See Chapter 59, Organizing Build Logic for more details about the buildSrc project.
+See Chapter 62, Organizing Build Logic for more details about the buildSrc project.
 
 Standalone project
 
@@ -47,15 +53,15 @@ You can create a separate project for your task class. This project produces and
 
 In our examples, we will start with the task class in the build script, to keep things simple. Then we will look at creating a standalone project.
 
-## **57.2. Writing a simple task class**
+## **60.2. Writing a simple task class**
 
 为实现一个定义的任务类，你要扩展DefaultTask
 
 To implement a custom task class, you extend DefaultTask.
 
-例57.1 定义一个定制任务
+例60.1 定义一个定制任务
 
-Example 57.1. Defining a custom task
+Example 60.1. Defining a custom task
 
 build.gradle
 ```
@@ -67,9 +73,9 @@ class GreetingTask extends DefaultTask {
 
 This task doesn't do anything useful, so let's add some behaviour. To do so, we add a method to the task and mark it with the TaskAction annotation. Gradle will call the method when the task executes. You don't have to use a method to define the behaviour for the task. You could, for instance, call doFirst() or doLast() with a closure in the task constructor to add behaviour.
 
-例57.2  一个hello world 任务
+例60.2  一个hello world 任务
 
-Example 57.2. A hello world task
+Example 60.2. A hello world task
 
 build.gradle
 ```
@@ -92,9 +98,9 @@ hello from GreetingTask
 
 Let's add a property to the task, so we can customize it. Tasks are simply POGOs, and when you declare a task, you can set the properties or call methods on the task object. Here we add a greeting property, and set the value when we declare the greeting task.
 
-例57.3  一个自定义的hello world任务
+例60.3  一个自定义的hello world任务
 
-Example 57.3. A customizable hello world task
+Example 60.3. A customizable hello world task
 
 build.gradle
 ```
@@ -123,15 +129,15 @@ hello from GreetingTask
 greetings from GreetingTask
 ```
 
-## **57.3. A standalone project**
+## **60.3. A standalone project**
 
 现在我们将我们的任务转移到一个独立的项目,所以我们可以发布它,并分享。这个项目是一个简单的Groovy项目,生成一个包含任务类的JAR。这是一个简单的项目构建脚本。它适用于Groovy插件,并添加Gradle API作为编译时依赖项。
 
 Now we will move our task to a standalone project, so we can publish it and share it with others. This project is simply a Groovy project that produces a JAR containing the task class. Here is a simple build script for the project. It applies the Groovy plugin, and adds the Gradle API as a compile-time dependency.
 
-例57.4  一个自定义任务的构建
+例60.4  一个自定义任务的构建
 
-Example 57.4. A build for a custom task
+Example 60.4. A build for a custom task
 
 build.gradle
 ```
@@ -149,9 +155,9 @@ Note: The code for this example can be found at samples/customPlugin/plugin in t
 
 We just follow the convention for where the source for the task class should go.
 
-例57.5   一个自定义任务
+例60.5   一个自定义任务
 
-Example 57.5. A custom task
+Example 60.5. A custom task
 
 src/main/groovy/org/gradle/GreetingTask.groovy
 ```
@@ -170,15 +176,15 @@ class GreetingTask extends DefaultTask {
 }
 ```
 
-## **57.3.1. Using your task class in another project**
+## **60.3.1. Using your task class in another project**
 
-为在构建脚本时使用某任务类,您需要添加类到构建脚本的类路径中。要做到这一点,你需要用一个“buildscript { }”块,如59.6节所述,“构建脚本的外部依赖”。下面的例子显示当载有任务类的JAR包已经发布到一个本地存储库时，你该如何做到这一点:
+为在构建脚本时使用某任务类,您需要添加类到构建脚本的类路径中。要做到这一点,你需要用一个“buildscript { }”块,如62.6节所述,“构建脚本的外部依赖”。下面的例子显示当载有任务类的JAR包已经发布到一个本地存储库时，你该如何做到这一点:
 
-To use a task class in a build script, you need to add the class to the build script's classpath. To do this, you use a buildscript { } block, as described in Section 59.6, “External dependencies for the build script”. The following example shows how you might do this when the JAR containing the task class has been published to a local repository:
+To use a task class in a build script, you need to add the class to the build script's classpath. To do this, you use a buildscript { } block, as described in Section 62.6, “External dependencies for the build script”. The following example shows how you might do this when the JAR containing the task class has been published to a local repository:
 
-例57.6 在其他的项目使用自定义任务
+例60.6 在其他的项目使用自定义任务
 
-Example 57.6. Using a custom task in another project
+Example 60.6. Using a custom task in another project
 
 build.gradle
 ```
@@ -199,15 +205,15 @@ task greeting(type: org.gradle.GreetingTask) {
 }
 ```
 
-## **57.3.2. Writing tests for your task class**
+## **60.3.2. Writing tests for your task class**
 
 当你测试任务类时候，可以使用ProjectBuilder类来创建Project实例使用。
 
 You can use the ProjectBuilder class to create Project instances to use when you test your task class.
 
-例57.7 测试一个自定义任务
+例60.7 测试一个自定义任务
 
-Example 57.7. Testing a custom task
+Example 60.7. Testing a custom task
 
 src/test/groovy/org/gradle/GreetingTaskTest.groovy
 ```
@@ -221,7 +227,7 @@ class GreetingTaskTest {
 }
 ```
 
-## **57.4. Incremental tasks**
+## **60.4. Incremental tasks**
 
 增量任务是个待开发的特性
 
@@ -243,7 +249,7 @@ With Gradle, it's very simple to implement a task that gets skipped when all of 
 
 If you'd like to optimise your build so that only out-of-date inputs are processed, you can do so with an incremental task.
 
-### **57.4.1. Implementing an incremental task**
+### **60.4.1. Implementing an incremental task**
 
 对于一个处理输出不断增值的任务,它必须包含增量任务动作。这个任务动作方法包含一个IncrementalTaskInputs参数,这表明对于Gradle的此动作将仅处理改变的输入。
 
@@ -253,9 +259,9 @@ For a task to process inputs incrementally, that task must contain an incrementa
 
 The incremental task action may supply an IncrementalTaskInputs.outOfDate() action for processing any input file that is out-of-date, and a IncrementalTaskInputs.removed() action that executes for any input file that has been removed since the previous execution.
 
-例57.8 定义一个增量任务行为
+例60.8 定义一个增量任务行为
 
-Example 57.8. Defining an incremental task action
+Example 60.8. Defining an incremental task action
 
 build.gradle
 ```
@@ -298,7 +304,7 @@ For a simple transformer task like this, the task action simply needs to generat
 
 A task may only contain a single incremental task action.
 
-### **57.4.2. Which inputs are considered out of date?**
+### **60.4.2. Which inputs are considered out of date?**
 
 当Gradle有之前任务执行历史记录，且仅相对之前任务执行改变的内容写进了输入文件，那么Gradle能够判定哪个输入文件需要被任务重新处理。这种情况下，IncrementalTaskInputs.outOfDate()动作可以执行应用于任何添加和修改的输入文件。IncrementalTaskInputs.removed()动作可以执行用于任何移除的输入文件。
 
@@ -337,7 +343,7 @@ In any of these cases, Gradle will consider all of the input files to be outOfDa
 
 You can check if Gradle was able to determine the incremental changes to input files with IncrementalTaskInputs.isIncremental().
 
-### **57.4.3. An incremental task in action**
+### **60.4.3. An incremental task in action**
 
 鉴于上述增量任务的实现,我们可以通过例子探索各种变化场景。注意各种突变任务(“updateInputs”、“removeInput”等)只是出于当前演示目的:这些通常不会是你构建脚本的一部分。
 
@@ -347,9 +353,9 @@ Given the incremental task implementation above, we can explore the various chan
 
 First, consider the IncrementalReverseTask executed against a set of inputs for the first time. In this case, all inputs will be considered “out of date”:
 
-例57.9  首次运行增量任务
+例60.9  首次运行增量任务
 
-Example 57.9. Running the incremental task for the first time
+Example 60.9. Running the incremental task for the first time
 
 build.gradle
 ```
@@ -379,18 +385,18 @@ out of date: 3.txt
 
 Naturally when the task is executed again with no changes, then the entire task is up to date and no files are reported to the task action:
 
-例57.10  使用没有改变的输入文件运行增量任务
+例60.10  使用没有改变的输入文件运行增量任务
 
-Example 57.10. Running the incremental task with unchanged inputs
+Example 60.10. Running the incremental task with unchanged inputs
 
 Output of gradle -q incrementalReverse
 ```
 > gradle -q incrementalReverse
 When an input file is modified in some way or a new input file is added, then re-executing the task results in those files being reported to IncrementalTaskInputs.outOfDate():
 ```
-例57.11  使用过时的输入文件运行增量任务
+例60.11  使用过时的输入文件运行增量任务
 
-Example 57.11. Running the incremental task with updated input files
+Example 60.11. Running the incremental task with updated input files
 
 build.gradle
 ```
@@ -409,9 +415,9 @@ out of date: 4.txt
 
 When an existing input file is removed, then re-executing the task results in that file being reported to IncrementalTaskInputs.removed():
 
-例57.12 使用已移除的输入文件运行增量任务
+例60.12 使用已移除的输入文件运行增量任务
 
-Example 57.12. Running the incremental task with an input file removed
+Example 60.12. Running the incremental task with an input file removed
 
 build.gradle
 ```
@@ -428,9 +434,9 @@ removed: 3.txt
 
 When an output file is deleted (or modified), then Gradle is unable to determine which input files are out of date. In this case, all input files are reported to the IncrementalTaskInputs.outOfDate() action, and no input files are reported to the IncrementalTaskInputs.removed() action:
 
-例57.13  使用已移除的输出文件运行增量任务
+例60.13  使用已移除的输出文件运行增量任务
 
-Example 57.13. Running the incremental task with an output file removed
+Example 60.13. Running the incremental task with an output file removed
 
 build.gradle
 ```
@@ -449,9 +455,9 @@ out of date: 3.txt
 
 When a task input property is modified, Gradle is unable to determine how this property impacted the task outputs, so all input files are assumed to be out of date. So similar to the changed output file example, all input files are reported to the IncrementalTaskInputs.outOfDate() action, and no input files are reported to the IncrementalTaskInputs.removed() action:
 
-例57.14  使用改变的输入属性运行增量任务
+例60.14  使用改变的输入属性运行增量任务
 
-Example 57.14. Running the incremental task with an input property changed
+Example 60.14. Running the incremental task with an input property changed
 
 ```
 Output of gradle -q -PtaskInputProperty=changed incrementalReverse
