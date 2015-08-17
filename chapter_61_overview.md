@@ -313,7 +313,7 @@ To use a plugin in a build script, you need to add the plugin classes to the bui
 
 例61.7  在其他项目中使用自定义插件
 
-Example 58.7. Using a custom plugin in another project
+Example 61.7. Using a custom plugin in another project
 
 build.gradle
 ```
@@ -334,7 +334,7 @@ apply plugin: 'org.samples.greeting'
 或者，如果你的插件被发布到插件门户上，你可以使用孵化插件DSL（见20.5节,“使用DSL应用插件”)来应用插件
 Alternatively, if your plugin is published to the plugin portal, you can use the incubating plugins DSL (see Section 20.5, “Applying plugins with the plugins DSL”) to apply the plugin:
 
-Example 58.8. Applying a community plugin with the plugins DSL
+Example 61.8. Applying a community plugin with the plugins DSL
 
 build.gradle
 ```
