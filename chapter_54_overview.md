@@ -396,4 +396,5 @@ task mappings << {
     println conf2ScopeMappings.mappings
 ```
 如果可能的话Gradle排除规则会转换成 Maven排除规则。这种转化只有在Gradle排除规则里组和模块名称被指定时才可行（如同Maven相对Ivy两者都需要一样）。如果他们是可转换的，每个配置排除规则也会包含在Maven POM中。
+
 Gradle exclude rules are converted to Maven excludes if possible. Such a conversion is possible if in the Gradle exclude rule the group as well as the module name is specified (as Maven needs both in contrast to Ivy). Per-configuration excludes are also included in the Maven POM, if they are convertible. 
