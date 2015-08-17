@@ -1,4 +1,4 @@
-# **第四十三章. Build Announcements插件**
+# **第43章. Build Announcements插件**
 
 Chapter 43. The Build Announcements Plugin
 
