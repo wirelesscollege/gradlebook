@@ -1,4 +1,4 @@
-# **第三十八章 IDEA 插件**
+# **第38章 IDEA 插件**
 
 Chapter 38. The IDEA Plugin
 
