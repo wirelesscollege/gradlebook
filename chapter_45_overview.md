@@ -1,6 +1,6 @@
-# **第44章. Application插件**
+# **第45章. Application插件**
 
-Chapter 44. The Application Plugin
+Chapter 45. The Application Plugin
 
 Application插件让创建可执行的JVM应用更方便.在软件开发期间,很容易启动本地的应用,并按照tar或者zip格式打包应用,包括操作系统指定的启动脚本。
 
@@ -14,17 +14,17 @@ Applying the Application plugin also implicitly applies the Java plugin. The mai
 
 Applying the Application plugin also implicitly applies the Distribution plugin. A main distribution is created that packages up the application, including code dependencies and generated start scripts.
 
-## **44.1.用法**
+## **45.1.用法**
 
-44.1. Usage
+45.1. Usage
 
 要使用application插件，需首先在你的构建脚本中引用它.
 
 To use the application plugin, include the following in your build script:
 
-示例44.1.使用application插件
+示例45.1.使用application插件
 
-Example 44.1. Using the application plugin
+Example 45.1. Using the application plugin
 
 build.gradle
 ```
@@ -35,9 +35,9 @@ build.gradle
 
 The only mandatory configuration for the plugin is the specification of the main class (i.e. entry point) of the application.
 
-示例44.2. 配置应用程序的main class
+示例45.2. 配置应用程序的main class
 
-Example 44.2. Configure the application main class
+Example 45.2. Configure the application main class
 
 build.gradle
 ```
@@ -52,22 +52,22 @@ You can run the application by executing the run task (type: JavaExec). This wil
 
 If your application requires a specific set of JVM settings or system properties, you can configure the applicationDefaultJvmArgs property. These JVM arguments are applied to the run task and also considered in the generated start scripts of your distribution.
 
-示例 44.3. 配置默认JVM设置
-Example 44.3. Configure default JVM settings
+示例 45.3. 配置默认JVM设置
+Example 45.3. Configure default JVM settings
 
 build.gradle
 ```
     applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
 ```
 
-44.1.1. The distribution
+45.1.1. The distribution
 
 通过Distribution插件可以创建应用程序的分布，一个主要的通过distribution会创建以下内容：
 
 A distribution of the application can be created, by way of the Distribution plugin (which is automatically applied). A main distribution is created with the following content:
 
-表44.1. 分布内容
-Table 44.1. Distribution content
+表45.1. 分布内容
+Table 45.1. Distribution content
 
 |Location	|Content|
 |--
@@ -79,8 +79,8 @@ Table 44.1. Distribution content
 
 Static files to be added to the distribution can be simply added to src/dist. More advanced customization can be done by configuring the CopySpec exposed by the main distribution.
 
-示例 44.4. 包括来自其他tasks的应用程序分布
-Example 44.4. Include output from other tasks in the application distribution
+示例 45.4. 包括来自其他tasks的应用程序分布
+Example 45.4. Include output from other tasks in the application distribution
 
 build.gradle
 ```
@@ -108,9 +108,9 @@ distributions {
 
 By specifying that the distribution should include the task's output files (see Section 14.9.1, “Declaring a task's inputs and outputs”), Gradle knows that the task that produces the files must be invoked before the distribution can be assembled and will take care of this for you.
 
-示例44.5.自动创建分布文件
+示例45.5.自动创建分布文件
 
-Example 44.5. Automatically creating files for distribution
+Example 45.5. Automatically creating files for distribution
 
 执行gradle distZip,输出:
 Output of gradle distZip
@@ -133,9 +133,9 @@ Total time: 1 secs
 
 You can run gradle installDist to create an image of the application in build/install/projectName. You can run gradle distZip to create a ZIP containing the distribution, gradle distTar to create an application TAR or gradle assemble to build both.
 
-44.1.2.自定义启动脚本生成
+45.1.2.自定义启动脚本生成
 
-44.1.2. Customizing start script generation
+45.1.2. Customizing start script generation
 
 application插件能生成可立即使用的UNIX(适用于在Linux，MacOSX等)和Windows启动脚本.该启动脚本启动一个JVM来指定默认的部分构建和运行时环境（如,JAVA_OPTS环境变量）.该默认脚本模板与启动Gradle的脚本类似,可作为Gradle分布式的一部分.
 
@@ -145,15 +145,15 @@ The application plugin can generate Unix (suitable for Linux, Mac OS X etc.) and
 
 The start scripts are completely customizable. Please refer to the documentation of CreateStartScripts for more details and customization examples.
 
-## **44.2.任务**
+## **45.2.任务**
 
-44.2. Tasks
+45.2. Tasks
 
 该Application插件添加了以下任务到项目.
 
 The Application plugin adds the following tasks to the project.
 
-表44.2.应用插件 - 任务
+表45.2.应用插件 - 任务
 
 Table 44.2. Application plugin - tasks
 
@@ -167,9 +167,9 @@ Table 44.2. Application plugin - tasks
 |distTar		|	jar,startScripts	|Tar		|			Creates a full distribution TAR archive including runtime libraries and OS specific scripts.|
 
 
-## **44.3.约定属性**
+## **45.3.约定属性**
 
-44.3. Convention properties
+45.3. Convention properties
 
 该application插件为项目增加了一些特性,你可以用它来配置它的行为.请参见API文档中项目类.
 
