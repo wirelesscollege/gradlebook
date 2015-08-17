@@ -1,9 +1,9 @@
 第51章 Gradle 测试工具
 Chapter 51. The Gradle TestKit
-Gradle测试工具正在完善，在后续版本中有些API或者是特性可能要变更。
-
-
+Gradle测试工具正在完善，在后续版本中有些API和特性可能要变更。
 The Gradle TestKit is currently incubating. Please be aware that its API and other characteristics may change in later Gradle versions.
+Gradle 测试工具是一个依赖测试gradle 插件与构建逻辑的库。于此同时更聚焦于功能 测试。
+
 The Gradle TestKit (a.k.a. just TestKit) is a library that aids in testing Gradle plugins and build logic generally. At this time, it is focused on functional testing. That is, testing build logic by exercising it as part of a programmatically executed build. Over time, the TestKit will likely expand to facilitate other kinds of tests.
 
 51.1. Usage
