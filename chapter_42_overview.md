@@ -1,5 +1,6 @@
 # **Chapter 42. The Announce Plugin**
-第42章 通知插件
+
+## 第42章 通知插件
 
 The Gradle announce plugin allows you to send custom announcements during a build. The following notification systems are supported:
 
