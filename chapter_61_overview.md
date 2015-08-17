@@ -217,7 +217,7 @@ Now we will move our plugin to a standalone project, so we can publish it and sh
 
 例61.5  一个自定义插件的构建
 
-Example 58.5. A build for a custom plugin
+Example 61.5. A build for a custom plugin
 
 build.gradle
 
