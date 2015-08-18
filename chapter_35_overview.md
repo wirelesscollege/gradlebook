@@ -209,17 +209,17 @@ sonar.project {
 }
 ```
 
-## **34.4. 分析非Java语言**
+## **35.4. 分析非Java语言**
 
-34.4. Analyzing languages other than Java
+35.4. Analyzing languages other than Java
 
 安装相应的Sonar插件并设置相应的sonar.project，分析非Java语言编写的代码，
 
 To analyze code written in a language other than Java， install the corresponding Sonar plugin， and set sonar.project.language accordingly:
 
-示例 34.10. 分析非Java语言
+示例 35.10. 分析非Java语言
 
-Example 34.10. Analyzing languages other than Java
+Example 35.10. Analyzing languages other than Java
 
 build.gradle
 
