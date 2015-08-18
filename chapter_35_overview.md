@@ -288,16 +288,16 @@ A list of available Sonar properties can be found in the Sonar documentation. No
 
 The following properties can alternatively be set from the command line， as task parameters of the sonarAnalyze task. A task parameter will override any corresponding value set in the build script.
 
-•	server.url
-•	database.url
-•	database.driverClassName
-•	database.username
-•	database.password
-•	showSql
-•	showSqlResults
-•	verbose
+•	server.url  
+•	database.url   
+•	database.driverClassName  
+•	database.username   
+•	database.password   
+•	showSql   
+•	showSqlResults   
+•	verbose   
 •	forceAnalysis
-
+   
 
 下面是一个完整的例子：
 
