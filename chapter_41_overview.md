@@ -53,33 +53,33 @@ Table 41.1. Project report plugin – tasks
 
 
 
-## **40.3 项目布局**
+## **41.3 项目布局**
 
-40.3. Project layout
+41.3. Project layout
 
 项目报告插件不需要任何特定的项目布局。
 
 The project report plugin does not require any particular project layout.
 
-## **40.4  依赖管理**
+## **41.4  依赖管理**
 
-40.4. Dependency management
+41.4. Dependency management
 
 项目报告插件没有定义任何依赖配置。
 
 The project report plugin does not define any dependency configurations.
 
-## **40.5 常规属性**
+## **41.5 常规属性**
 
-40.5. Convention properties
+41.5. Convention properties
 
 项目报告定义了以下常规属性：
 
 The project report defines the following convention properties:
 
-表40.2 项目报告插件—常规属性
+表41.2 项目报告插件—常规属性
 
-Table 40.2. Project report plugin - convention properties
+Table 41.2. Project report plugin - convention properties
 
 |属性名称	|类型	|默认值	|描述|
 |--
