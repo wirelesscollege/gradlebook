@@ -34,7 +34,7 @@ The project report plugin defines the following tasks:
 
 Table 41.1. Project report plugin – tasks
 
-|任务名称|依赖于|类型	|描述|
+|任务名称	|依赖于|类型	|描述|
 |--
 |dependencyReport|-	|DependencyReportTask|生成项目依赖报告|
 |htmlDependencyReport	|-|	HtmlDependencyReportTask|生成一个或一组HTML项目依赖报告|
