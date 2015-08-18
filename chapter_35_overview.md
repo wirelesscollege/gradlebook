@@ -213,7 +213,7 @@ sonar.project {
 
 35.4. Analyzing languages other than Java
 
-安装相应的Sonar插件并设置相应的sonar.project，分析非Java语言编写的代码，
+安装相应的Sonar插件并设置相应的sonar.project.language，分析非Java语言编写的代码：
 
 To analyze code written in a language other than Java， install the corresponding Sonar plugin， and set sonar.project.language accordingly:
 
