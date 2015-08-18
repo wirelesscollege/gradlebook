@@ -203,3 +203,4 @@ The “basic” build init type is useful for creating a fresh new Gradle projec
 这种类型不需要你配置，也不需要你明确指定。    
 This type is used when no type was explicitly specified, and no type could be inferred.
 
+百度搜索[无线学院](http://wirelesscollege.cn)
