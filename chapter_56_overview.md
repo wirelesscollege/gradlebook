@@ -1,4 +1,4 @@
-# **Chapter 54. Building native binaries(构建本地二进制文件)**
+# **Chapter 56. Building native binaries(构建本地二进制文件)**
 
 Gradle对构建本地二进制文件的支持正在开发中。请注意，DSL和其他配置在以后的Gradle版本中可能会改变。 
 
@@ -8,7 +8,7 @@ The Gradle support for building native binaries is currently incubating. Please 
 
 The various native binary plugins add support for building native software components, such as executables or shared libraries, from code written in C++, C and other languages. While many excellent build tools exist for this space of software development, Gradle offers developers its trademark power and flexibility together with dependency management practices more traditionally found in the JVM development space.
 
-## **54.1. Supported languages**
+## **56.1. Supported languages**
 
 目前支持以下源语言:
 
@@ -20,11 +20,11 @@ The following source languages are currently supported:
 •	Assembly
 •	Windows resources
 
-## **54.2. Tool chain support（工具链支持）**
+## **56.2. Tool chain support（工具链支持）**
 
 Gradle提供了使用不同工具链执行相同构建的功能。当你建立一个本地二进制文件时,它将试图找到一个安装在你的设备里可以构建二进制的工具链。你可以准确地调整它如何工作,详细请参见54.15节,“Tool chains”。
 
-Gradle offers the ability to execute the same build using different tool chains. When you build a native binary, Gradle will attempt to locate a tool chain installed on your machine that can build the binary. You can fine tune exactly how this works, see Section 54.15, “Tool chains” for details.
+Gradle offers the ability to execute the same build using different tool chains. When you build a native binary, Gradle will attempt to locate a tool chain installed on your machine that can build the binary. You can fine tune exactly how this works, see Section 56.15, “Tool chains” for details.
 
 以下工具链支持：
 
@@ -53,9 +53,9 @@ The following tool chains are unofficially supported. They generally work fine, 
 |UNIX-like	|GCC||
 |UNIX-like	|Clang||
 
-## **54.3.安装工具链**
+## **56.3.安装工具链**
 
-54.3. Tool chain installation
+56.3. Tool chain installation
 
 请注意,如果你正在使用GCC那么你目前需要安装支持c++,即使你不是从c++源构建。这个警告将在未来Gradle版本删除。
 
@@ -65,7 +65,7 @@ Note that if you are using GCC then you currently need to install support for C+
 
 To build native binaries, you will need to have a compatible tool chain installed:
 
-### **54.3.1. Windows**
+### **56.3.1. Windows**
 
 为了在windows上构建，需要安装一个兼容的Visual Studio版本。本地插件将会检测到Visual Studio的安装，并选择最新的版本。没有必要浪费时间纠结在环境变量和批处理脚本上。通过Cygwin shell 和Windows命令行处理的很好。
 或者你可以安装携带GCC或者MinGW环境的Gygwin工具.Clang目前还不支持
@@ -73,23 +73,24 @@ To build native binaries, you will need to have a compatible tool chain installe
 To build on Windows, install a compatible version of Visual Studio. The native plugins will discover the Visual Studio installations and select the latest version. There is no need to mess around with environment variables or batch scripts. This works fine from a Cygwin shell or the Windows command-line.
 Alternatively, you can install Cygwin with GCC or MinGW. Clang is currently not supported.
 
-### **54.3.2. OS X**
+### **56.3.2. OS X**
 
 为了在OS X上构建，你需要安装XCode.本地插件通过系统路径会检测到Code的安装。
 
 To build on OS X, you should install XCode. The native plugins will discover the XCode installation using the system PATH.
 
+本地插件也使用GCC和Clang绑定Macports工作.使用一个Macports工具链,你将需要将使用的工具链端口的选择命令添加到系统的PATH环境变量下.
 The native plugins also work with GCC and Clang bundled with Macports. To use one of the Macports tool chains, you will need to make the tool chain the default using theport select command and add Macports to the system PATH.
 
-### **54.3.3. Linux**
+### **56.3.3. Linux**
 
-为了能在Linuc上构建，需安装一个兼容的GCC或Clang版本。本地插件通过系统了路径会发现CC或Clang。
+为了能在Linux上构建，需安装一个兼容的GCC或Clang版本。本地插件通过系统了路径会发现CC或Clang。
 
 To build on Linux, install a compatible version of GCC or Clang. The native plugins will discover GCC or Clang using the system PATH.
 
-## **54.4.组件模型**
+## **56.4.组件模型**
 
-54.4. Component model
+56.4. Component model
 
 为使用Gradle构建本地二进制文件,你的项目应该定义一个或多个本地组件。每个组件代表Gradle应该构建的一个可执行文件或者是库文件。一个项目可以定义任何数量的组件。Gradle默认不定义任何组件。
 
@@ -107,9 +108,9 @@ For each component, Gradle defines one or more binaries as output. To build a bi
 
 In many cases, more than one binary can be produced for a component. These binaries may vary based on the tool chain used to build, the compiler/linker flags supplied, the dependencies provided, or additional source files provided. Each native binary produced for a component is referred to as variant. Binary variants are discussed in detail below.
 
-## **54.5.并行编译**
+## **56.5.并行编译**
 
-54.5. Parallel Compilation
+56.5. Parallel Compilation
 
 默认情况下Gradle使用单一构建职工池同时编译和链接本地组件。不需要任何特殊配置启用并行构建。
 
@@ -123,17 +124,17 @@ By default, the worker pool size is determined by the number of available proces
 
 The build worker pool is shared across all build tasks. This means that when using parallel project execution, the maximum number of concurrent individual compilation operations does not increase. For example, if the build machine has 4 processing cores and 10 projects are compiling in parallel, Gradle will only use 4 total workers, not 40.
 
-## **54.6. 构建库**
+## **56.6. 构建库**
 
-54.6. Building a library
+56.6. Building a library
 
 为构建一个静态或共享库，需在组件容器中定义一个库组件。以下的例子定义了一个名叫hello的库：
 
 To build either a static or shared native library, you define a library component in the components container. The following sample defines a library called hello:
 
-例54.1 定义一个库组件
+例56.1 定义一个库组件
 
-Example 54.1. Defining a library component
+Example 56.1. Defining a library component
 build.gradle
 ```
 model {
@@ -147,17 +148,17 @@ model {
 
 A library component is represented using NativeLibrarySpec. Each library component can produce at least one shared library binary (SharedLibraryBinarySpec) and at least one static library binary (StaticLibraryBinarySpec).
 
-## **54.7. 构建可执行程序**
+## **56.7. 构建可执行程序**
 
-54.7. Building an executable
+56.7. Building an executable
 
 为构建本地可执行程序，你在组件容器中定义一个可执行的组件。以下的例子定义了一个名为main的可执行程序
 
 To build a native executable, you define an executable component in the components container. The following sample defines an executable called main:
 
-例54.2 定义可执行组件
+例56.2 定义可执行组件
 
-Example 54.2. Defining executable components
+Example 56.2. Defining executable components
 
 build.gradle
 
@@ -180,7 +181,7 @@ An executable component is represented using NativeExecutableSpec. Each executab
 
 For each component defined, Gradle adds a FunctionalSourceSet with the same name. Each of these functional source sets will contain a language-specific source set for each of the languages supported by the project.
 
-## **54.8. Tasks**
+## **56.8. Tasks**
 
 对于每个由构建产生的NativeBinarySpec，一个生命周期任务被构建可用来创建二进制以及其他做编译、链接、装配二进制实际工作的任务。
 
@@ -192,24 +193,24 @@ For each NativeBinarySpec that can be produced by a build, a single lifecycle ta
 |NativeLibrarySpec| SharedLibraryBinarySpec${component.name}SharedLibrary	|${project.buildDir}/binaries/${component.name}SharedLibrary/lib${component.name}.so|
 |NativeLibrarySpec| StaticLibraryBinarySpec |${component.name}StaticLibrary	 |${project.buildDir}/binaries/${component.name}StaticLibrary/${component.name}.a|
 
-### **54.8.1. 使用共享库**
+### **56.8.1. 使用共享库**
 
-54.8.1. Working with shared libraries
+56.8.1. Working with shared libraries
 
 对于每一个可执行的二进制,cpp插件提供了一个安装$ { binary.name }任务,它开发了安装装可执行文件程序,连同它所需要的共享库。这让你运行可执行文件时没必要非在最后的位置安装共享库。
 
 For each executable binary produced, the cpp plugin provides an install${binary.name} task, which creates a development install of the executable, along with the shared libraries it requires. This allows you to run the executable without needing to install the shared libraries in their final locations.
 
-## **54.9. 找出更多关于您的项目的信息**
+## **56.9. 找出更多关于您的项目的信息**
 
-54.9. Finding out more about your project
+56.9. Finding out more about your project
 
 Gradle提供了可以展示你项目产生的组件和二进制文件更详细的信息报告，可以通过命令行运行得到。要使用这个报告,只需运行gradle组件。下面是一个运行样例项目报告的例子:
 
 Gradle provides a report that you can run from the command-line that shows some details about the components and binaries that your project produces. To use this report, just run gradle components. Below is an example of running this report for one of the sample projects:
 
-例54.3 组件报告
-Example 54.3. The components report
+例56.3 组件报告
+Example 56.3. The components report
 
 Output of gradle components
 ````
@@ -267,9 +268,9 @@ BUILD SUCCESSFUL
 Total time: 1 secs
 ```
 
-## **54.10  语言支持**
+## **56.10  支持语言**
 
-54.10. Language support
+56.10. Language support
 
 目前，Gradle支持由下列语言任意结合构建本地二进制文件。一个本地二进制文件包含一个或多个名为FunctionalSourceSet的实例（如'main', 'test'等），每个实例都包含LanguageSourceSets，它针对每种语言含有一个源码文件。
 
@@ -287,9 +288,9 @@ C++语言支持依赖于cpp插件。
 
 C++ language support is provided by means of the 'cpp' plugin.
 
-例54.4 cpp插件
+例56.4 cpp插件
 
-Example 54.4. The 'cpp' plugin
+Example 56.4. The 'cpp' plugin
 build.gradle
 ```
 apply plugin: 'cpp'C++源码
@@ -303,7 +304,7 @@ app插件为每个CppSourceSet定义默认的位置，然而为了不同的项�
 
 While the cpp plugin defines these default locations for each CppSourceSet, it is possible to extend or override these defaults to allow for a different project layout.
 
-Example 54.5. C++ source set
+Example 56.5. C++ source set
 build.gradle
 ```
 sources {
@@ -320,15 +321,15 @@ sources {
 
 For a library named 'main', header files in src/main/headers are considered the “public” or “exported” headers. Header files that should not be exported should be placed inside the src/main/cpp directory (though be aware that such header files should always be referenced in a manner relative to the file including them).
 
-### **54.10.2. C sources**
+### **56.10.2. C sources**
 
 c语言支持依赖于‘c’插件
 
 C language support is provided by means of the 'c' plugin.
 
-例54.6 c插件
+例56.6 c插件
 
-Example 54.6. The 'c' plugin
+Example 56.6. The 'c' plugin
 
 build.gradle
 ```
@@ -343,9 +344,9 @@ app插件为每个CppSourceSet定义默认的位置，然而为了不同的项�
 
 While the c plugin defines these default locations for each CSourceSet, it is possible to extend or override these defaults to allow for a different project layout.
 
-例54.7 C源码集
+例56.7 C源码集
 
-Example 54.7. C source set
+Example 56.7. C source set
 build.gradle
 ```
 sources {
@@ -365,15 +366,15 @@ sources {
 
 For a library named 'main', header files in src/main/headers are considered the “public” or “exported” headers. Header files that should not be exported should be placed inside the src/main/c directory (though be aware that such header files should always be referenced in a manner relative to the file including them).
 
-### **54.10.3. Assembler sources**
+### **56.10.3. Assembler sources**
 
 汇编语言支持依赖于'assembler'插件
 
 Assembly language support is provided by means of the 'assembler' plugin.
 
-例54.8  'assembler'插件
+例56.8  'assembler'插件
 
-Example 54.8. The 'assembler' plugin
+Example 56.8. The 'assembler' plugin
 build.gradle
 
 ```
@@ -383,15 +384,15 @@ apply plugin: 'assembler'
 
 Assembler sources to be included in a native binary are provided via a AssemblerSourceSet, which defines a set of Assembler source files. By default, for any named component the AssemblerSourceSet contains .s source files under src/${name}/asm.
 
-### **54.10.4. Objective-C sources**
+### **56.10.4. Objective-C sources**
 
 Objective-C语言依赖于'objective-c'插件支持。
 
 Objective-C language support is provided by means of the 'objective-c' plugin.
 
-例54.9 'objective-c'插件
+例56.9 'objective-c'插件
 
-Example 54.9. The 'objective-c' plugin
+Example 56.9. The 'objective-c' plugin
 
 build.gradle
 ```
@@ -402,15 +403,15 @@ Objective-C源码列入在本地二进制文件里是通过ObjectiveCSourceSet�
 
 Objective-C sources to be included in a native binary are provided via a ObjectiveCSourceSet, which defines a set of Objective-C source files. By default, for any named component the ObjectiveCSourceSet contains .m source files under src/${name}/objectiveC.
 
-### **54.10.5. Objective-C++ sources***
+### **56.10.5. Objective-C++ sources***
 
 Objective-C++语言支持依赖于'objective-cpp'插件。
 
 Objective-C++ language support is provided by means of the 'objective-cpp' plugin.
 
-例54.10 'objective-cpp'插件
+例56.10 'objective-cpp'插件
 
-Example 54.10. The 'objective-cpp' plugin
+Example 56.10. The 'objective-cpp' plugin
 
 build.gradle
 ```
@@ -421,15 +422,15 @@ Objective-C++源码列入在本地二进制文件里是通过AssemblerSourceSet�
 
 Objective-C++ sources to be included in a native binary are provided via a ObjectiveCppSourceSet, which defines a set of Objective-C++ source files. By default, for any named component the ObjectiveCppSourceSet contains .mm source files under src/${name}/ObjectiveCppSourceSet.
 
-## **54.11. Configuring the compiler, assembler and linker(配置编译器、汇编和连接器)**
+## **56.11. Configuring the compiler, assembler and linker(配置编译器、汇编和连接器)**
 
 每个生成的为禁止文件都和一套编译器和链接器设置密切相关,其中包括命令行参数以及宏定义。这些设置可以应用于所有的二进制文件,单个二进制或选择性基于某些标准的一组二进制文件。
 
 Each binary to be produced is associated with a set of compiler and linker settings, which include command-line arguments as well as macro definitions. These settings can be applied to all binaries, an individual binary, or selectively to a group of binaries based on some criteria.
 
-例54.11  应用于所有二进制文件的设置
+例56.11  应用于所有二进制文件的设置
 
-Example 54.11. Settings that apply to all binaries
+Example 56.11. Settings that apply to all binaries
 
 build.gradle
 ```
@@ -455,9 +456,9 @@ Each binary is associated with a particular NativeToolChain, allowing settings t
 
 It is easy to apply settings to all binaries of a particular type:
 
-例54.12  应用于所有共享库的设置
+例56.12  应用于所有共享库的设置
 
-Example 54.12. Settings that apply to all shared libraries
+Example 56.12. Settings that apply to all shared libraries
 
 build.gradle
 ```
@@ -475,9 +476,9 @@ binaries.withType(SharedLibraryBinarySpec) {
 
 Furthermore, it is possible to specify settings that apply to all binaries produced for a particular executable or library component:
 
-例54.13 设置应用于main生成的所有二进制文件
+例56.13 设置应用于main生成的所有二进制文件
 
-Example 54.13. Settings that apply to all binaries produced for the 'main' executable component
+Example 56.13. Settings that apply to all binaries produced for the 'main' executable component
 
 build.gradle
 ```
@@ -515,9 +516,9 @@ The example above will apply the supplied configuration to all executable binari
 
 Similarly, settings can be specified to target binaries for a component that are of a particular type: eg all shared libraries for the main library component.
 
-例54.14  设置仅应用于main库组件生成的共享二进制文件
+例56.14  设置仅应用于main库组件生成的共享二进制文件
 
-Example 54.14. Settings that apply only to shared libraries produced for the 'main' library component
+Example 56.14. Settings that apply only to shared libraries produced for the 'main' library component
 
 build.gradle
 ```
@@ -533,15 +534,15 @@ model {
 }
 ```
 
-54.12. Windows Resources
+56.12. Windows Resources
 
 在使用VisualCpp工具链时,Gradle能够编译窗口资源(rc)文件和链接成一个本地二进制。此功能由'windows-resources插件支持。
 
 When using the VisualCpp tool chain, Gradle is able to compile Window Resource (rc) files and link them into a native binary. This functionality is provided by the'windows-resources' plugin.
 
-例54.15 windows-resources 插件
+例56.15 windows-resources 插件
 
-Example 54.15. The 'windows-resources' plugin
+Example 56.15. The 'windows-resources' plugin
 
 build.gradle
 ```
@@ -556,7 +557,7 @@ Windows resources to be included in a native binary are provided via a WindowsRe
 
 As with other source types, you can configure the location of the windows resources that should be included in the binary.
 
-Example 54.16. Configuring the location of Windows resource sources
+Example 56.16. Configuring the location of Windows resource sources
 
 build-resource-only-dll.gradle
 ```
@@ -577,9 +578,9 @@ sources {
 You are able to construct a resource-only library by providing Windows Resource sources with no other language sources, and configure the linker as appropriate:
 
 
-例54.17 构建一个仅资源的dll
+例56.17 构建一个仅资源的dll
 
-Example 54.17. Building a resource-only dll
+Example 56.17. Building a resource-only dll
 
 build-resource-only-dll.gradle
 ```
@@ -609,13 +610,13 @@ model {
 
 The example above also demonstrates the mechanism of passing extra command-line arguments to the resource compiler. The rcCompiler extension is of type PreprocessingTool.
 
-## **54.13. Library Dependencies**
+## **56.13. Library Dependencies**
 
 本机组件的依赖关系是二进制库文件输出头文件。头文件在编译过程中被使用，和已编译的二进制依赖在链接和执行中被使用。
 
 Dependencies for native components are binary libraries that export header files. The header files are used during compilation, with the compiled binary dependency being used during linking and execution.
 
-### **54.13.1. Dependencies within the same project**
+### **56.13.1. Dependencies within the same project**
 
 一组源码可能依赖来自同一个项目的另一个二进制组件提供的头文件。一个常见的例子是一个本地可执行组件,使用一个单独的本地库组件提供的功能。这样一个库的依赖可以添加到一个与可执行组件相关联的源码集:
 
@@ -623,7 +624,7 @@ A set of sources may depend on header files provided by another binary component
 
 Such a library dependency can be added to a source set associated with the executable component:
 
-Example 54.18. Providing a library dependency to the source set
+Example 56.18. Providing a library dependency to the source set
 
 build.gradle
 ```
@@ -637,7 +638,7 @@ sources {
 
 Alternatively, a library dependency can be provided directly to the NativeExecutableBinary for the executable.
 
-Example 54.19. Providing a library dependency to the binary
+Example 56.19. Providing a library dependency to the binary
 build.gradle
 ```
 model {
@@ -673,13 +674,14 @@ model {
 }
 ```
 
-### **54.13.2. Project Dependencies**
+### **56.13.2. Project Dependencies**
 
 对于一个在不同Gradle项目生成的组件，符号是相同的。
 
 For a component produced in a different Gradle project, the notation is similar.
 
-Example 54.20. Declaring project dependencies
+示例 56.20. 声明项目依赖
+Example 56.20. Declaring project dependencies
 
 build.gradle
 
@@ -717,7 +719,7 @@ project(":exe") {
 }
 ```
 
-## **54.14. Native Binary Variants**
+## **56.14. Native Binary Variants**
 
 对于每个定义的可执行文件或库文件,Gradle可以建立若干不同的本地二进制变异。不同的变体的例子包括调试的和发布的二进制文件,32位与64位的二进制文件,不同定义处理器标志生成的二进制文件。
 
@@ -727,13 +729,13 @@ Gradle产生的二进制文件可以在构建类型,平台,和特性下差异化
 
 Binaries produced by Gradle can be differentiated on build type, platform, and flavor. For each of these 'variant dimensions', it is possible to specify a set of available values as well as target each component at one, some or all of these. For example, a plugin may define a range of support platforms, but you may choose to only target Windows-x86 for a particular component.
 
-### **54.14.1. Build types**
+### **56.14.1. Build types**
 
 构建一个二进制的类型决定了各种非功能性方面因素,如是否包含调试信息,或者二进制编译优化水平。典型的构建类型是“调试”和“发布”,但一个项目可以自由定义任何组构建类型。
 
 A build type determines various non-functional aspects of a binary, such as whether debug information is included, or what optimisation level the binary is compiled with. Typical build types are 'debug' and 'release', but a project is free to define any set of build types.
 
-Example 54.21. Defining build types
+Example 56.21. Defining build types
 
 build.gradle
 ```
@@ -753,7 +755,7 @@ If no build types are defined in a project, then a single, default build type ca
 
 For a build type, a Gradle project will typically define a set of compiler/linker flags per tool chain.
 
-Example 54.22. Configuring debug binaries
+Example 56.22. Configuring debug binaries
 
 build.gradle
 ```
@@ -773,7 +775,7 @@ binaries.all {
 
 At this stage, it is completely up to the build script to configure the relevant compiler/linker flags for each build type. Future versions of Gradle will automatically include the appropriate debug flags for any 'debug' build type, and may be aware of various levels of optimisation as well.
 
-### **54.14.2. Platform**
+### **56.14.2. Platform**
 
 一个可执行或库可以被构建并运行在不同的操作系统和cpu架构,并在每个平台生成不同的产物。Gradle定义每个OS /架构结合作为NativePlatform,并且一个项目可能定义任意数量的平台。如果一个项目没有定义任何平台,那么“当前”平台将会添加作为默认平台。
 
@@ -783,7 +785,7 @@ An executable or library can be built to run on different operating systems and 
 
 Presently, a Platform consists of a defined operating system and architecture. As we continue to develop the native binary support in Gradle, the concept of Platform will be extended to include things like C-runtime version, Windows SDK, ABI, etc. Sophisticated builds may use the extensibility of Gradle to apply additional attributes to each platform, which can then be queried to specify particular includes, preprocessor macros or compiler arguments for a native binary.
 
-Example 54.23. Defining platforms
+Example 56.23. Defining platforms
 
 build.gradle
 ```
@@ -806,7 +808,7 @@ model {
 
 For a given variant, Gradle will attempt to find a NativeToolChain that is able to build for the target platform. Available tool chains are searched in the order defined. See the tool chains section below for more details.
 
-### **54.14.3. Flavor**
+### **56.14.3. Flavor**
 
 每个组件可以有一组特性,每一个特性由一个单独的二进制变体生成。而构建类型和目标平台变体维度有个定义的意图,每个项目可以定义任意数量的特性且可以以任何形式把意图应用于它们。
 
@@ -816,7 +818,7 @@ Each component can have a set of named flavors, and a separate binary variant ca
 
 An example of component flavors might differentiate between 'demo', 'paid' and 'enterprise' editions of the component, where the same set of sources is used to produce binaries with different functions.
 
-Example 54.24. Defining flavors
+Example 56.24. Defining flavors
 
 build.gradle
 ```
@@ -845,13 +847,13 @@ In the example above, a library is defined with a 'english' and 'french' flavor.
 
 If no flavor is defined for a component, then a single default flavor named 'default' is used.
 
-### **54.14.4. Selecting the build types, platforms and flavors for a component**
+### **56.14.4. Selecting the build types, platforms and flavors for a component**
 
 对于一个默认的组件,Gradle将试图为每一个项目定义的构建类型、平台和特性以及他们之间的结合体创建一个本地二进制变量。可以在每个组件的基础上通过指定的一组targetBuildTypes,targetPlatform和/或targetFlavors覆盖这点。
 
 For a default component, Gradle will attempt to create a native binary variant for each and every combination of buildType, platform and flavor defined for the project. It is possible to override this on a per-component basis, by specifying the set of targetBuildTypes, targetPlatform and/or targetFlavors.
 
-Example 54.25. Targeting a component at particular platforms
+Example 56.25. Targeting a component at particular platforms
 
 build.gradle
 ```
@@ -880,7 +882,7 @@ Here you can see that the TargetedNativeComponent.targetPlatform() method is use
 
 A similar mechanism exists for selecting TargetedNativeComponent.targetBuildTypes() and TargetedNativeComponent.targetFlavors().
 
-### **54.14.5. Building all possible variants**
+### **56.14.5. Building all possible variants**
 
 当一组构建类型、目标平台和特性组件定义后，每一个可能的组合的NativeBinarySpec模型元素就创建好了。然而,在很多情况下是不可能建立一个特定的变量,也许是因为没有可用工具链构建为一个特定的平台。
 
@@ -890,7 +892,7 @@ When a set of build types, target platforms, and flavors is defined for a compon
 
 If a binary variant cannot be built for any reason, then the NativeBinarySpec associated with that variant will not be buildable. It is possible to use this property to create a task to generate all possible variants on a particular machine.
 
-Example 54.26. Building all possible variants
+Example 56.26. Building all possible variants
 
 build.gradle
 ```
@@ -900,20 +902,20 @@ task buildAllExecutables {
     }
 }
 ```
-## **54.15. Tool chains**
+## **56.15. Tool chains**
 
 一个构建可能使用不同的工具链为不同的平台构建变量。为此,核心的二进制的插件将试图定位和提供支持的工具链。然而,项目的设置工具链也可以显式地定义,允许额外的交叉编译器进行配置以及允许指定安装目录。
 
 A single build may utilize different tool chains to build variants for different platforms. To this end, the core 'native-binary' plugins will attempt to locate and make available supported tool chains. However, the set of tool chains for a project may also be explicitly defined, allowing additional cross-compilers to be configured as well as allowing the install directories to be specified.
 
-### **54.15.1. Defining tool chains**
+### **56.15.1. Defining tool chains**
 
 The supported tool chain types are:
 •	Gcc
 •	Clang
 •	VisualCpp
 
-Example 54.27. Defining tool chains
+Example 56.27. Defining tool chains
 
 build.gradle
 ```
@@ -936,7 +938,7 @@ model {
 
 Each tool chain implementation allows for a certain degree of configuration (see the API documentation for more details).
 
-### **54.15.2. Using tool chains**
+### **56.15.2. Using tool chains**
 
 没有必要或可能指定应该用于构建的工具链。对于给定的变量,Gradle将试图找到能够构建目标平台的NativeToolChain。可用的工具链可以在定义的顺序搜索到。
 
@@ -968,7 +970,7 @@ Gradle提供一个钩子,允许构建作者控制具体参数设置传递给可�
 
 Gradle provides a hook that allows the build author to control the exact set of arguments passed to a tool chain executable. This enables the build author to work around any limitations in Gradle, or assumptions that Gradle makes. The arguments hook should be seen as a 'last-resort' mechanism, with preference given to truly modelling the underlying domain.
 
-Example 54.28. Reconfigure tool arguments
+Example 56.28. Reconfigure tool arguments
 
 build.gradle
 ```
@@ -998,13 +1000,13 @@ model {
 }
 ```
 
-### **54.15.3. Cross-compiling with GCC**
+### **56.15.3. Cross-compiling with GCC**
 
 GCC和Clang工具链的交叉编译通过添加额外的目标平台的支持是可行的。这样做是通过为工具链指定一个目标平台。为每个目标平台可以指定一个自定义配置。每个目标平台都应有指定的配置。
 
 Cross-compiling is possible with the Gcc and Clang tool chains, by adding support for additional target platforms. This is done by specifying a target platform for a toolchain. For each target platform a custom configuration can be specified.
 
-Example 54.29. Defining target platforms
+Example 56.29. Defining target platforms
 
 build.gradle
 ```
@@ -1039,7 +1041,7 @@ model {
 }
 ```
 
-## **54.16. Visual Studio IDE integration**
+## **56.16. Visual Studio IDE integration**
 
 Gradle可以为你构建中定义的本地组件生成Visual Studio项目和解决方案文件。这种功能被添加到visual studio插件。对于多项目构建,所有拥有本地组件的项目都该应用此插件。
 
@@ -1053,13 +1055,13 @@ visual studio生成的文件的内容可以通过由visualStudio的扩展提供�
 
 The content of the generated visual studio files can be modified via API hooks, provided by the visualStudio extension. Take a look at the 'visual-studio' sample, or seeVisualStudioExtension.getProjects() and VisualStudioExtension.getSolutions() in the API documentation for more details.
 
-## **54.17. CUnit support**
+## **56.17. CUnit support**
 
 Gradle cunit插件支持本地二进制项目编译和执行cunit测试。对于你的项目中每个NativeExecutableSpec和NativeLibrarySpecdefined,Gradle将创建一个匹配CUnitTestSuiteSpec组件,名为$ { component.name }Test。
 
 The Gradle cunit plugin provides support for compiling and executing CUnit tests in your native-binary project. For each NativeExecutableSpec and NativeLibrarySpecdefined in your project, Gradle will create a matching CUnitTestSuiteSpec component, named ${component.name}Test.
 
-### **54.17.1. CUnit sources**
+### **56.17.1. CUnit sources**
 
 Gradle将为项目中的每个CUnitTestSuiteSpec组件创建一个名为“cunit”的CSourceSet项。这个源码集应该包含组件源码的cunit测试文件。源文件可以位于常规位置(src/${component.name}Test/cunit)或者可以像任何其源码集一样配置。
 
@@ -1069,7 +1071,7 @@ Gradle通过利用一些生成的CUnit启动资源初始化CUnit test注册表�
 
 Gradle initialises the CUnit test registry and executes the tests, utilising some generated CUnit launcher sources. Gradle will expect and call a function with the signature void gradle_cunit_register() that you can use to configure the actual CUnit suites and tests to execute.
 
-Example 54.30. Registering CUnit tests
+Example 56.30. Registering CUnit tests
 ```
 suite_operators.c
 #include <CUnit/Basic.h>
@@ -1095,13 +1097,13 @@ void gradle_cunit_register() {
 
 Due to this mechanism, your CUnit sources may not contain a main method since this will clash with the method provided by Gradle.
 
-### **54.17.2. Building CUnit executables**
+### **56.17.2. Building CUnit executables**
 
 CUnitTestSuiteSpec组件都有一个关联的NativeExecutableSpec或NativeLibrarySpec组件。为主要组件配置的每个NativeBinarySpec，都有一个匹配的CUnitTestSuiteBinarySpec将配置在测试套件组件中。这些测试套件二进制文件可以以类似的方式配置其他二进制实例:
 
 A CUnitTestSuiteSpec component has an associated NativeExecutableSpec or NativeLibrarySpec component. For each NativeBinarySpec configured for the main component, a matching CUnitTestSuiteBinarySpec will be configured on the test suite component. These test suite binaries can be configured in a similar way to any other binary instance:
 
-Example 54.31. Registering CUnit tests
+Example 56.31. Registering CUnit tests
 
 build.gradle
 ```
@@ -1117,13 +1119,13 @@ binaries.withType(CUnitTestSuiteBinarySpec) {
 
 Both the CUnit sources provided by your project and the generated launcher require the core CUnit headers and libraries. Presently, this library dependency must be provided by your project for each CUnitTestSuiteBinarySpec.
 
-### **54.17.3. Running CUnit tests**
+### **56.17.3. Running CUnit tests**
 
 对于每个CUnitTestSuiteBinarySpec,Gradle将创建一个任务来执行这个二进制文件,它将运行所有的注册CUnit测试。测试结果将在${build.dir}/test-results 目录中。
 
 For each CUnitTestSuiteBinarySpec, Gradle will create a task to execute this binary, which will run all of the registered CUnit tests. Test results will be found in the${build.dir}/test-results directory.
 
-Example 54.32. Running CUnit tests
+Example 56.32. Running CUnit tests
 
 build.gradle
 ```
@@ -1192,25 +1194,25 @@ The current support for CUnit is quite rudimentary. Plans for future integration
 •	Real-time feedback for test execution.
 •	Support for additional test frameworks.
 
-## **54.18. GoogleTest support**
+## **56.18. GoogleTest support**
 
 Gradle谷歌测试插件支持在本地二进制项目中编译和执行测试。为每个在你的项目中定义的NativeExecutableSpec andNativeLibrarySpec,它将创建一个匹配GoogleTestTestSuiteSpec组件,名为${component.name}Test。
 
 The Gradle google-test plugin provides support for compiling and executing GoogleTest tests in your native-binary project. For each NativeExecutableSpec andNativeLibrarySpec defined in your project, Gradle will create a matching GoogleTestTestSuiteSpec component, named ${component.name}Test.
 
-### **54.18.1. GoogleTest sources**
+### **56.18.1. GoogleTest sources**
 
 Gradle将会为项目中每个GoogleTestTestSuiteSpec组件创建一个名为的cpp的CppSourceSet。这个源码集应该包含该组件源码的GoogleTest测试文件。源文件可以位于常规位置 (src/${component.name}Test/cpp)或者可以像任何其他源码集一样配置。
 
 Gradle will create a CppSourceSet named 'cpp' for each GoogleTestTestSuiteSpec component in the project. This source set should contain the GoogleTest test files for the component sources. Source files can be located in the conventional location (src/${component.name}Test/cpp) or can be configured like any other source set.
 
-### **54.18.2. Building GoogleTest executables**
+### **56.18.2. Building GoogleTest executables**
 
 GoogleTestTestSuiteSpec组件都有一个关联的NativeExecutableSpec或NativeLibrarySpec组件。对于主要组件配置的每个NativeBinarySpec,都将在测试套件组件中配置一个匹配的GoogleTestTestSuiteBinarySpec。这些测试套件二进制文件可以以类似的方式配置其他二进制实例:
 
 A GoogleTestTestSuiteSpec component has an associated NativeExecutableSpec or NativeLibrarySpec component. For each NativeBinarySpec configured for the main component, a matching GoogleTestTestSuiteBinarySpec will be configured on the test suite component. These test suite binaries can be configured in a similar way to any other binary instance:
 
-Example 54.33. Registering GoogleTest tests
+Example 56.33. Registering GoogleTest tests
 
 build.gradle
 ```
@@ -1227,7 +1229,7 @@ binaries.withType(GoogleTestTestSuiteBinarySpec) {
 
 The GoogleTest sources provided by your project require the core GoogleTest headers and libraries. Presently, this library dependency must be provided by your project for each GoogleTestTestSuiteBinarySpec.
 
-### **54.18.3. Running GoogleTest tests**
+### **56.18.3. Running GoogleTest tests**
 
 对于每个GoogleTestTestSuiteBinarySpec，Gradle将会创建一个任务去执行这个二进制文件，它将会运行所有注册的GoogleTest测试，测试结果将会在目录 ${build.dir}/test-results下找到。
 
