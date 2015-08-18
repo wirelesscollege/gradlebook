@@ -134,7 +134,7 @@ subprojects {
 }
 ```
 
-在子项目中的sonar块,配置一个SonarProjectModel类型对象.
+在子项目中的sonar块,配置一个SonarProjectModel类型对象.  
 The sonar block in a subproject configures an object of type SonarProjectModel.
 
 项目也可以单独配置，例如，skip属性设置为true将防止项目(及其子项目)被分析，设置skip的项目将不会显示在Sonar web界面中。
