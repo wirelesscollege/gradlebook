@@ -1,6 +1,6 @@
 # **第35章 Sonar插件**
 
-Chapter 34. The Sonar Plugin
+Chapter 35. The Sonar Plugin
 
 你可能希望使用新的Sonar Runner插件来代替该插件. 特别是Sonar Runner插件仅支持Sonar3.4及以上版本。
 
