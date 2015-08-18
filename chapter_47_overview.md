@@ -1,6 +1,6 @@
-# **Chapter 47. Build Init Plugin**
+# **第47章 构建初始化插件**
 
-第47章 构建初始化插件
+Chapter 47. Build Init Plugin
 
 构建初始化插件正在开发中，在以后的gradle版本中可能会发生DSL或者其他配置的变化。
 
@@ -19,10 +19,9 @@ Gradle plugins typically need to be applied to a project before they can be used
 It also leverages the wrapper task from the Wrapper plugin (see Chapter 48, Wrapper Plugin), which means that the Gradle Wrapper will also be installed into the project.
 
 
-## **47.1. Tasks**
+## **47.1 任务**
 
-47.1 任务
-
+47.1. Tasks
 
 插件添加如下的任务到项目里：  
 The plugin adds the following tasks to the project:
@@ -36,30 +35,26 @@ Table 47.1. Build Init plugin - tasks
 |wrapper	|-	|Wrapper|	Generates Gradle wrapper files.|
 
 
-## **47.2. What to set up**
+## **47.2 需要设置什么**
+47.2. What to set up
 
-47.2 需要设置什么
 
-初始化支持不同的构建设置类型，这些类型可以使用参数来进行传递。例如：创建一个java library项目，你可以执行：gradle init --type java-library。
-
+初始化支持不同的构建设置类型，这些类型可以使用参数来进行传递。例如：创建一个java library项目，你可以执行：gradle init --type java-library。  
 The init supports different build setup types. The type is specified by supplying a --type argument value. For example, to create a Java library project simply execute: gradle init --type java-library.
 
-
+如果--type参数不支持，那么gradle可以内引用环境变量。例如：我想要内引用一个pom类型得值，gradle将会寻找pom.xml完成一个gradle构建。  
 If a --type parameter is not supplied, Gradle will attempt to infer the type from the environment. For example, it will infer a type value of “pom” if it finds a pom.xml to convert to a Gradle build.
 
-如果--type参数不支持，那么gradle可以内引用环境变量。例如：我想要内引用一个pom类型得值，gradle将会寻找pom.xml完成一个gradle构建。
-
+如果类型没有引用，那么basic类型会被采用。   
 If the type could not be inferred, the type “basic” will be used.
 
-如果类型没有因引用，那么basic类型会被采用
-
+支持所有的构建类型包括Wrapper类型项目。    
 All build setup types include the setup of the Gradle Wrapper.
 
-支持所有的构建类型包括Wrapper类型项目
 
-## **47.3. Build init types**
+## **47.3 构建初始化类型**
 
-47.3 构建初始化类型
+47.3. Build init types
 
 As this plugin is currently incubating, only a few build init types are currently supported. More types will be added in future Gradle releases.
 
