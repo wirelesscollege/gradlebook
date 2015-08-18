@@ -233,9 +233,9 @@ sonar.project {
 
 As of Sonar 3.4， only one language per project can be analyzed. You can， however， set a different language for each project in a multi-project build.
 
-34.5. 设置自定义Sonar属性
+## **35.5. 设置自定义Sonar属性**
 
-34.5. Setting Custom Sonar Properties
+35.5. Setting Custom Sonar Properties
 
 最终，大部分配置以键-值对的形式被传递到Sonar代码分析器作为Sonar属性，API文档内SonarProperty 注解展示了插件对象模型与sonar属性之间的映射关系。Sonar插件可以hook一些属性，防止它们被code analyzer，同样的hooks可以被使用到那些没有被插件对象模型转化过的属性上。
 
