@@ -198,7 +198,7 @@ project(":project2").sonar.project.language = "groovy"
 
 By default， the Sonar plugin will analyze the production sources in the main source set and the test sources in the test source set. This works independent of the project's source directory layout. Additional source sets can be added as needed.
 
-示例 35.9 分析自定义源集合
+示例 35.9 分析自定义源集合   
 Example 35.9. Analyzing custom source sets
 
 build.gradle
