@@ -6,7 +6,7 @@ Chapter 41. The Project Report Plugin
 
 The Project report plugin adds some tasks to your project which generate reports containing useful information about your build. These tasks generate the same content that you get by executing the tasks, dependencies, and properties tasks from the command line (see Section 11.6, “Obtaining information about your build”). In contrast to the command line reports, the report plugin generates the reports into a file. There is also an aggregating task that depends on all report tasks added by the plugin.
 
-我们计划在未来的Gradle版本中添加更多已存在报告以及创建一些其他的报告。
+我们计划在未来的Gradle版本中添加更多已存在报告并创建一些其他的报告。
 
 We plan to add much more to the existing reports and create additional ones in future releases of Gradle.
 
