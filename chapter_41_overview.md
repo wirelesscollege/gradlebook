@@ -10,9 +10,9 @@ The Project report plugin adds some tasks to your project which generate reports
 
 We plan to add much more to the existing reports and create additional ones in future releases of Gradle.
 
-## **40.1 使用**
+## **41.1 使用**
 
-40.1. Usage
+41.1. Usage
 
 要使用项目报告插件，需包含以下构建脚本：
 
@@ -22,19 +22,19 @@ To use the Project report plugin, include the following in your build script:
 apply plugin: 'project-report'
 ```
 
-## **40.2 任务**
+## **41.2 任务**
 
-40.2. Tasks
+41.2. Tasks
 
 项目报告插件定义了以下任务：
 
 The project report plugin defines the following tasks:
 
-表40.1  项目报告插件--任务
+表41.1  项目报告插件--任务
 
-Table 40.1. Project report plugin – tasks
+Table 41.1. Project report plugin – tasks
 
-|任务名称	|依赖于|类型	|描述|
+|任务名称|依赖于|类型	|描述|
 |--
 |dependencyReport|-	|DependencyReportTask|生成项目依赖报告|
 |htmlDependencyReport	|-|	HtmlDependencyReportTask|生成一个或一组HTML项目依赖报告|
