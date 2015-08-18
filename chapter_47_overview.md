@@ -192,9 +192,9 @@ Contains a sample Groovy class and an associated Spock specification, if there a
 
 
 
-### **47.3.5  基本类型”**
+### **47.3.5  基本类型**
 
-47.3.5. “basic
+47.3.5. “basic”
 
 基本类型在创建一个新的gradle项目时是非常有用的，它可以创建一个简单的gradle构建文件，拥有备注及连接帮助你开始使用。     
 The “basic” build init type is useful for creating a fresh new Gradle project. It creates a sample build.gradle file, with comments and links to help get started.
