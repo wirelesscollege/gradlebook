@@ -10,7 +10,7 @@ Sonar插件提供了监控代码质量的web站，该插件增加了一个sonarA
 
 The Sonar plugin provides integration with Sonar， a web-based platform for monitoring code quality. The plugin adds a sonarAnalyze task that analyzes the project to which the plugin is applied， as well as its subprojects. The results are stored in the Sonar database. The plugin is based on the Sonar Runner and requires Sonar 2.11 or higher.
 
-sonarAnalyze任务是一个孤立的任务，执行它不需要依赖其他的task.除了源码，该任务同样可以分析class文件和测试结果文件(如果可用)，为达到最佳效果，推荐在analysis前运行一个完整的构建，一个典型的配置为在构建服务上一天执行一次分析。
+sonarAnalyze任务是一个独立的任务，执行它不需要依赖其他的task.除了源码，该任务同样可以分析class文件和测试结果文件(如果可用)，为达到最佳效果，推荐在analysis前运行一个完整的构建，一个典型的配置为在构建服务上一天执行一次分析。
 
 The sonarAnalyze task is a standalone task that needs to be executed explicitly and doesn't depend on any other tasks. Apart from source code， the task also analyzes class files and test result files (if available). For best results， it is therefore recommended to run a full build before the analysis. In a typical setup， analysis would be performed once per day on a build server.
 
