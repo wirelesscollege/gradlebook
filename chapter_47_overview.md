@@ -192,7 +192,7 @@ Contains a sample Groovy class and an associated Spock specification, if there a
 
 
 
-### **47.3.5  基本类型**
+### **47.3.5  “基本类型”**
 
 47.3.5. “basic”
 
