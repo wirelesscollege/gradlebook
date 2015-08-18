@@ -245,9 +245,9 @@ Eventually， most configuration is passed to the Sonar code analyzer in the for
 
 For global Sonar properties， use the withGlobalProperties hook on SonarRootModel:
 
-示例 34.11. 设置自定义全局属性
+示例 35.11. 设置自定义全局属性
 
-Example 34.11. Setting custom global properties
+Example 35.11. Setting custom global properties
 
 build.gradle
 
@@ -262,9 +262,9 @@ sonar.withGlobalProperties { props ->
 对于预置项目的Sonar属性，我们可以在sonar项目中使用withProjectProperties hook：
 For per-project Sonar properties， use the withProjectProperties hook on SonarProject:
 
-示例 34.12. 设置自定义项目属性
+示例 35.12. 设置自定义项目属性
 
-Example 34.12. Setting custom project properties
+Example 35.12. Setting custom project properties
 
 build.gradle
 
@@ -280,9 +280,9 @@ sonar.project.withProjectProperties { props ->
 
 A list of available Sonar properties can be found in the Sonar documentation. Note that for most of these properties， the Sonar plugin's object model has an equivalent property， and it isn't necessary to use a withGlobalProperties or withProjectProperties hook. For configuring a third-party Sonar plugin， consult the plugin's documentation.
 
-## 34.6. 通过命令行配置Sonar设置
+## **35.6. 通过命令行配置Sonar设置**
 
-34.6. Configuring Sonar Settings from the Command Line
+35.6. Configuring Sonar Settings from the Command Line
 
 以下属性通过命令行来设置也是一种选择，可把这些属性作为sonarAnalyze任务的参数，该任务参数将覆盖任何在构建脚本中所设置的对应值。
 
@@ -311,9 +311,9 @@ Here is a complete example:
 假如你需要通过命令行设置其他属性，你可以使用系统属性这样做：
 
 If you need to set other properties from the command line， you can use system properties to do so:
-示例 34.13.实现自定义命令行属性
+示例 35.13.实现自定义命令行属性
 
-Example 34.13. Implementing custom command line properties
+Example 35.13. Implementing custom command line properties
 
 build.gradle
 
@@ -327,17 +327,17 @@ sonar.project {
 
 However， keep in mind that it is usually best to keep configuration in the build script and under source control.
 
-34.7. 任务
+## **35.7. 任务**
 
-34.7. Tasks
+35.7. Tasks
 
 Sonar插件添加了以下任务到项目中.
 
 The Sonar plugin adds the following tasks to the project.
 
-表 34.1. Sonar插件 – 任务
+表 35.1. Sonar插件 – 任务
 
-Table 34.1. Sonar plugin – tasks
+Table 35.1. Sonar plugin – tasks
 
 |Task name|	Depends on|	Type|	Description|
 |--
