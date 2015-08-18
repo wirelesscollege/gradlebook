@@ -1,6 +1,6 @@
-# **第六十章 组织构建逻辑**
+# **第62章 组织构建逻辑**
 
-Chapter 60. Organizing Build Logic 
+# **Chapter 62. Organizing Build Logic** 
 
 Gradle提供了多种组织构建逻辑的方式。首先你可以把你的构建逻辑直接放到一个任务的动作中。如果多个任务使用共同的逻辑你可以把逻辑抽取出来成一个方法。如果多个项目共用一个逻辑你可以把这个逻辑定义成一个方法并放到父工程里边。如果构建逻辑太复杂不易于抽取出方法，你应该把你的逻辑封装成一个类来执行你的方法。Gradle可以非常简单的实现。把你的类放到一个目录里然后Gradle会自动编译他们并把他们添加到构建脚本的classpath里。
 
@@ -46,17 +46,17 @@ Here is a summary of the ways you can organise your build logic:
 
 •   External libraries. Use external libraries directly in your build file. 
 
-## **60.1. 继承属性和方法**
+## **62.1. 继承属性和方法**
 
-60.1. Inherited properties and methods
+## **62.1. Inherited properties and methods**
 
 一个项目构建脚本中定义的任何方法和属性也被所有的子项目可见。你可以利用这配置公共的配置，并且可以把方法抽取出来封装成一个方法并并子项目使用。
 
 Any method or property defined in a project build script is also visible to all the sub-projects. You can use this to define common configurations, and to extract build logic into methods which can be reused by the sub-projects. 
 
-例子60.1. 继承属性和方法
+例子62.1. 继承属性和方法
 
-Example 60.1. Using inherited properties and methods
+Example 62.1. Using inherited properties and methods
 
 build.gradle
 ```
@@ -84,17 +84,17 @@ srcDir: child/src/java
 
 ```
 
-## **60.2. 注入配置**
+## **62.2. 注入配置**
 
-60.2. Injected configuration
+62.2. Injected configuration
 
-你可以使用57.1节Section 57.1, “Cross project configuration” 和  57.2节 “Subproject configuration”中介绍的配置注入的方法把属性和方法注入到多个工程里。这相对继承来说是一个更好的选择因为其一注入是在构建脚本中执行这样你就可以注入不同的逻辑到不同的项目中，其二你可以多个配置例如仓库，插件，任务等等。下面的例子显示它是如何起作用的。
+你可以使用59.1节Section 59.1, “Cross project configuration” 和  59.2节 “Subproject configuration”中介绍的配置注入的方法把属性和方法注入到多个工程里。这相对继承来说是一个更好的选择因为其一注入是在构建脚本中执行这样你就可以注入不同的逻辑到不同的项目中，其二你可以多个配置例如仓库，插件，任务等等。下面的例子显示它是如何起作用的。
 
-You can use the configuration injection technique discussed in Section 57.1, “Cross project configuration” and Section 57.2, “Subproject configuration” to inject properties and methods into various projects. This is generally a better option than inheritance, for a number of reasons: The injection is explicit in the build script, You can inject different logic into different projects, And you can inject any kind of configuration such as repositories, plug-ins, tasks, and so on. The following sample shows how this works. 
+You can use the configuration injection technique discussed in Section 59.1, “Cross project configuration” and Section 59.2, “Subproject configuration” to inject properties and methods into various projects. This is generally a better option than inheritance, for a number of reasons: The injection is explicit in the build script, You can inject different logic into different projects, And you can inject any kind of configuration such as repositories, plug-ins, tasks, and so on. The following sample shows how this works. 
 
-例子60.2 注入属性和方法
+例子62.2 注入属性和方法
 
-Example 60.2. Using injected properties and methods
+Example 62.2. Using injected properties and methods
 
 build.gradle
 ```
@@ -132,17 +132,17 @@ srcDirName: src/java/legacy
 srcDir: child2/src/java/legacy
 ```
 
-## **60.3. 用额外的构建脚本配置项目**
+## **62.3. 用额外的构建脚本配置项目**
 
-60.3. Configuring the project using an external build script
+## **62.3. Configuring the project using an external build script**
 
 你可以使用的额外的脚本配置当前的项目。Gradle所有的构建语言都可以在额外的脚本获得。你甚至可以在这个额外的配置文件中使用其他项目的脚本。
 
 You can configure the current project using an external build script. All of the Gradle build language is available in the external script. You can even apply other scripts from the external script. 
 
-例子60.3.  使用额外的构建脚本配置项目
+例子62.3.  使用额外的构建脚本配置项目
 
-Example 60.3. Configuring the project using an external build script
+Example 62.3. Configuring the project using an external build script
 
 build.gradle
 ```
@@ -158,9 +158,9 @@ configuring root project 'configureProjectUsingScript'
 hello from other script
 ```
 
-60.4. 在项目中添加源码
+62.4. 在项目中添加源码
 
-60.4. Build sources in the buildSrc project
+62.4. Build sources in the buildSrc project
 
 当你运行Gradle，它会检查buildSrc目录是否存在，若存在Gradle会自动编译并测试源码并把路径添加到构建脚本的classpath里。你不需要提供另外的方法，这可以是一个你添加任务和插件的很好的地方。
 
@@ -174,9 +174,9 @@ For multi-project builds there can be only one buildSrc directory, which has to 
 
 Listed below is the default build script that Gradle applies to the buildSrc project:
 
-图60.1. 默认的buildSrc构建脚本
+图62.1. 默认的buildSrc构建脚本
 
-Figure 60.1. Default buildSrc build script
+Figure 62.1. Default buildSrc build script
 ```
 apply plugin: 'groovy'
 
@@ -194,9 +194,9 @@ This means that you can just put your build source code in this directory and st
 
 If you need more flexibility, you can provide your own build.gradle. Gradle applies the default build script regardless of whether there is one specified. This means you only need to declare the extra things you need. Below is an example. Notice that this example does not need to declare a dependency on the Gradle API, as this is done by the default build script: 
 
-例子60.4. 自定义源码构建脚本
+例子62.4. 自定义源码构建脚本
 
-Example 60.4. Custom buildSrc build script
+Example 62.4. Custom buildSrc build script
 
 buildSrc/build.gradle
 ```
@@ -213,9 +213,9 @@ dependencies {
 
 The buildSrc project can be a multi-project build, just like any other regular multi-project build. However, all of the projects that should be on the classpath of the actual build must be runtime dependencies of the root project in buildSrc. You can do this by adding this to the configuration of each project you wish to export: 
 
-例子60.5.    向根项目的buildSrc里添加子项目
+例子62.5.    向根项目的buildSrc里添加子项目
 
-Example 60.5. Adding subprojects to the root buildSrc project
+Example 62.5. Adding subprojects to the root buildSrc project
 
 buildSrc/build.gradle
 ```
@@ -228,17 +228,17 @@ rootProject.dependencies {
 
 Note: The code for this example can be found at samples/multiProjectBuildSrc in the ‘-all’ distribution of Gradle.
 
-## **60.5. 从一个构建里运行另一个Gradle构建**
+## **62.5. 从一个构建里运行另一个Gradle构建**
 
-60.5. Running another Gradle build from a build
+## **62.5. Running another Gradle build from a build**
 
 你可以使用GradleBuild任务，你既可以要么使用buildFile属性去指定执行哪个构建，也可以使用任务属性去指定执行哪些任务。
 
 You can use the GradleBuild task. You can use either of the dir or buildFile properties to specify which build to execute, and the tasks property to specify which tasks to execute. 
 
-例子60.6. 从一个构建执行另一个构建
+例子62.6. 从一个构建执行另一个构建
 
-Example 60.6. Running another build from a build
+Example 62.6. Running another build from a build
 
 build.gradle
 ```
@@ -255,17 +255,17 @@ Output of gradle -q build
 hello from the other build.
 ```
 
-60.6.构建脚本额外的依赖
+62.6.构建脚本额外的依赖
 
-60.6. External dependencies for the build script
+62.6. External dependencies for the build script
 
 如果你的构建脚本需要使用额外包，你可以自己把它们添加到构建脚本的classpath里，你使用buildscript()方法来完成这个，会把构建脚本声明的闭环当做参数传递过去。
 
 If your build script needs to use external libraries, you can add them to the script's classpath in the build script itself. You do this using the buildscript() method, passing in a closure which declares the build script classpath. 
 
-例子60.7. 为构建脚本声明另外的依赖
+例子62.7. 为构建脚本声明另外的依赖
 
-Example 60.7. Declaring external dependencies for the build script
+Example 62.7. Declaring external dependencies for the build script
 
 build.gradle
 ```
@@ -287,9 +287,9 @@ The closure passed to the buildscript() method configures a ScriptHandler instan
 
 Having declared the build script classpath, you can use the classes in your build script as you would any other classes on the classpath. The following example adds to the previous example, and uses classes from the build script classpath.
 
-例子60.8.  一个带额外的依赖的构建脚本
+例子62.8.  一个带额外的依赖的构建脚本
 
-Example 60.8. A build script with external dependencies
+Example 62.8. A build script with external dependencies
 
 build.gradle
 ```
@@ -317,17 +317,17 @@ aGVsbG8gd29ybGQK
 
 For multi-project builds, the dependencies declared in the a project's build script, are available to the build scripts of all sub-projects. 
 
-60.7. Ant可选的依赖
+62.7. Ant可选的依赖
 
-60.7. Ant optional dependencies
+62.7. Ant optional dependencies
 
 对于额外的依赖没有被ant可选的任务处理的原因我们也不是很理解。但是你可以轻易的用其他方式完成这件事情。
 
 For reasons we don't fully understand yet, external dependencies are not picked up by Ant's optional tasks. But you can easily do it in another way. [26] 
 
-例子60.9.  Ant 可选依赖
+例子62.9.  Ant 可选依赖
 
-Example 60.9. Ant optional dependencies
+Example 62.9. Ant optional dependencies
 
 build.gradle
 ```
@@ -359,9 +359,9 @@ task ftp << {
 
 This is also a good example for the usage of client modules. The POM file in Maven Central for the ant-commons-net task does not provide the right information for this use case.
 
-## **60.8. 总结**
+## **62.8. 总结**
 
-60.8. Summary
+62.8. Summary
 
 Gradle提供了多种用户组织构建逻辑的方法。你可以选择适合你的需求的方式和不你不需要的方面的一个平衡点，避免冗余和难以维护。我们的经验是每个非常复杂的自定义构建在不同的构建之间很少被分享。其他的构建工具都是分割构建逻辑到单独的工程。Gradle省去了这方面你不必要的开销。
 
