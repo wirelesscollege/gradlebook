@@ -341,8 +341,11 @@ Table 35.1. Sonar plugin – tasks
 
 |Task name|	Depends on|	Type|	Description|
 |--
-|sonarAnalyze|	-	|SonarAnalyze|Analyzes a project hierarchy and stores the results in the Sonar database.|
+|sonarAnalyze|	-	|SonarAnalyze|分析项目层次结构和保存结果到Sonar数据库|   
 
-分析项目层次结构和保存结果到Sonar数据库
+|Task name|	Depends on|	Type|	Description|
+|--
+|sonarAnalyze|	-	|SonarAnalyze|Analyzes a project hierarchy and stores the results in the Sonar database.|   
+
 
 百度搜索[无线学院](http://wirelesscollege.cn)
