@@ -56,180 +56,149 @@ All build setup types include the setup of the Gradle Wrapper.
 
 47.3. Build init types
 
+因为插件正在开发中，所以仅仅只有一少部分的初始化类型支持，更多的类型将在未来的Gradle release版本中加入。
+
 As this plugin is currently incubating, only a few build init types are currently supported. More types will be added in future Gradle releases.
 
-因为插件正在开发中，所以仅仅只有一少部分的初始化类型支持，更多得类型可以在未来的Gradle release版本中会加入。
 
-### **47.3.1. “pom” (Maven conversion)**
+### **47.3.1 “pom”（Maven标记）**
+47.3.1. “pom” (Maven conversion)
 
-47.3.1 “pom”（Maven标记）
+pom类型可以将Apache Maven项目转化为gradle构建. 此插件可以将pom文件转化为一或多个gradle文件。但它仅仅在pom文件有效的情况下使用，如果这个文件存在，那么类型将会自动内引用。
 
 The “pom” type can be used to convert an Apache Maven build to a Gradle build. This works by converting the POM to one or more Gradle files. It is only able to be used if there is a valid “pom.xml” file in the directory that the init task is invoked in. This type will be automatically inferred if such a file exists.
 
-pom类型就可以将Apache Maven项目转化为gradle构建. 插件将把pom文件转化为一到多个gradle配置文件。这个插件仅仅在pom文件有效的情况下使用，如果这个文件存在，那么类型将会自动内引用。
+Maven conversion是由gradle community 小组成员开发，是使用maven2gradle工具实现的。  
 
 The Maven conversion implementation was inspired by the maven2gradle tool that was originally developed by Gradle community members.
 
-插件是使用maven2gradle工具实现的，工具是由gradle community 小组成员开发的。
-
+转化的过程有如下的特征：   
 The conversion process has the following features:
 
-转化的过程有如下的特征：
-
+使用有效的POM文件以及有效的设置  
 Uses effective POM and effective settings (support for POM inheritance, dependency management, properties)
 
-使用有效的POM文件以及有效的设置
-
+支持单模块项目以及多样化模块项目     
 Supports both single module and multimodule projects
 
-支持单模块项目以及多样化模块项目
-
+支持自定义模块名      
 Supports custom module names (that differ from directory names)
 
-支持自定义模块名
-
+产生大致数据-例如id，描述，和版本   
 Generates general metadata - id, description and version
 
-产生大致数据-例如id，描述，和版本
-
+应用maven，java以及war插件      
 Applies maven, java and war plugins (as needed)
 
-应用maven，java以及war插件
-
+支持打包war项目到jar包       
 Supports packaging war projects as jars if needed
 
-支持打包war项目到jar包
-
+生成依赖，包含外置以及内置依赖     
 Generates dependencies (both external and inter-module)
 
-生成依赖，包含外置以及内置依赖
-
+生成下载资源库，例如本地Maven仓库     
 Generates download repositories (inc. local Maven repository)
 
-生成下载资源库，例如本地Maven仓库
-
+仅支持java编译设置    
 Adjusts Java compiler settings
 
-仅支持java编译设置
-
+支持打包原文件以及测试     
 Supports packaging of sources and tests
 
-支持打包原文件以及测试
-
+支持TestNG runner     
 Supports TestNG runner
 
-支持TestNG runner
-
+依靠maven实施插件设置生成全局扩展     
 Generates global exclusions from Maven enforcer plugin settings
 
-依靠maven实施插件设置生成全局扩展
 
 ### **47.3.2. “java-library”**
 
+“java-library”类型初始化当前不支持推断使用，只能明确得声明为这个类型才能使用，这个和刚才的pom类型是有区别的，pom类型可以不声明type。    
 The “java-library” build init type is not inferable. It must be explicitly specified.
 
-“java-library”类型初始化当前不支持推断使用，只能明确得声明为这个类型才能使用，这个和刚才的pom类型是有区别的，pom类型可以不声明type
-
+它有以下的特征：    
 It has the following features:
 
-它有以下的特征：
-
+需要使用java插件    
 Uses the “java” plugin
 
-需要使用java插件
-
+需要使用jcenter依赖资源库     
 Uses the “jcenter” dependency repository
 
-需要使用jcenter依赖资源库
-
+需要使用Junit测试    
 Uses JUnit for testing
 
-需要使用Junit测试
-
+拥有本地源码转化目录    
 Has directories in the conventional locations for source code
 
-拥有本地源码转化目录
-
+包含简单的类以及单元测试，如果项目不存在源码和测试文件的话     
 Contains a sample class and unit test, if there are no existing source or test files
-
-包含简单的类以及单元测试，如果项目不存在源码和测试文件的话
 
 
 ### **47.3.3. “scala-library”**
 
+scala-library没有明确的初始化类型，它是需要明确指定type类型。      
 The “scala-library” build init type is not inferable. It must be explicitly specified.
 
-scala-library也是需要明确指定type类型得
-
+它有以下特征：   
 It has the following features:
 
-它有以下特征：
-
+使用scala插件   
 Uses the “scala” plugin
 
-使用scala插件
-
+使用jcenter依赖仓库    
 Uses the “jcenter” dependency repository
 
-使用jcenter依赖仓库
-
+使用Scala2.10版本    
 Uses Scala 2.10
 
-使用Scala2.10版本
-
+使用ScalaTest测试    
 Uses ScalaTest for testing
 
-使用ScalaTest测试
-
+拥有本地源码转化目录    
 Has directories in the conventional locations for source code
 
-拥有本地源码转化目录
-
+包含简单的scala类以及ScalaTest测试套件，如果项目不存在源码和测试文件的话   
 Contains a sample scala class and an associated ScalaTest test suite, if there are no existing source or test files
 
-包含简单的scala类以及ScalaTest测试套件，如果项目不存在源码和测试文件的话
 
 ### **47.3.4. “groovy-library”**
 
+groovy-library没有明确的初始化类型，它也是需要明确指定type类型。     
 The “groovy-library” build init type is not inferable. It must be explicitly specified.
 
-groovy-library需要明确指定构建type
 
+它拥有如下特征：   
 It has the following features:
 
-拥有如下特征：
-
+使用groovy插件  
 Uses the “groovy” plugin
 
-使用groovy插件
-
+使用jcenter仓库   
 Uses the “jcenter” dependency repository
 
-使用jcenter仓库
-
+使用groovy 2.x版本    
 Uses Groovy 2.x
 
-使用groovy 2.x版本
-
+使用Spock测试框架来测试    
 Uses Spock testing framework for testing
 
-使用Spock测试框架来测试
-
+拥有源码转化目录    
 Has directories in the conventional locations for source code
 
-拥有源码转化目录
-
+包含简单的Groovy类以及associated Spock specification，如果项目不存在源码和测试文件的话    
 Contains a sample Groovy class and an associated Spock specification, if there are no existing source or test files
 
-包含简单的Groovy类以及associated Spock specification，如果项目不存在源码和测试文件的话
 
-### **47.3.5. “basic”**
 
-47.3.5  基本类型
+### **47.3.5  基本类型”**
+
+47.3.5. “basic
 
 The “basic” build init type is useful for creating a fresh new Gradle project. It creates a sample build.gradle file, with comments and links to help get started.
 
-基本类型在创建一个新的gradle项目的时候非常有用，它可以创建一个简单的gradle构建文件，拥有备注以及连接帮助你开始使用。
+基本类型在创建一个新的gradle项目时是非常有用的，它可以创建一个简单的gradle构建文件，拥有备注及连接帮助你开始使用。
 
 This type is used when no type was explicitly specified, and no type could be inferred.
 
