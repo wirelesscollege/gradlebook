@@ -22,9 +22,9 @@ The sonarAnalyze task is a standalone task that needs to be executed explicitly 
 
 At a minimum， the Sonar plugin has to be applied to the project.
 
-示例 34.1. 使用Sonar插件
+示例 35.1. 使用Sonar插件
 
-Example 34.1. Applying the Sonar plugin
+Example 35.1. Applying the Sonar plugin
 
 build.gradle
 
@@ -36,9 +36,9 @@ apply plugin: "sonar"
 
 Unless Sonar is run locally and with default settings， it is necessary to configure connection settings for the Sonar server and database.
 
-示例 34.2. 配置Sonar连接设置
+示例 35.2. 配置Sonar连接设置
 
-Example 34.2. Configuring Sonar connection settings
+Example 35.2. Configuring Sonar connection settings
 
 build.gradle
 
@@ -56,17 +56,17 @@ sonar {
 }
 ```
 
-另外，可以通过命令行来设置部分或所有连接(参见34.6节:"命令行配置Sonar设置").
+另外，可以通过命令行来设置部分或所有连接(参见35.6节:"命令行配置Sonar设置").
 
-Alternatively， some or all connection settings can be set from the command line (see Section 34.6， “Configuring Sonar Settings from the Command Line”).
+Alternatively， some or all connection settings can be set from the command line (see Section 35.6， “Configuring Sonar Settings from the Command Line”).
 
 项目设置决定这个项目将会如何进行分析，默认配置适用于分析标准的Java项目，并且你可以在许多方面进行自定义。
 
 Project settings determine how the project is going to be analyzed. The default configuration works well for analyzing standard Java projects and can be customized in many ways.
 
-示例 34.3. 配置Sonar项目设置
+示例 35.3. 配置Sonar项目设置
 
-Example 34.3. Configuring Sonar project settings
+Example 35.3. Configuring Sonar project settings
 
 build.gradle
 
@@ -82,9 +82,9 @@ sonar在SonarRootModel类型的对象上配置服务器、数据库和项目块�
 
 The sonar， server， database， and project blocks in the examples above configure objects of type SonarRootModel， SonarServer， SonarDatabase， and SonarProject， respectively. See their API documentation for further information.
 
-## **34.2. 分析多项目构建**
+## **35.2. 分析多项目构建**
 
-34.2. Analyzing Multi-Project Builds
+35.2. Analyzing Multi-Project Builds
 
 Sonar插件能够分析整个项目的层次结构.且能在Sonar web界面的综合指标里生成了项目及其子项目的层次视图。这也比每个项目单独分析要快。
 
@@ -94,9 +94,9 @@ The Sonar plugin is capable of analyzing a whole project hierarchy at once. This
 
 To analyze a project hierarchy， the Sonar plugin needs to be applied to the top-most project of the hierarchy. Typically (but not necessarily) this will be the root project. The sonar block in that project configures an object of type SonarRootModel. It holds all global configuration， most importantly server and database connection settings.
 
-示例 34.4. 多项目构建的全局配置
+示例 35.4. 多项目构建的全局配置
 
-Example 34.4. Global configuration in a multi-project build
+Example 35.4. Global configuration in a multi-project build
 
 build.gradle
 
@@ -120,9 +120,9 @@ sonar {
 
 Each project in the hierarchy has its own project configuration. Common values can be set from a parent build script.
 
-示例 34.5. 在多项目构建中配置共同的项目
+示例 35.5. 在多项目构建中配置共同的项目
 
-Example 34.5. Common project configuration in a multi-project build
+Example 35.5. Common project configuration in a multi-project build
 build.gradle
 ```
 subprojects {
@@ -141,9 +141,9 @@ The sonar block in a subproject configures an object of type SonarProjectModel.
 
 Projects can also be configured individually. For example， setting the skip property to true prevents a project (and its subprojects) from being analyzed. Skipped projects will not be displayed in the Sonar web interface.
 
-示例 34.6. 在多项目构建中配置单个项目
+示例 35.6. 在多项目构建中配置单个项目 
 
-Example 34.6. Individual project configuration in a multi-project build
+Example 35.6. Individual project configuration in a multi-project build
 
 build.gradle
 
@@ -161,9 +161,9 @@ project(":project1") {
 
 Another typical per-project configuration is the programming language to be analyzed. Note that Sonar can only analyze one language per project.
 
-示例 34.7. 配置被分析的语言
+示例 35.7. 配置被分析的语言
 
-Example 34.7. Configuring the language to be analyzed
+Example 35.7. Configuring the language to be analyzed
 
 build.gradle
 ```
@@ -180,9 +180,9 @@ project(":project2") {
 
 When setting only a single property at a time， the equivalent property syntax is more succinct:
 
-示例 34.8. 使用属性语法
+示例 35.8. 使用属性语法
 
-Example 34.8. Using property syntax
+Example 35.8. Using property syntax
 
 build.gradle
 
@@ -190,15 +190,16 @@ build.gradle
 project(":project2").sonar.project.language = "groovy"
 ```
 
-## **34.3 分析自定义源集合**
+## **35.3 分析自定义源集合**
 
-34.3. Analyzing Custom Source Sets
+35.3. Analyzing Custom Source Sets
 
 默认情况下，Sonar插件将分析main和test这两源集合，这不依赖于项目源目录布局.可根据需要添加附加源集合.
 
 By default， the Sonar plugin will analyze the production sources in the main source set and the test sources in the test source set. This works independent of the project's source directory layout. Additional source sets can be added as needed.
 
-Example 34.9. Analyzing custom source sets
+示例 35.9 分析自定义源集合
+Example 35.9. Analyzing custom source sets
 
 build.gradle
 ```
