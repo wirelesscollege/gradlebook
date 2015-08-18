@@ -14,9 +14,9 @@ sonarAnalyze任务是一个孤立的任务，执行它不需要依赖其他的ta
 
 The sonarAnalyze task is a standalone task that needs to be executed explicitly and doesn't depend on any other tasks. Apart from source code， the task also analyzes class files and test result files (if available). For best results， it is therefore recommended to run a full build before the analysis. In a typical setup， analysis would be performed once per day on a build server.
 
-## **34.1. 用法**
+## **35.1. 用法**
 
-34.1. Usage
+35.1. Usage
 
 当使用Sonar插件的时候，如下代码需要配置到build.gradle项目内。
 
