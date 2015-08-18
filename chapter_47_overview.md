@@ -1,22 +1,23 @@
-# **Chapter 46. Build Init Plugin**
+# **Chapter 47. Build Init Plugin**
 
-第46章 构建初始化插件
-
-The Build Init plugin is currently incubating. Please be aware that the DSL and other configuration may change in later Gradle versions.
+第47章 构建初始化插件
 
 构建初始化插件正在开发中，在以后的gradle版本中可能会发生DSL或者其他配置的变化。
 
+The Build Init plugin is currently incubating. Please be aware that the DSL and other configuration may change in later Gradle versions.
+
+gradle构建初始化插件可以在引入一个新的gradle中间时使用，它支持在不同类型的项目中创建标记以更好的转化为gradle的构建任务，例如：Apache Maven build   
+
 The Gradle Build Init plugin can be used to bootstrap the process of creating a new Gradle build. It supports creating brand new projects of different types as well as converting existing builds (e.g. An Apache Maven build) to be Gradle builds.
 
-gradle构建初始化插件可以在引导一个新的gradle中间时使用，它支持在不同类型得项目中创建标记以更好的转化为gradle的构建任务，例如：Apache Maven build
+Gradle插件使用前需要在配置文件里声明（详见章节21.3“插件的应用”），而构建初始化插件是被自动应用的插件，那意味着你不需要在配置文件里去配置它，使用这个初始化插件其实就是在你创建Gradle 构建时就开始了，不需要创建一个“stub” build.gradle文件去应用它。
 
 Gradle plugins typically need to be applied to a project before they can be used (see Section 21.3, “Applying plugins”). The Build Init plugin is an automatically applied plugin, which means you do not need to apply it explicitly. To use the plugin, simply execute the task named init where you would like to create the Gradle build. There is no need to create a “stub” build.gradle file in order to apply the plugin.
 
-Gradle插件需要在使用前在配置文件里声明，查看21.3“Applying plugins”，而构建初始化插件是呗自动应用的插件，那意味着你不需要在配置文件里去配置它，使用这个初始化插件其实就是在你创建Gradle build的时候就开始了，不需要创建一个“桩”build.gradle文件去应用该插件。
+在wrapper类型任务里也是一样，你只需要保证Gradle Wrapper插件配置到项目里了就好了（见48章，Wrapper 插件）。
 
 It also leverages the wrapper task from the Wrapper plugin (see Chapter 48, Wrapper Plugin), which means that the Gradle Wrapper will also be installed into the project.
 
-在wrapper类型任务里也是一样，你只需要保证Gradle Wrapper插件配置到项目里了就好了。请查看48，Wrapper Plugin。
 
 ## **47.1. Tasks**
 
