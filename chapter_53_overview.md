@@ -11,19 +11,19 @@ This chapter describes the original publishing mechanism available in Gradle 1.0
 
 You can read about the new publishing plugins in Chapter 67, Ivy Publishing (new) and Chapter 68, Maven Publishing (new). Please try them out and give us feedback. 
 
-## **51.1引言**
+## **53.1引言**
 
-51.1. Introduction
+53.1. Introduction
 
-本章是关于如何声明项目的构建产物，以及在工作中如何利用这些构建产物。定义项目的产物作为文件提供给外面的世界。产物有可能是个库或者是 ZIP文件或者是其他的文件，并且想发布多少产物就发布多少。
+本章是关于如何声明项目的构建产物，以及在工作中如何利用这些构建产物。定义项目的产物作为文件提供给外面的世界。产物有可能是个库或者是 ZIP文件或者是其他的文件，并且想发布多少产物就可以发布多少。
 
 This chapter is about how you declare the outgoing artifacts of your project, and how to work with them (e.g. upload them). We define the artifacts of the projects as the files the project provides to the outside world. This might be a library or a ZIP distribution or any other file. A project can publish as many artifacts as it wants. 
 
-## **51.2.产物与配置**
+## **53.2.产物与配置**
 
-51.2. Artifacts and configurations
+53.2. Artifacts and configurations
 
-像依赖一样，artifacts是配出来的。事实上，配置可以同时包括artifacts与dependencies。
+像依赖一样，构建产物是配置出来的。事实上，配置可以同时包括构建产物和依赖。
 
 Like dependencies, artifacts are grouped by configurations. In fact, a configuration can contain both artifacts and dependencies at the same time. 
 
