@@ -27,7 +27,7 @@ This chapter is about how you declare the outgoing artifacts of your project, an
 
 Like dependencies, artifacts are grouped by configurations. In fact, a configuration can contain both artifacts and dependencies at the same time. 
 
-在项目中为每个配置，Gradle提供uploadConfigurationName 与 buildConfigurationName任务。这些任务会 build并上传属于各自配置的artifacts。
+对于项目的每一个配置，Gradle提供uploadConfigurationName 与 buildConfigurationName任务。这些任务会 build并上传属于各自配置的artifacts。
 
 For each configuration in your project, Gradle provides the tasks uploadConfigurationName and buildConfigurationName. [18] Execution of these tasks will build or upload the artifacts belonging to the respective configuration. 
 
