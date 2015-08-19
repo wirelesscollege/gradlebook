@@ -1,14 +1,15 @@
 # **第53章．发布构建产物**
 
-Chapter 53. Publishing artifacts
+Chapter 53. Publishing artifacts  
 
-可能在Gradle 1.0至Gradle 1.3，一个新的出版机构被介绍过。而这种新的机制是孵化产品还不成熟，它引入了一些新的概念与特征，这将会使Gradle publishing 将会更强大。
+本章将介绍在Gradle 1.0至Gradle 1.3中介绍过的一个新的发布机制，
+但这个新的机制是孵化产品还不成熟，它引入了一些新的概念与特征，这将会使Gradle publishing 如虎添翼。
 
 This chapter describes the original publishing mechanism available in Gradle 1.0: in Gradle 1.3 a new mechanism for publishing was introduced. While this new mechanism is incubating and not yet complete, it introduces some new concepts and features that do (and will) make Gradle publishing even more powerful. 
 
-在64章Ivy Publishing (new)与65章Maven Publishing (new)，可以读到关于新出版物的插件，请试着使用它们，并给我们反馈使用中的问题。
+你可以在67章Ivy Publishing (new)和68章Maven Publishing (new)，读到关于新出版物的插件。请试着使用它们，并给我们反馈使用中的问题。
 
-You can read about the new publishing plugins in Chapter 64, Ivy Publishing (new) and Chapter 65, Maven Publishing (new). Please try them out and give us feedback. 
+You can read about the new publishing plugins in Chapter 67, Ivy Publishing (new) and Chapter 68, Maven Publishing (new). Please try them out and give us feedback. 
 
 ## **51.1引言**
 
