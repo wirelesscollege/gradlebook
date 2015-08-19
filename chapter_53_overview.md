@@ -107,7 +107,6 @@ map-based syntax定义使用文件的artifact，map必须包括输入文件，�
 
 There is a map-based syntax for defining an artifact using a file. The map must include a file entry that defines the file. The map may include other artifact properties: 
 
-例 53.4.Map syntax
 Example 53.4. Map syntax for defining an artifact using a file
 
 build.gradle
@@ -121,15 +120,16 @@ artifacts {
 }
 ```
 
-## **51.4.发布artifacts**
+## **53.4.发布构建产物**
 
-51.4. Publishing artifacts
+53.4. Publishing artifacts
 
-每一个任务都有一个特定的upload task，在上传之前，必须配置upload task并定义要发布的路径. 您所定义的库不会自动用于上传, 事实上，这些库中的一些只允许下载artifacts，而不是上传。下面是一个示例，您可以配置一个upload task configuration：
+每一个任务都有一个特定的upload task，在上传之前，必须配置upload task并定义要发布的路径. 您所定义的库不会自动用于上传, 事实上，这些库中的一些只允许下载artifacts，而不是上传。下面是一个示例，如何配置一个upload task配置：
 
 We have said that there is a specific upload task for each configuration. Before you can do an upload, you have to configure the upload task and define where to publish the artifacts to. The repositories you have defined (as described in Section 50.6, “Repositories”) are not automatically used for uploading. In fact, some of those repositories only allow downloading artifacts, not uploading. Here is an example of how you can configure the upload task of a configuration: 
 
-Example 51.5. Configuration of the upload task
+例 53.5 配置upload task   
+Example 53.5. Configuration of the upload task
 
 build.gradle
 ```
@@ -154,27 +154,31 @@ uploadArchives {
 }
 ```
 
-如上所示，你可以使用一个引用到现在的repository或者创建一个新的repository. 如第50.6.9中“More about Ivy resolvers”描述，你就可以使用所有的Ivy resolver来用于上传。
+如上所示，你可以使用一个引用到现在的repository或者创建一个新的repository. 如第52.6.9中“More about Ivy resolvers”描述，你就可以使用所有的Ivy resolver来用于上传。
 
-如果upload repository被定义于多模式的，Gradle必须为每个上传文件选择一个模式。Gradle将会结合可选布书友参数默认上传url parameter定义的模式。如果没有提供url parameter，Gradle将会使用第一个定义的artifactPattern进行上传或者如果设置了ivyPattern，将会使用第一个定义的ivyPattern上传Ivy files
-上传Maven repository的相关描述，详见Section 52.6, “Interacting with Maven repositories”
+As you can see, you can either use a reference to an existing repository or create a new repository. As described in Section 52.6.9, “More about Ivy resolvers”, you can use all the Ivy resolvers suitable for the purpose of uploading. 
 
-As you can see, you can either use a reference to an existing repository or create a new repository. As described in Section 50.6.9, “More about Ivy resolvers”, you can use all the Ivy resolvers suitable for the purpose of uploading. 
+如果upload repository被定义于多模式的，Gradle必须为每个上传文件选择一个模式。Gradle将会结合可选布书友参数默认上传url parameter定义的模式。如果没有提供url parameter，Gradle将会使用第一个定义的artifactPattern进行上传或者如果设置了ivyPattern，将会使用第一个定义的ivyPattern上传Ivy files。
 
-If an upload repository is defined with multiple patterns, Gradle must choose a pattern to use for uploading each file. By default, Gradle will upload to the pattern defined by the url parameter, combined with the optional layout parameter. If no url parameter is supplied, then Gradle will use the first defined artifactPattern for uploading, or the first defined ivyPattern for uploading Ivy files, if this is set. 
-Uploading to a Maven repository is described in Section 52.6, “Interacting with Maven repositories”.
+If an upload repository is defined with multiple patterns, Gradle must choose a pattern to use for uploading each file.By default, Gradle will upload to the pattern defined by the url parameter, combined with the optional layout parameter. If no url parameter is supplied, then Gradle will use the first defined artifactPattern for uploading, or the first defined ivyPattern for uploading Ivy files, if this is set. 
 
-## **51.5. More about project libraries**
+上传Maven repository的相关描述，详见章节 54.6, “Interacting with Maven repositories”。  
+
+Uploading to a Maven repository is described in Section 54.6, “Interacting with Maven repositories”.
+
+## **53.5. 更多关于 project libraries**
+53.5. More about project libraries
 
 如果你的项目被用作library，你需要定义这个library的artifacts是什么并且定义这些artifacts的依赖关系。Java plugin为这个目的添了runtime configuration，隐含假设是，即runtime依赖是要发布的artifact的依赖，当然这个是完全可定制的，您可以添加自定义配置，或者让现有的配置从其他配置扩展。你可能有一个不同artifacts 组，其中一组有不同的dependencies设置。这个机制是非常强大和灵活的。
 
 If your project is supposed to be used as a library, you need to define what are the artifacts of this library and what are the dependencies of these artifacts. The Java plugin adds a runtime configuration for this purpose, with the implicit assumption that the runtime dependencies are the dependencies of the artifact you want to publish. Of course this is fully customizable. You can add your own custom configuration or let the existing configurations extend from other configurations. You might have a different group of artifacts which have a different set of dependencies. This mechanism is very powerful and flexible. 
 
-如果有人想使用你的项目作为library，她只需简单声明所依赖的配置。Gradle dependency提供配置属性。如果未指定配置属性，则使用默认配置（详见50.4.9 “Dependency configurations”）,使用你的项目作为一个库，无从是从multi-project build还是通过从存储库中检索项目。在后一种情况下，版本库中的ivy.xml描述符应该包含所有必要的信息。如果你使用Maven库你不工作要有灵活性，如上面所描述的。如何发布Maven repository,详见52.6, “Interacting with Maven repositories”
+如果有人想使用你的项目作为library，她只需简单声明所依赖的配置。Gradle dependency提供配置属性。如果未指定配置属性，则使用默认配置（详见52.4.9 “依赖配置”）,要使用你的项目作为一个库，可以选择多项目构建或者通过从存储库中检索项目。在后一种情况下，版本库中的ivy.xml描述符应该包含所有必要的信息。如果你使用Maven库就不具备那种灵活性了，如上面所描述的。如何发布Maven repository,详见54.6, “Interacting with Maven repositories”  
 
-If someone wants to use your project as a library, she simply needs to declare which configuration of the dependency to depend on. A Gradle dependency offers the configuration property to declare this. If this is not specified, the default configuration is used (see Section 50.4.9, “Dependency configurations”). Using your project as a library can either happen from within a multi-project build or by retrieving your project from a repository. In the latter case, an ivy.xml descriptor in the repository is supposed to contain all the necessary information. If you work with Maven repositories you don't have the flexibility as described above. For how to publish to a Maven repository, see the section Section 52.6, “Interacting with Maven repositories”. 
+If someone wants to use your project as a library, she simply needs to declare which configuration of the dependency to depend on. A Gradle dependency offers the configuration property to declare this. If this is not specified, the default configuration is used (see Section 52.4.9, “Dependency configurations”). Using your project as a library can either happen from within a multi-project build or by retrieving your project from a repository. In the latter case, an ivy.xml descriptor in the repository is supposed to contain all the necessary information. If you work with Maven repositories you don't have the flexibility as described above. For how to publish to a Maven repository, see the section Section 54.6, “Interacting with Maven repositories”. 
 
 ________________________________________
+【18】准确的说，基础插件中提供了这些任务。如果你使用Java插件，这些插件会自动应用。     
 [18] To be exact, the Base plugin provides those tasks. This plugin is automatically applied if you use the Java plugin.
 
 百度搜索[无线学院](http://wirelesscollege.cn)
