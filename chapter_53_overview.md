@@ -1,4 +1,4 @@
-# **第53章．发布构建产物**
+# **第53章发布构建产物**
 
 Chapter 53. Publishing artifacts  
 
