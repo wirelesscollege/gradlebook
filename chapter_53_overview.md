@@ -7,7 +7,7 @@ Chapter 53. Publishing artifacts
 
 This chapter describes the original publishing mechanism available in Gradle 1.0: in Gradle 1.3 a new mechanism for publishing was introduced. While this new mechanism is incubating and not yet complete, it introduces some new concepts and features that do (and will) make Gradle publishing even more powerful. 
 
-你可以在67章Ivy Publishing (new)和68章Maven Publishing (new)，读到关于新出版物的插件。请试着使用它们，并给我们反馈使用中的问题。
+你可以在67章Ivy Publishing (new)和68章Maven Publishing (new)中读到关于新出版物插件的信息。请试着使用它们，并给我们反馈使用中的问题。
 
 You can read about the new publishing plugins in Chapter 67, Ivy Publishing (new) and Chapter 68, Maven Publishing (new). Please try them out and give us feedback. 
 
