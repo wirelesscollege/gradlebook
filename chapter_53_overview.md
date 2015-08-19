@@ -35,19 +35,19 @@ For each configuration in your project, Gradle provides the tasks uploadConfigur
 
 Table 22.5, “Java plugin - dependency configurations” shows the configurations added by the Java plugin. Two of the configurations are relevant for the usage with artifacts. The archives configuration is the standard configuration to assign your artifacts to. The Java plugin automatically assigns the default jar to this configuration. We will talk more about the runtime configuration in Section 53.5, “More about project libraries”. As with dependencies, you can declare as many custom configurations as you like and assign artifacts to them. 
 
-## **51.3声明artifacts**
+## **53.3声明构建产物**
 
-51.3. Declaring artifacts
+53.3. Declaring artifacts
 
-### **51.3.1. Archive task artifacts**
+### **53.3.1. Archive task artifacts**
 
 可以使用archive task来定义artifact
 
 You can use an archive task to define an artifact:
 
-例：51.1. 用archive task定义一个artifact
+例：53.1. 用archive task定义一个artifact
 
-Example 51.1. Defining an artifact using an archive task
+Example 53.1. Defining an artifact using an archive task
 
 build.gradle
 ```
@@ -62,15 +62,15 @@ artifacts {
 
 It is important to note that the custom archives you are creating as part of your build are not automatically assigned to any configuration. You have to explicitly do this assignment.
 
-### **51.3.2. File artifacts**
+### **53.3.2. File artifacts**
 
-也可以把artifact放到文件中。
+你也可以把artifact存放到文件中。
 
 You can also use a file to define an artifact:
 
-例51.2 使用文件来存放artifact
+例53.2 使用文件来存放artifact
 
-Example 51.2. Defining an artifact using a file
+Example 53.2. Defining an artifact using a file
 
 build.gradle
 ```
@@ -81,11 +81,12 @@ artifacts {
 }
 ```
 
-Gradle根据文件的名称计算出artifact的属性，可以自己自定义这些属性：
+Gradle根据文件的名称计算出artifact的属性，你也可以自己自定义这些属性：
 
 Gradle will figure out the properties of the artifact based on the name of the file. You can customize these properties:
 
-Example 51.3. Customizing an artifact
+例 53.3 自定义一个artifact  
+Example 53.3. Customizing an artifact
 
 build.gradle
 ```
@@ -102,11 +103,12 @@ artifacts {
 }
 ```
 
-map-based syntax定义使用文件的artifact，map必须包括输入文件，也可以包括其他属性
+map-based syntax定义使用文件的artifact，map必须包括输入文件，也可以包括其他属性。  
 
 There is a map-based syntax for defining an artifact using a file. The map must include a file entry that defines the file. The map may include other artifact properties: 
 
-Example 51.4. Map syntax for defining an artifact using a file
+例 53.4.Map syntax
+Example 53.4. Map syntax for defining an artifact using a file
 
 build.gradle
 ```
