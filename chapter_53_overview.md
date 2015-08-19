@@ -1,6 +1,6 @@
-# **第51章．发布构建产物**
+# **第53章．发布构建产物**
 
-Chapter 51. Publishing artifacts
+Chapter 53. Publishing artifacts
 
 可能在Gradle 1.0至Gradle 1.3，一个新的出版机构被介绍过。而这种新的机制是孵化产品还不成熟，它引入了一些新的概念与特征，这将会使Gradle publishing 将会更强大。
 
