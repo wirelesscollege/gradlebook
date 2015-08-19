@@ -31,9 +31,9 @@ Gradle提供uploadConfigurationName 和 buildConfigurationName任务给你项目
 
 For each configuration in your project, Gradle provides the tasks uploadConfigurationName and buildConfigurationName. [18] Execution of these tasks will build or upload the artifacts belonging to the respective configuration. 
 
-表22.5,” Java plugin - dependency configurations” 通过Java plugin显示添加的配置，两个配置对artifacts的用法都有重大意义。archives configuration 是将标准配置分配到自己的artifacts 中。Java plugin自动分配默认的jar为这些配置。在51.5“More about project libraries”会介绍更多关于runtime配置，作为依赖，你可以声明许多自定义配置，将artifacts分配给自定义的配置
+表22.5,” Java 插件 - 依赖配置” 通过Java 插件展示了添加的配置，两个配置对构建产物的用法都有重大意义。归档配置是将标准配置分配到自己的构建产物 中。Java 插件自动分配默认的jar为这些配置。在53.5“关于项目库的更多”会介绍更多关于runtime配置，作为依赖，你可以声明许多自定义配置，将构建产物分配给自定义的配置。
 
-Table 22.5, “Java plugin - dependency configurations” shows the configurations added by the Java plugin. Two of the configurations are relevant for the usage with artifacts. The archives configuration is the standard configuration to assign your artifacts to. The Java plugin automatically assigns the default jar to this configuration. We will talk more about the runtime configuration in Section 51.5, “More about project libraries”. As with dependencies, you can declare as many custom configurations as you like and assign artifacts to them. 
+Table 22.5, “Java plugin - dependency configurations” shows the configurations added by the Java plugin. Two of the configurations are relevant for the usage with artifacts. The archives configuration is the standard configuration to assign your artifacts to. The Java plugin automatically assigns the default jar to this configuration. We will talk more about the runtime configuration in Section 53.5, “More about project libraries”. As with dependencies, you can declare as many custom configurations as you like and assign artifacts to them. 
 
 ## **51.3声明artifacts**
 
