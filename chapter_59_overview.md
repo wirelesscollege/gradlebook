@@ -42,7 +42,7 @@ The Configuration injection feature and access to the complete project model are
 
 Configuration on demand mode attempts to configure only projects that are relevant for requested tasks, i.e. it only executes the build.gradle file of projects that are participating in the build. This way, the configuration time of a large multi-project build can be reduced. In the long term, this mode will become the default mode, possibly the only mode for Gradle build execution. The configuration on demand feature is incubating so not every build is guaranteed to work correctly. The feature should work very well for multi-project builds that have decoupled projects (Section 59.9, “Decoupled Projects”). In “configuration on demand” mode, projects are configured as follows:
 
-根项目总始终配置。这种方式的典型配置支持(项目或子项目的脚本块)
+根项目总是始终配置。这种方式的典型配置支持(项目或子项目的脚本块)
 
 The root project is always configured. This way the typical common configuration is supported (allprojects or subprojects script blocks).
 
