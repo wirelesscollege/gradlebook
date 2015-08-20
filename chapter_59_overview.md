@@ -1,6 +1,6 @@
-# **第56章.多项目构建**
+# **第59章 多项目构建**
 
-Chapter 56. Multi-project Builds
+Chapter 59. Multi-project Builds
 
 强有力的支持多项目构建是Gradle的独有卖点之一,这个主题也是最有技术含量的.
 
@@ -10,37 +10,37 @@ The powerful support for multi-project builds is one of Gradle's unique selling 
 
 A multi-project build in gradle consists of one root project, and one or more subprojects that may also have subprojects.
 
-## **56.1 跨项目配置**
+## **59.1 跨项目配置**
 
-56.1. Cross project configuration
+59.1. Cross project configuration
 
 虽然每个子项目能够在与其他子项目完全隔离下配置自身,这是子项目共同的特性。但通常更好的会在项目间共享配置,因为相同的配置会影响多个子项目。
 
 While each subproject could configure itself in complete isolation of the other subprojects, it is common that subprojects share common traits. It is then usually preferable to share configurations among projects, so the same configuration affects several subprojects.
 
-让我们开始一个非常简单的多项目构建。Gradle是一个支持通用构建的工具。因此项目并不一定要是Java项目。我们的第一个实例是关于
+让我们开始一个非常简单的多项目构建。Gradle是一个支持通用构建的工具。因此项目并不一定要是Java项目。我们的第一个实例是关于marine life.
 
 Let's start with a very simple multi-project build. Gradle is a general purpose build tool at its core, so the projects don't have to be Java projects. Our first examples are about marine life.
 
-### **56.1.1. 配置和执行**
+### **59.1.1. 配置和执行**
 
-56.1.1. Configuration and execution
+59.1.1. Configuration and execution
 
-55.1节中，“Build phases”介绍了Gradle每次构建的过程。让我们放大一次多项目构建的配置和过程.此处的配置是指执行一个项目的build.gradle文件,这意味着如使用'apply plugin'声明下载所有插件.默认情况下,所有项目的配置会在执行任意task前执行.这意味着当从一个项目中发起一个单一任务请求时,需要先配置所有多项目构建。原因是为了支持灵活的访问和改变任何部分的Gradle项目模型
+58.1节中，“Build phases”介绍了Gradle每次构建的过程。让我们放大一次多项目构建的配置和过程.此处的配置是指执行一个项目的build.gradle文件,这意味着如使用'apply plugin'声明下载所有插件.默认情况下,所有项目的配置会在执行任意task前执行.这意味着当从一个项目中发起一个单一任务请求时,需要先配置所有多项目构建。原因是为了支持灵活的访问和改变任何部分的Gradle项目模型
 
 Section 55.1, “Build phases” describes the phases of every Gradle build. Let's zoom into the configuration and execution phases of a multi-project build. Configuration here means executing the build.gradle file of a project, which implies e.g. downloading all plugins that were declared using 'apply plugin'. By default, the configuration of all projects happens before any task is executed. This means that when a single task, from a single project is requested, all projects of multi-project build are configured first. The reason every project needs to be configured is to support the flexibility of accessing and changing any part of the Gradle project model.
 
-56.1.1.1. 按需配置
+59.1.1.1. 按需配置
 
-56.1.1.1. Configuration on demand
+59.1.1.1. Configuration on demand
 
-由于每个项目在执行阶段之前都配置了，因此配置注入功能和访问完整项目模型都是可能的。然而，这种方法在一个非常大的多项目构建中可能不是最有效的。它们有Gradle构建层次上的子项目。庞大的多项目构建的配置时间可能会变得很明显。可扩展性是Gradle的重要要求。因此，从1.4版本开始引入了一种新的扩展“configuration on demand”
+由于每个项目在执行阶段之前都配置了，因此配置注入功能和访问完整项目模型都是可能的。然而，这种方法在一个非常大的多项目构建中可能不是最有效的。它们有Gradle构建层次上的子项目。庞大的多项目构建的配置时间可能会变得很明显。可扩展性是Gradle的重要要求。因此，从1.4版本开始引入了一种新的扩展“configuration on demand”.
 
 The Configuration injection feature and access to the complete project model are possible because every project is configured before the execution phase. Yet, this approach may not be the most efficient in a very large multi-project build. There are Gradle builds with a hierarchy of hundreds of subprojects. The configuration time of huge multi-project builds may become noticeable. Scalability is an important requirement for Gradle. Hence, starting from version 1.4 a new incubating 'configuration on demand' mode is introduced.
 
-按需配置模式尝试配置只有相关请求任务的项目配置，即只执行参与构建项目的build.gradle文件。这种方式，一个大型多项目构建的配置时间可以减少。从伤员来看，该模式将变成默认模式，可能是Gradle构建执行的唯一模式。按需配置功能是扩展的所以不是每个构建都要保证是正常工作的。该功能进行有解耦的(56.9章节-“解耦项目”)多项目构建操作应该非常好。在“按需配置”模式下，项目配置如下：
+按需配置模式尝试配置只有相关请求任务的项目配置，即只执行参与构建项目的build.gradle文件。这种方式，一个大型多项目构建的配置时间可以减少。从长远来看，该模式将变成默认模式，可能是Gradle构建执行的唯一模式。按需配置功能是扩展的所以不是每个构建都要保证是正常工作的。该功能进行有解耦的(59.9章节-“解耦项目”)多项目构建操作应该非常好。在“按需配置”模式下，项目配置如下：
 
-Configuration on demand mode attempts to configure only projects that are relevant for requested tasks, i.e. it only executes the build.gradle file of projects that are participating in the build. This way, the configuration time of a large multi-project build can be reduced. In the long term, this mode will become the default mode, possibly the only mode for Gradle build execution. The configuration on demand feature is incubating so not every build is guaranteed to work correctly. The feature should work very well for multi-project builds that have decoupled projects (Section 56.9, “Decoupled Projects”). In “configuration on demand” mode, projects are configured as follows:
+Configuration on demand mode attempts to configure only projects that are relevant for requested tasks, i.e. it only executes the build.gradle file of projects that are participating in the build. This way, the configuration time of a large multi-project build can be reduced. In the long term, this mode will become the default mode, possibly the only mode for Gradle build execution. The configuration on demand feature is incubating so not every build is guaranteed to work correctly. The feature should work very well for multi-project builds that have decoupled projects (Section 59.9, “Decoupled Projects”). In “configuration on demand” mode, projects are configured as follows:
 
 根项目总始终配置。这种方式的典型配置支持(项目或子项目的脚本块)
 
