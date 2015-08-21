@@ -101,5 +101,4 @@ war {
 
 [13]runtime配置继承自compile配置。
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

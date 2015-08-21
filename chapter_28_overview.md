@@ -45,4 +45,3 @@ Jetty 插件定义了下列公约属性：
 |stopKey	|String	|null	|当需要请求停止时，传递给 Jetty 的key。|
 这些属性都由一个JettyPluginConvention公约对象提供。
 
-百度搜索[无线学院](http://wirelesscollege.cn)

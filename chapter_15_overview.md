@@ -640,5 +640,4 @@ taskY
 
 [7]你可能会想，为什么既不导入StopExecutionException也没有通过其完全限定名来访问它。原因是，Gradle 会向您的脚本添加默认的一些导入。这些导入是可自定义的 （见附录 E，现有的 IDE 支持和没有支持时如何应对）。
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

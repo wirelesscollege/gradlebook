@@ -52,5 +52,3 @@ Checkstyle 插件添加了下列的依赖配置：
 
 ## **29.5. 配置**
 请参阅CheckstyleExtension。
-
-百度搜索[无线学院](http://wirelesscollege.cn)

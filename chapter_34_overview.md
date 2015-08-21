@@ -254,5 +254,4 @@ Table 34.4. JaCoCo plugin - dependency configurations
 |jacocoAnt	|The JaCoCo Ant library used for running the JacocoReport and JacocoMerge tasks.|
 |jacocoAgent	|The JaCoCo agent library used for instrumenting the code under test.|
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

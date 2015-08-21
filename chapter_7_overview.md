@@ -460,5 +460,3 @@ In this chapter, you have seen how to do some of the things you commonly need to
 另外,不要忘了继续阅读第 8 章, 依赖管理基础 内容哟~~~
 
 Otherwise, continue on to Chapter 8, Dependency Management Basics.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

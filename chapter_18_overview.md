@@ -52,4 +52,3 @@ Gradle 缓存的定期垃圾收集。
 ## **18.4. 配置守护进程**
 可以配置一些守护进程的设置，例如 JVM 参数、 内存设置或Java home目录。有关更多信息请参阅20.1章节， “通过 gradle.properties 配置构建环境”
 
-百度搜索[无线学院](http://wirelesscollege.cn)

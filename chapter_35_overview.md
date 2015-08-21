@@ -347,5 +347,3 @@ Table 35.1. Sonar plugin – tasks
 |--
 |sonarAnalyze|	-	|SonarAnalyze|Analyzes a project hierarchy and stores the results in the Sonar database.|   
 
-
-百度搜索[无线学院](http://wirelesscollege.cn)

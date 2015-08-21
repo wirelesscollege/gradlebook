@@ -323,5 +323,3 @@ Otherwise, continue on to some of the other tutorials.
 [4] 我们也在努力改进语法让发布到Maven仓库不那么费劲.
 
 [4] We are working to make the syntax consistent for resolving from and publishing to Maven repositories.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

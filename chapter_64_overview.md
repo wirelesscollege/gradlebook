@@ -100,5 +100,4 @@ The Wrapper task adds appropriate file permissions to allow the execution of the
 Wrapper任务添加了合适的权限用来运行gradlew *NIX 
 命令的执行。svn保存了这个文件权限。我们不确定其他版本控制是如何处理的。总是起作用的就是执行 “sh gradlew”.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

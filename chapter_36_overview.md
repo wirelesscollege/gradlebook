@@ -369,5 +369,3 @@ Table 36.5. Sonar Runner plugin - tasks
 |--
 |sonarRunner	|-	|SonarRunner|Analyzes a project hierarchy and stores the results in the Sonar database.（分析一个项目的层级与存储结果到sonar数据库中）|
 
-百度搜索[无线学院](http://wirelesscollege.cn)
-

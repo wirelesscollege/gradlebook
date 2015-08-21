@@ -608,5 +608,3 @@ Otherwise, continue on to the tutorials in Chapter 7, Java Quickstart and Chapte
 [2] 附录中有命令可以更改这种默认行为. 请参阅 附录 D, Gradle 命令行 
 
 There are command line switches to change this behavior. See Appendix D, Gradle Command Line )
-
-百度搜索[无线学院](http://wirelesscollege.cn)

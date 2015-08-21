@@ -448,5 +448,3 @@ Project.container()方法创建NamedDomainObjectContainer实例,有很多有用�
 The Project.container() methods create instances of NamedDomainObjectContainer, that have many useful methods for managing and configuring the objects. In order to use a type with any of the project.container methods, it MUST expose a property named “name” as the unique, and constant, name for the object. The project.container(Class) variant of the container method creates new instances by attempting to invoke the constructor of the class that takes a single string argument, which is the desired name of the object. See the above link for project.container method variants that allow custom instantiation strategies.
 
 Previous|Contents|Next
-
-百度搜索[无线学院](http://wirelesscollege.cn)

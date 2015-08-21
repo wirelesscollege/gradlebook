@@ -595,4 +595,3 @@ jar.manifest.writeTo("$buildDir/mymanifest.mf")
 
 [10] TestNG 文档包含了有关测试组的更多详细信息： http://testng.org/doc/documentation-main.html#test-groups。
 
-百度搜索[无线学院](http://wirelesscollege.cn)

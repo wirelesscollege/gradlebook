@@ -81,5 +81,4 @@ This chapter describes a very simple Groovy project. Usually, a real project wil
 
 You can find out more about the Groovy plugin in Chapter 24, The Groovy Plugin, and you can find more sample Groovy projects in the samples/groovy directory in the Gradle distribution.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

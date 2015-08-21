@@ -616,4 +616,3 @@ Sometimes you are interested in which tasks are executed in which order for a gi
 
 In this chapter, you have seen some of the things you can do with Gradle from the command-line. You can find out more about the gradle command in Appendix D, Gradle Command Line.
 
-百度搜索[无线学院](http://wirelesscollege.cn)

@@ -66,5 +66,4 @@ The Build Dashboard plugin does not define any dependency configurations.
 你可以通过ReportingExtension插件来控制面板插件生成的位置
 You can influence the location of build dashboard plugin generation via ReportingExtension.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

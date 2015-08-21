@@ -214,5 +214,4 @@ uploadArchives {
 
 When signing is not required and the POM cannot be signed due to insufficient configuration (i.e. no credentials for signing) then the signPom() method will silently do nothing.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

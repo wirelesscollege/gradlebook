@@ -181,5 +181,4 @@ ________________________________________
 【18】准确的说，基础插件中提供了这些任务。如果你使用Java插件，这些插件会自动应用。     
 [18] To be exact, the Base plugin provides those tasks. This plugin is automatically applied if you use the Java plugin.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

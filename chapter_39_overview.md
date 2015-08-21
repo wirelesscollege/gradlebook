@@ -238,5 +238,3 @@ idea.project.ipr {
 IDEA文件产生的依赖的路径是绝对路径，如果你手动定义了一个指向Gradle缓存依赖的路径变量，那么IDEA将自动用这个变量代替绝对路径变量，你可以通过“idea.pathVariables”属性来定义路径变量，以便它可以适当的进行合并而不是建了重复的变量。
 
 The paths of dependencies in the generated IDEA files are absolute. If you manually define a path variable pointing to the Gradle dependency cache, IDEA will automatically replace the absolute dependency paths with this path variable. you can configure this path variable via the “idea.pathVariables” property, so that it can do a proper merge without creating duplicates.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

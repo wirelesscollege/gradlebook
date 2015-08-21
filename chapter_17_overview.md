@@ -140,5 +140,3 @@ ProjectEvaluationListener
 TaskExecutionGraphListener
 TaskExecutionListener
 TaskActionListener
-
-百度搜索[无线学院](http://wirelesscollege.cn)

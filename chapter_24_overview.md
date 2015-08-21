@@ -185,5 +185,3 @@ Java 插件向 project 里的每个source set 添加了一个JavaCompile task。
 
 [11] 我们使用和 Russel Winder 的 Gant 工具同样的约定（http://gant.codehaus.org）。
 
-百度搜索[无线学院](http://wirelesscollege.cn)
-

@@ -497,5 +497,3 @@ gradle-wrapper-1.0-src.zip
 你可以使用Project.copySpec()方法在归档之间共享内容。
 
 你经常会想要发布一个归档文件，这样就可从另一个项目中使用它。这一过程在第 51章，发布文件中会讲到。
-
-百度搜索[无线学院](http://wirelesscollege.cn)

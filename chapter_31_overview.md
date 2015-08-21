@@ -43,4 +43,3 @@ FindBugs 插件增加了下列的依赖配置：
 ## **31.4. 配置**
 请参阅FindBugsExtension。
 
-百度搜索[无线学院](http://wirelesscollege.cn)

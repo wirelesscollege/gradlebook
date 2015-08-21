@@ -81,5 +81,3 @@ TODO: which url, configure port, uses source files in place and can edit your fi
 了解更多关于War plugin和Jetty plugin的应用请参阅第 26 章, War Plugin以及 第 28 章, Jetty Plugin . 你可以在发行包的samples/webApplication下找到更多示例.
 
 You can find out more about the War plugin in Chapter 26, The War Plugin and the Jetty plugin in Chapter 28, The Jetty Plugin . You can find more sample Java projects in the samples/webApplication directory in the Gradle distribution.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

@@ -1245,5 +1245,4 @@ The current support for GoogleTest is quite rudimentary. Plans for future integr
 •	Real-time feedback for test execution.
 •	Support for additional test frameworks.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

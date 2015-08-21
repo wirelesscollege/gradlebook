@@ -66,5 +66,3 @@ Please take a look at Chapter 18, The Gradle Daemon. The Tooling API uses the da
 As the tooling API is an interface for developers, the Javadoc is the main documentation for it. This is exactly our intention - we don't expect this chapter to grow very much. Instead we will add more code samples and improve the Javadoc documentation. The main entry point to the tooling API is the GradleConnector. You can navigate from there to find code samples and other instructions. Another very important set of resources are the samples that live in “$gradleHome/samples/toolingApi”. These samples also specify all of the required dependencies for the Tooling API, along with the suggested repositories to obtain the jars from
 
 由于Tooling API对于开发者是个接口，Javadoc是它的主要文档。这正是我们的目的,我们不期望这一章非常长。取而代之,我们将添加更多的代码示例来提高Javadoc文档。指向tooling API的主要入口点是GradleConnector。你可以从那里导航找到代码示例和其他指令。另一个非常重要的资源集在“$gradleHome/samples/toolingApi”。这些样例还指明了Tooling API所有必需的依赖项,以及获取jar文件的建议库
-
-百度搜索[无线学院](http://wirelesscollege.cn)

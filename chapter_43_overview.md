@@ -45,4 +45,3 @@ rootProject {
     apply plugin: 'build-announcements'
 }
 ```
-百度搜索[无线学院](http://wirelesscollege.cn)

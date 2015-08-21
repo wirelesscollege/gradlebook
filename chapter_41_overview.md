@@ -104,5 +104,3 @@ Table 41.2. Project report plugin - convention properties
 这些常规属性提供了一个常规ProjectReportsPluginConvention类型的对象。
 
 These convention properties are provided by a convention object of type ProjectReportsPluginConvention.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

@@ -273,5 +273,3 @@ eclipse.wtp.facet.file.withXml { provider ->
     provider.asNode().fixed.find { it.@facet == 'jst.java' }.@facet = 'jst2.java'
 }
 ```
-
-百度搜索[无线学院](http://wirelesscollege.cn)

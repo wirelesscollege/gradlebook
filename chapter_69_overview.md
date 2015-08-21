@@ -420,5 +420,3 @@ Due to the inherent nature of the rule based approach, it is more efficient at c
 Gradle的这个方面正在积极开发中,它将迅速被应用。请务必查看Gradle对应版本的文档以便您使用和观看的Gradle在未来版本的发行说明中的变化。
 
 As this area of Gradle is under active development, it will be changing rapidly. Please be sure to consult the documentation of Gradle corresponding to the version you are using and to watch for changes announced in the release notes for future versions.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

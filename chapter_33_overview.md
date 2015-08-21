@@ -81,5 +81,3 @@ Table 33.3. PMD plugin - dependency configurations
 
 See the PmdExtension class in the API documentation.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
-

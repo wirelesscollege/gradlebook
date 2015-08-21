@@ -30,5 +30,4 @@ Table 48.1. Wrapper plugin - tasks
 |--
 |wrapper|	-	|Wrapper|Generates Gradle wrapper files.|
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

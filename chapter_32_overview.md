@@ -62,5 +62,4 @@ Table 32.3. JDepend plugin - dependency configurations
 
 See the ![JDependExtension](https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.JDependExtension.html class in the API documentation.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

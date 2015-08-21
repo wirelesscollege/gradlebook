@@ -436,4 +436,3 @@ The “maven-publish” plugin leverages some experimental support for late plug
 
 The same applies to any attempt to access publication-specific tasks like PublishToMavenRepository. These tasks should be referenced from within a model block.
 
-百度搜索[无线学院](http://wirelesscollege.cn)

@@ -193,5 +193,3 @@ For an archive to be a candidate for comparison, it must be added as an artifact
 该产物必须必须由zip,Jar,War,Ear任务生成.Gradle将来的版本将在这部分更加灵活.
 
 The archive must also have been produced by a Zip, Jar, War, Ear task. Future versions of Gradle will support increased flexibility in this area.
-
-百度搜索[无线学院](http://wirelesscollege.cn)

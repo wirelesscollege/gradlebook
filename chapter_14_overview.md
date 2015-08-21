@@ -157,5 +157,3 @@ gradle -q configure的输出结果
 
 
 [6] Teamcity或Bamboo就是提供这个功能的 CI 服务器的例子。
-
-百度搜索[无线学院](http://wirelesscollege.cn)

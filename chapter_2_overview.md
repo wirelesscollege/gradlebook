@@ -114,4 +114,4 @@ Ant tasks are first class citizens. Even more interesting, Ant projects are firs
     
     For Java teams which share also Python or Ruby knowledge or are happy to learn it, the above arguments don't apply. The Gradle design is well-suited for creating another build script engine in JRuby or Jython. It just doesn't have the highest priority for us at the moment. We happily support any community effort to create additional build script engines.
 
-    百度搜索[无线学院](http://wirelesscollege.cn)
+   

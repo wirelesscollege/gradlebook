@@ -75,5 +75,4 @@ Gradle运行时的JVM参数可以通过GRADLE_OPTS或JAVA_OPTS来设置.这些�
 
 JVM options for running Gradle can be set via environment variables. You can use GRADLE_OPTS or JAVA_OPTS . Those variables can be used together. JAVA_OPTS is by convention an environment variable shared by many Java applications. A typical use case would be to set the HTTP proxy in JAVA_OPTS and the memory options in GRADLE_OPTS . Those variables can also be set at the beginning of the gradle or gradlew script.
 
-百度搜索[无线学院](http://wirelesscollege.cn) 
 

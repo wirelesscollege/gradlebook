@@ -200,4 +200,3 @@ Scala 插件添加了一个名为zinc的配置，以解析 Zinc 库及其依赖�
 ## **25.12. IntelliJ 集成**
 当 IDEA 插件遇到 Scala 项目时，它将添加额外的配置，使得项目能够在使用 IDEA 时开箱即用。具体而言，该插件添加了一个 Scala facet 和一个匹配项目的类路径上的 Scala 版本的 Scala 编译器类库。
 
-百度搜索[无线学院](http://wirelesscollege.cn)

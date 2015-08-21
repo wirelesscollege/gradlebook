@@ -62,4 +62,3 @@ systemProp.https.nonProxyHosts=*.nonproxyrepos.com|localhost
 将http.proxyUser系统属性设置为一个这样的值：域/用户名。
 通过http.auth.ntlm.domain系统属性提供验证域。
 
-百度搜索[无线学院](http://wirelesscollege.cn)

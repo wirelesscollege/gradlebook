@@ -48,6 +48,5 @@ The following validations are performed:
 
 Any failed validations will result in a warning message.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 
 

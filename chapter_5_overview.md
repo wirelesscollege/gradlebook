@@ -37,5 +37,4 @@ The place to go for help with Gradle is http://gradle.org. The Gradle Forums is 
 chapter
 If something's not working for you, posting a question or problem report to the forums is the fastest way to get help. It's also the place to post improvement suggestions or new ideas. The development team frequently posts news items and announces releases via the forum, making it a great way to stay up to date with the latest Gradle developments.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

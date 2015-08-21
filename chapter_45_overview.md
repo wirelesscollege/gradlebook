@@ -175,4 +175,3 @@ Table 45.2. Application plugin - tasks
 
 The application plugin adds some properties to the project, which you can use to configure its behaviour. See the Project class in the API documentation.
 
-百度搜索[无线学院](http://wirelesscollege.cn)

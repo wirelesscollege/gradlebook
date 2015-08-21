@@ -126,4 +126,3 @@ task fooJar(type: Jar) {
 
 The first argument of the instruction call is the key of the property. The other arguments form the value. To learn more about the available instructions have a look at the BND tool.
 
-百度搜索[无线学院](http://wirelesscollege.cn)

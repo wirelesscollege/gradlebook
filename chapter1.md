@@ -48,5 +48,4 @@ In Chapter 2, Overview you will find a detailed overview of Gradle. Otherwise, t
 
 This user guide, like Gradle itself, is under very active development. Some parts of Gradle aren't documented as completely as they need to be. Some of the content presented won't be entirely clear or will assume that you know more about Gradle than you do. We need your help to improve this user guide. You can find out more about contributing to the documentation at the Gradle web site.
 
-百度搜索[无线学院](http://wirelesscollege.cn)
 

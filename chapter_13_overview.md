@@ -236,5 +236,3 @@ dependencies {
 ```
 
 [5] 截至 Gradle 1.0-milestone-9版本，我们鼓励但不强制要求使用 ext 来添加额外属性因此，当未知的属性被设置时，Gradle不会构建失败。然而，它将打印一个警告。
-
-百度搜索[无线学院](http://wirelesscollege.cn)
