@@ -28,7 +28,7 @@ Let's start with a very simple multi-project build. Gradle is a general purpose 
 
 58.1节中，“Build phases”介绍了Gradle每次构建的过程。让我们放大一次多项目构建的配置和过程.此处的配置是指执行一个项目的build.gradle文件,这意味着如使用'apply plugin'声明下载所有插件.默认情况下,所有项目的配置会在执行任意task前执行.这意味着当从一个项目中发起一个单一任务请求时,需要先配置所有多项目构建。原因是为了支持灵活的访问和改变任何部分的Gradle项目模型
 
-Section 55.1, “Build phases” describes the phases of every Gradle build. Let's zoom into the configuration and execution phases of a multi-project build. Configuration here means executing the build.gradle file of a project, which implies e.g. downloading all plugins that were declared using 'apply plugin'. By default, the configuration of all projects happens before any task is executed. This means that when a single task, from a single project is requested, all projects of multi-project build are configured first. The reason every project needs to be configured is to support the flexibility of accessing and changing any part of the Gradle project model.
+Section 58.1, “Build phases” describes the phases of every Gradle build. Let's zoom into the configuration and execution phases of a multi-project build. Configuration here means executing the build.gradle file of a project, which implies e.g. downloading all plugins that were declared using 'apply plugin'. By default, the configuration of all projects happens before any task is executed. This means that when a single task, from a single project is requested, all projects of multi-project build are configured first. The reason every project needs to be configured is to support the flexibility of accessing and changing any part of the Gradle project model.
 
 ####**59.1.1.1. 按需配置**
 
@@ -1040,17 +1040,17 @@ We have an interesting set of dependencies. Obviously the date and hello project
 
 Such dependency patterns are daily bread in the problem space of multi-project builds. If a build system does not support these patterns, you either can't solve your problem or you need to do ugly hacks which are hard to maintain and massively impair your productivity as a build master.
 
-## **56.7. 项目库依赖**
+## **59.7. 项目库依赖**
 
-56.7. Project lib dependencies
+59.7. Project lib dependencies
 
 如果一个项目需要通过另一个项目在其编译路径生成的jar,且不仅仅是jar,也要该jar的传递依赖?显然,这是java多项目构建的一种非常常见用例.前面在50.4.3章节-“Project dependencies”已经提到,Gradle提供项目库依赖这一点.
 
 What if one project needs the jar produced by another project in its compile path, and not just the jar but also the transitive dependencies of this jar? Obviously this is a very common use case for Java multi-project builds. As already mentioned in Section 50.4.3, “Project dependencies”, Gradle offers project lib dependencies for this.
 
-示例 56.24. 项目库依赖
+示例 59.24. 项目库依赖
 
-Example 56.24. Project lib dependencies
+Example 59.24. Project lib dependencies
 
 构建布局
 
@@ -1086,9 +1086,9 @@ java/
 Note: The code for this example can be found at samples/userguide/multiproject/dependencies/java in the ‘-all’ distribution of Gradle.
 We have the projects “shared”, “api” and “personService”. The “personService” project has a lib dependency on the other two projects. The “api” project has a lib dependency on the “shared” project. [22]
 
-示例 56.25. 项目库依赖
+示例 59.25. 项目库依赖
 
-Example 56.25. Project lib dependencies
+Example 59.25. Project lib dependencies
 
 settings.gradle
 ```
@@ -1130,9 +1130,9 @@ All the build logic is in the “build.gradle” file of the root project. [23] 
 
 If you come from Maven land you might be perfectly happy with this. If you come from Ivy land, you might expect some more fine grained control. Gradle offers this to you:
 
-示例 56.26. 细粒度的控制依赖
+示例 59.26. 细粒度的控制依赖
 
-Example 56.26. Fine grained control over dependencies
+Example 59.26. Fine grained control over dependencies
 
 build.gradle
 
@@ -1174,17 +1174,17 @@ project(':services:personService') {
 
 The Java plugin adds per default a jar to your project libraries which contains all the classes. In this example we create an additional library containing only the interfaces of the “api” project. We assign this library to a new dependency configuration. For the person service we declare that the project should be compiled only against the “api” interfaces but tested with all classes from “api”.
 
-### **56.7.1. 禁用依赖项目的构建**
+### **59.7.1. 禁用依赖项目的构建**
 
-56.7.1. Disabling the build of dependency projects
+59.7.1. Disabling the build of dependency projects
 
 有时候你做一个部分构建时不想依赖项目进行构建。要禁用项目依赖的构建你可以运行gradle -a 选项。
 
 Sometimes you don't want depended on projects to be built when doing a partial build. To disable the build of the depended on projects you can run Gradle with the -a option.
 
-## **56.8. 并行项目执行**
+## **59.8. 并行项目执行**
 
-56.8. Parallel project execution
+59.8. Parallel project execution
 
 随着台式机和CI服务器越来越多的cpu内核，Gradle能够充分利用这些资源是很重要的。更具体的说，并行执行的尝试：
 
@@ -1206,45 +1206,41 @@ Although Gradle already offers parallel test execution via Test.setMaxParallelFo
 
 Parallel project execution allows the separate projects in a decoupled multi-project build to be executed in parallel (see also: Section 56.9, “Decoupled Projects”). While parallel execution does not strictly require decoupling at configuration time, the long-term goal is to provide a powerful set of features that will be available for fully decoupled projects. Such features include:
 
-56.1.1.1章节，“需求配置” 。
+59.1.1.1章节，“需求配置” 。    
+Section 59.1.1.1, “Configuration on demand”.
 
-Section 56.1.1.1, “Configuration on demand”.
-
-并行项目配置。
-
+并行项目配置。     
 Configuration of projects in parallel.
 
-为不变的项目重新使用配置。
-
+为不变的项目重新使用配置。     
 Re-use of configuration for unchanged projects.
 
-项目级别的最新检查。
-
+项目级别的最新检查。    
 Project-level up-to-date checks.
 
-在构建相关项目的地方使用预构建。
-
+在构建相关项目的地方使用预构建。   
 Using pre-built artifacts in the place of building dependent projects.
+
 
 如何并行执行工作的？首先，你需要告诉Gradle使用并行模式。你可以使用命令行参数(附录D，Gradle命令行)或配置你的构建环境变量(19.1章节，“通过 gradle.properties配置构建环境变量”)。除非你提供一些指定数量并行线程，Gradle试图选择基于可用的CPU的正确数量。每个平行的工作仅拥有一个给定的项目。这意味着从同一个项目中的2个任务从来没有并行执行。因此只有多项目构建能够使用并行执行。任务的依赖是完全支持的并将开始并行执行前面的任务。请记住，对分离的任务，按字母排序的顺序执行并不是在并行模式下工作。你需要确保任务依赖正确声明以避免排序问题。
 
 How does parallel execution work? First, you need to tell Gradle to use the parallel mode. You can use the command line argument (Appendix D, Gradle Command Line) or configure your build environment (Section 19.1, “Configuring the build environment via gradle.properties”). Unless you provide a specific number of parallel threads Gradle attempts to choose the right number based on available CPU cores. Every parallel worker exclusively owns a given project while executing a task. This means that 2 tasks from the same project are never executed in parallel. Therefore only multi-project builds can take advantage of parallel execution. Task dependencies are fully supported and parallel workers will start executing upstream tasks first. Bear in mind that the alphabetical scheduling of decoupled tasks, known from the sequential execution, does not really work in parallel mode. You need to make sure the task dependencies are declared correctly to avoid ordering issues.
 
-## **56.9. 解耦项目**
+## **59.9. 解耦项目**
 
-56.9. Decoupled Projects
+59.9. Decoupled Projects
 
 Gradle允许任何项目在配置和执行阶段访问其他项目。虽然这提供一个强大的处理能力和灵活的构建者，这也限制了Gradle构建这些项目的灵活性。例如，有效的防止Gradle从正确的多项目中构建并行，仅配置项目的一个子集或在项目依赖的部分地方替代预构建。
 
 Gradle allows any project to access any other project during both the configuration and execution phases. While this provides a great deal of power and flexibility to the build author, it also limits the flexibility that Gradle has when building those projects. For instance, this effectively prevents Gradle from correctly building multiple projects in parallel, configuring only a subset of projects, or from substituting a pre-built artifact in place of a project dependency.
 
-如果不能直接访问对方的项目模型,则这两个项目则称为接口的项目。接口的项目可以只声明依赖关系：项目依赖(50.4.3章节-“项目依赖”)和/或任务依赖(6.5章节-“任务依赖”)。任何其他形式的项目相互作用(即通过修改另一个项目对象or通过从另一个项目对象中读取某个值)导致项目被解耦。配置过程中耦合的后果是如果Gradle调用‘configuration on demand’选项，生成的结果可能在几个方面存在缺陷。在执行截断耦合的结果是，如果Gradle调用并行选项，一个项目的任务运行来不及影响并联在项目的构建任务。
+如果不能直接访问对方的项目模型,则这两个项目则称为接口的项目。接口的项目可以只声明依赖关系：项目依赖(52.4.3章节-“项目依赖”)和/或任务依赖(6.5章节-“任务依赖”)。任何其他形式的项目相互作用(即通过修改另一个项目对象or通过从另一个项目对象中读取某个值)导致项目被解耦。配置过程中耦合的后果是如果Gradle调用‘configuration on demand’选项，生成的结果可能在几个方面存在缺陷。在执行截断耦合的结果是，如果Gradle调用并行选项，一个项目的任务运行来不及影响并联在项目的构建任务。
 
-Two projects are said to be decoupled if they do not directly access each other's project model. Decoupled projects may only interact in terms of declared dependencies: project dependencies (Section 50.4.3, “Project dependencies”) and/or task dependencies (Section 6.5, “Task dependencies”). Any other form of project interaction (i.e. by modifying another project object or by reading a value from another project object) causes the projects to be coupled. The consequence of coupling during the configuration phase is that if gradle is invoked with the 'configuration on demand' option, the result of the build can be flawed in several ways. The consequence of coupling during execution phase is that if gradle is invoked with the parallel option, one project task runs too late to influence a task of a project building in parallel. Gradle does not attempt to detect coupling and warn the user, as there are too many possibilities to introduce coupling.
+Two projects are said to be decoupled if they do not directly access each other's project model. Decoupled projects may only interact in terms of declared dependencies: project dependencies (Section 52.4.3, “Project dependencies”) and/or task dependencies (Section 6.5, “Task dependencies”). Any other form of project interaction (i.e. by modifying another project object or by reading a value from another project object) causes the projects to be coupled. The consequence of coupling during the configuration phase is that if gradle is invoked with the 'configuration on demand' option, the result of the build can be flawed in several ways. The consequence of coupling during execution phase is that if gradle is invoked with the parallel option, one project task runs too late to influence a task of a project building in parallel. Gradle does not attempt to detect coupling and warn the user, as there are too many possibilities to introduce coupling.
 
-对于要加上项目的一个非常常见的方式是通过使用配置注入(56.1章节-"跨项目配置")。它可能不会立即显现出来，但使用的关键Gradle功能，如allprojects和subprojects的关键字会自动使你的项目被耦合。这是因为这些关键字用在build.gradle文件中来定义一个项目。通常不定义常见的配置的是个“根目录”，但作为Gradle而言这个根目录仍然是一个完成成熟的项目，并通过allprojects项目有效的耦合到所有的其他项目。根目录的子项目不影响‘configuration on demand’，但在任务项目build.gradle文件中使用一个allprojects和subprojects将会产生影响。
+对于要加上项目的一个非常常见的方式是通过使用配置注入(59.1章节-"跨项目配置")。它可能不会立即显现出来，但使用的关键Gradle功能，如allprojects和subprojects的关键字会自动使你的项目被耦合。这是因为这些关键字用在build.gradle文件中来定义一个项目。通常不定义常见的配置的是个“根目录”，但作为Gradle而言这个根目录仍然是一个完成成熟的项目，并通过allprojects项目有效的耦合到所有的其他项目。根目录的子项目不影响‘configuration on demand’，但在任务项目build.gradle文件中使用一个allprojects和subprojects将会产生影响。
 
-A very common way for projects to be coupled is by using configuration injection (Section 56.1, “Cross project configuration”). It may not be immediately apparent, but using key Gradle features like the allprojects and subprojects keywords automatically cause your projects to be coupled. This is because these keywords are used in a build.gradle file, which defines a project. Often this is a “root project” that does nothing more than define common configuration, but as far as Gradle is concerned this root project is still a fully-fledged project, and by using allprojects that project is effectively coupled to all other projects. Coupling of the root project to subprojects does not impact 'configuration on demand', but using the allprojects and subprojects in any subproject's build.gradle file will have an impact.
+A very common way for projects to be coupled is by using configuration injection (Section 59.1, “Cross project configuration”). It may not be immediately apparent, but using key Gradle features like the allprojects and subprojects keywords automatically cause your projects to be coupled. This is because these keywords are used in a build.gradle file, which defines a project. Often this is a “root project” that does nothing more than define common configuration, but as far as Gradle is concerned this root project is still a fully-fledged project, and by using allprojects that project is effectively coupled to all other projects. Coupling of the root project to subprojects does not impact 'configuration on demand', but using the allprojects and subprojects in any subproject's build.gradle file will have an impact.
 
 这意味着使用任务形式的共享构建脚本逻辑或配置注入(allprojects, subprojects,等)将导致你的项目被耦合。作为作为我们扩展项目的解耦和提供的功能以帮助你解耦项目，我们将同时介绍新功能以帮助你解决常见的方法(像配置注入)不会影响被你耦合的项目。
 
@@ -1262,25 +1258,25 @@ Avoid a subproject's build.gradle referencing other subprojects; prefering cross
 
 Avoid changing the configuration of other projects at execution time.
 
-## **56.10. 多项目构建和测试**
+## **59.10. 多项目构建和测试**
 
-56.10. Multi-Project Building and Testing
+59.10. Multi-Project Building and Testing
 
 Java插件的构建任务通常用于编译，测试，和执行单个项目的代码样式检查(如果CodeQuality插件被使用)。在多项目构建中你可能经常想在一个项目范围内完成所有的任务。与此有关的buildNeeded 和buildDependents任务可以帮助你。
 
 The build task of the Java plugin is typically used to compile, test, and perform code style checks (if the CodeQuality plugin is used) of a single project. In multi-project builds you may often want to do all of these tasks across a range of projects. The buildNeeded and buildDependents tasks can help with this.
 
-看示例 56.25，“项目库依赖”，在示例中，“:services:personservice”项目同时依赖“:api” 和 “:shared” 项目。“:api” 项目也依赖 “:shared” 项目.
+看示例 59.25，“项目库依赖”，在示例中，“:services:personservice”项目同时依赖“:api” 和 “:shared” 项目。“:api” 项目也依赖 “:shared” 项目.
 
-Look at Example 56.25, “Project lib dependencies”. In this example, the “:services:personservice” project depends on both the “:api” and “:shared” projects. The “:api” project also depends on the “:shared” project.
+Look at Example 59.25, “Project lib dependencies”. In this example, the “:services:personservice” project depends on both the “:api” and “:shared” projects. The “:api” project also depends on the “:shared” project.
 
 假如你正在一个项目工作，“：api”项目，你一直在做改变，但是没有执行一个clean和构建整个项目。你想构建任何必要的jar，但只有在你已经改变了项目执行的代码质量和单元测试。在构建任务做到这一点。
 
 Assume you are working on a single project, the “:api” project. You have been making changes, but have not built the entire project since performing a clean. You want to build any necessary supporting jars, but only perform code quality and unit tests on the project you have changed. The build task does this.
 
-示例 56.27. 构建和测试单个项目
+示例 59.27. 构建和测试单个项目
 
-Example 56.27. Build and Test Single Project
+Example 59.27. Build and Test Single Project
 
 输出 gradle :api:build
 
@@ -1312,9 +1308,9 @@ Total time: 1 secs
 
 While you are working in a typical development cycle repeatedly building and testing changes to the “:api” project (knowing that you are only changing files in this one project), you may not want to even suffer the expense of building “:shared:compile” to see what has changed in the “:shared” project. Adding the “-a” option will cause Gradle to use cached jars to resolve any project lib dependencies and not try to re-build the depended on projects.
 
-示例 56.28. 部分构建和单项目测试
+示例 59.28. 部分构建和单项目测试
 
-Example 56.28. Partial Build and Test Single Project
+Example 59.28. Partial Build and Test Single Project
 
 输出 gradle -a :api:build
 
@@ -1342,9 +1338,9 @@ Total time: 1 secs
 
 If you have just gotten the latest version of source from your version control system which included changes in other projects that “:api” depends on, you might want to not only build all the projects you depend on, but test them as well. The buildNeeded task also tests all the projects from the project lib dependencies of the testRuntime configuration.
 
-示例 56.29. 构建和测试依赖项目
+示例 59.29. 构建和测试依赖项目
 
-Example 56.29. Build and Test Depended On Projects
+Example 59.29. Build and Test Depended On Projects
 
 输出 gradle :api:buildNeeded
 
@@ -1386,9 +1382,9 @@ Total time: 1 secs
 
 You also might want to refactor some part of the “:api” project that is used in other projects. If you make these types of changes, it is not sufficient to test just the “:api” project, you also need to test all projects that depend on the “:api” project. The buildDependents task also tests all the projects that have a project lib dependency (in the testRuntime configuration) on the specified project.
 
-示例 56.30. 构建和测试相关项目
+示例 59.30. 构建和测试相关项目
 
-Example 56.30. Build and Test Dependent Projects
+Example 59.30. Build and Test Dependent Projects
 
 输出 gradle :api:buildDependents
 
@@ -1434,17 +1430,17 @@ Total time: 1 secs
 
 Finally, you may want to build and test everything in all projects. Any task you run in the root project folder will cause that same named task to be run on all the children. So you can just run “gradle build” to build and test all projects.
 
-## **56.11. 多项目与buildSrc**
+## **59.11. 多项目与buildSrc**
 
-56.11. Multi Project and buildSrc
+59.11. Multi Project and buildSrc
 
-59.4章节，“Build sources in the buildSrc project” 告诉我们我们可以在指定的buildSrc目录下构建逻辑和进行编译测试。在一个多项目构建中，它们只能有一个buildSrc目录且必须位于根目录。 
+62.4章节，“Build sources in the buildSrc project” 告诉我们我们可以在指定的buildSrc目录下构建逻辑和进行编译测试。在一个多项目构建中，它们只能有一个buildSrc目录且必须位于根目录。 
 
-Section 59.4, “Build sources in the buildSrc project” tells us that we can place build logic to be compiled and tested in the special buildSrc directory. In a multi project build, there can only be one buildSrc directory which must be located in the root directory.
+Section 62.4, “Build sources in the buildSrc project” tells us that we can place build logic to be compiled and tested in the special buildSrc directory. In a multi project build, there can only be one buildSrc directory which must be located in the root directory.
 
-## **56.12. 属性和方法的继承**
+## **59.12. 属性和方法的继承**
 
-56.12. Property and method inheritance
+59.12. Property and method inheritance
 
 在一个项目中声明的属性和方法会被它所有的子项目继承。这是一种替代的配置注入。但是我们认为继承模式并不能很好的反映多项目构建的控件问题。在本用户指南的后续版本中，关于这点我们可能会写更多。
 
@@ -1458,17 +1454,17 @@ Method inheritance might be interesting to use as Gradle's Configuration Injecti
 
 You might be wondering why we have implemented a feature we obviously don't like that much. One reason is that it is offered by other tools and we want to have the check mark in a feature comparison :). And we like to offer our users a choice.
 
-## **56.13. 总结**
+## **59.13. 总结**
 
-56.13. Summary
+59.13. Summary
 
 编写该章节是相当费力的同时读它可以也有同样的效果.我们在该章节最终的启示是使用Gradle进行多项目构建并不难.有5个元素你需要记住:allprojects,subprojects,evaluationDependsOn,evaluationDependsOnChildren 和project lib dependencies.[24]有了这些元素,并牢记Gradle有独特的配置和执行过程,这样你就具备有很大的灵活性.但是当你进入高端领域时Gradle不成为障碍,通常伴随你到顶端。
 
 Writing this chapter was pretty exhausting and reading it might have a similar effect. Our final message for this chapter is that multi-project builds with Gradle are usually not difficult. There are five elements you need to remember: allprojects, subprojects, evaluationDependsOn, evaluationDependsOnChildren and project lib dependencies. [24] With those elements, and keeping in mind that Gradle has a distinct configuration and execution phase, you already have a lot of flexibility. But when you enter steep territory Gradle does not become an obstacle and usually accompanies and carries you to the top of the mountain.
 
-[21] 我们的实际使用情况是采用http://lucene.apache.org/solr,你需要为你访问每个索引指定一个war。这是一个原因，我们已经创建了一个分配程序。Resin servlet容器允许我们让这样的一个分布点在servlet容器进行基本的安装。
+[21] 我们的实际使用情况是采用http://lucene.apache.org/solr , 你需要为你访问每个索引指定一个war。这是一个原因，我们已经创建了一个分配程序。Resin servlet容器允许我们让这样的一个分布点在servlet容器进行基本的安装。
 
-[21] The real use case we had, was using http://lucene.apache.org/solr, where you need a separate war for each index you are accessing. That was one reason why we have created a distribution of webapps. The Resin servlet container allows us, to let such a distribution point to a base installation of the servlet container.
+[21] The real use case we had, was using http://lucene.apache.org/solr , where you need a separate war for each index you are accessing. That was one reason why we have created a distribution of webapps. The Resin servlet container allows us, to let such a distribution point to a base installation of the servlet container.
 
 [22]“services”也是一个项目，但是我们只使用它作为一个容器。它没有生成构建脚本也没有通过其他构建脚本得到其他注入。
 
