@@ -1477,3 +1477,5 @@ Writing this chapter was pretty exhausting and reading it might have a similar e
 [24] 因此我们在7加2的规则范围内很好
 
 [24] So we are well in the range of the 7 plus 2 Rule :)
+
+百度搜索[无线学院](http://wirelesscollege.cn)
