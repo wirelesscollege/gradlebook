@@ -599,9 +599,9 @@ The build is executed from the water project. Neither water nor tropicalFish hav
 
 As we have seen, you can run a multi-project build by entering any subproject dir and execute the build from there. All matching task names of the project hierarchy starting with the current dir are executed. But Gradle also offers to execute tasks by their absolute path (see also Section 56.5, “Project and task paths”):
 
-示例 56.13. 通过它们的绝对路径运行任务
+示例 59.13. 通过它们的绝对路径运行任务
 
-Example 56.13. Running tasks by their absolute path
+Example 59.13. Running tasks by their absolute path
 
 Output of gradle -q :hello :krill:hello hello
 
@@ -620,36 +620,36 @@ I'm tropicalFish
 
 The build is executed from the tropicalFish project. We execute the hello tasks of the water, the krill and the tropicalFish project. The first two tasks are specified by their absolute path, the last task is executed using the name matching mechanism described above.
 
-## **56.5. 项目和任务路径**
+## **59.5. 项目和任务路径**
 
-56.5. Project and task paths
+59.5. Project and task paths
 
 一个项目路径有以下模式:它首先是一个可选的冒号,它表示根项目.根项目是没有通过它名称指定路径的唯一项目.项目路径的其余部分是项目名称,这里的下一个项目是以冒号分割的子项目.
 
 A project path has the following pattern: It starts with an optional colon, which denotes the root project. The root project is the only project in a path that is not specified by its name. The rest of a project path is a colon-separated sequence of project names, where the next project is a subproject of the previous project.
 
-任务的路径就是其项目路径加上任务的名称,像":bluewhale:hello".你可以用它的名字来处理同一个项目的任务.这被解释为相对路径。
+任务的路径就是其项目路径加上任务的名称,像":bluewhale:hello".你可以用它的名字来处理同一个项目的任务.这被解释为相对路径。    
 The path of a task is simply its project path plus the task name, like “:bluewhale:hello”. Within a project you can address a task of the same project just by its name. This is interpreted as a relative path.
 
-## **56.6. 依赖 - 哪个依赖?**
+## **59.6. 依赖 - 哪个依赖?**
 
-56.6. Dependencies - Which dependencies?
+59.6. Dependencies - Which dependencies?
 
 最后一节的例子是特殊的,因为这个项目没有执行依赖.他们只有配置依赖.下面的部分说明了这2种类型的依赖关系。
 
 The examples from the last section were special, as the projects had no Execution Dependencies. They had only Configuration Dependencies. The following sections illustrate the differences between these two types of dependencies.
 
-### **56.6.1. 执行依赖**
+### **59.6.1. 执行依赖**
 
-56.6.1. Execution dependencies
+59.6.1. Execution dependencies
 
-56.6.1.1. 依赖关系和执行顺序
+####**59.6.1.1. 依赖关系和执行顺序**
 
-56.6.1.1. Dependencies and execution order
+59.6.1.1. Dependencies and execution order
 
-示例 56.14. 依赖关系和执行顺序
+示例 59.14. 依赖关系和执行顺序
 
-Example 56.14. Dependencies and execution order
+Example 59.14. Dependencies and execution order
 
 构建布局
 
@@ -699,9 +699,9 @@ Producing message:
 
 This didn't quite do what we want. If nothing else is defined, Gradle executes the task in alphanumeric order. Therefore, Gradle will execute “:consumer:action” before “:aproducer:action”. Let's try to solve this with a hack and rename the producer project to “aProducer”.
 
-示例 56.15. 依赖关系和执行顺序
+示例 59.15. 依赖关系和执行顺序
 
-Example 56.15. Dependencies and execution order
+Example 59.15. Dependencies and execution order
 
 构建布局
 ```
@@ -748,9 +748,9 @@ Consuming message: Watch the order of execution.
 
 We can show where this hack doesn't work if we now switch to the consumer dir and execute the build.
 
-示例 56.16. 依赖关系和执行顺序
+示例 59.16. 依赖关系和执行顺序
 
-Example 56.16. Dependencies and execution order
+Example 59.16. Dependencies and execution order
 
 Output of gradle -q action
 
@@ -763,13 +763,13 @@ Consuming message: null
 
 The problem is that the two “action” tasks are unrelated. If you execute the build from the “messages” project Gradle executes them both because they have the same name and they are down the hierarchy. In the last example only one “action” task was down the hierarchy and therefore it was the only task that was executed. We need something better than this hack.
 
-56.6.1.2. 声明依赖
+####**59.6.1.2. 声明依赖**
 
-56.6.1.2. Declaring dependencies
+59.6.1.2. Declaring dependencies
 
-示例56.17. 声明依赖
+示例59.17. 声明依赖
 
-Example 56.17. Declaring dependencies
+Example 59.17. Declaring dependencies
 
 构建布局
 
@@ -820,9 +820,9 @@ Consuming message: Watch the order of execution.
 
 Running this from the consumer directory gives:
 
-示例 56.18. 声明依赖
+示例 59.18. 声明依赖
 
-Example 56.18. Declaring dependencies
+Example 59.18. Declaring dependencies
 
 Output of gradle -q action
 ```
@@ -835,17 +835,17 @@ Consuming message: Watch the order of execution.
 
 This is now working better because we have declared that the “action” task in the “consumer” project has an execution dependency on the “action” task in the “producer” project.
 
-56.6.1.3. 跨项目任务依赖的性质
+#### **59.6.1.3. 跨项目任务依赖的性质**
 
-56.6.1.3. The nature of cross project task dependencies
+59.6.1.3. The nature of cross project task dependencies
 
 当然,不同项目的任务依赖并不局限于同一个名称的任务.让我们改变我们的任务的名称并执行构建.
 
 Of course, task dependencies across different projects are not limited to tasks with the same name. Let's change the naming of our tasks and execute the build.
 
-示例 56.19. 跨项目任务的依赖
+示例 59.19. 跨项目任务的依赖
 
-Example 56.19. Cross project task dependencies
+Example 59.19. Cross project task dependencies
 
 consumer/build.gradle
 ```
@@ -869,17 +869,17 @@ Producing message:
 Consuming message: Watch the order of execution.
 ```
 
-### **56.6.2. 配置时间依赖**
+### **59.6.2. 配置时间依赖**
 
-56.6.2. Configuration time dependencies
+59.6.2. Configuration time dependencies
 
 在我们进入Java部分时让我们先再看一个producer-consumer构建的例子.我们增加一个属性到“producer”项目并从“consumer”到“producer”创建一个时间依赖配置.
 
 Let's see one more example with our producer-consumer build before we enter Java land. We add a property to the “producer” project and create a configuration time dependency from “consumer” to “producer”.
 
-示例 56.20. 配置时间依赖
+示例 59.20. 配置时间依赖
 
-Example 56.20. Configuration time dependencies
+Example 59.20. Configuration time dependencies
 
 consumer/build.gradle
 
@@ -910,9 +910,9 @@ Consuming message: null
 
 The default evaluation order of projects is alphanumeric (for the same nesting level). Therefore the “consumer” project is evaluated before the “producer” project and the “producerMessage” value is set after it is read by the “consumer” project. Gradle offers a solution for this.
 
-示例 56.21. 配置时间依赖 - evaluationDependsOn
+示例 59.21. 配置时间依赖 - evaluationDependsOn
 
-Example 56.21. Configuration time dependencies - evaluationDependsOn
+Example 59.21. Configuration time dependencies - evaluationDependsOn
 
 consumer/build.gradle
 ```
@@ -937,9 +937,9 @@ Consuming message: Watch the order of evaluation.
 
 The use of the “evaluationDependsOn” command results in the evaluation of the “producer” project before the “consumer” project is evaluated. This example is a bit contrived to show the mechanism. In this case there would be an easier solution by reading the key property at execution time.
 
-示例 56.22. 配置时间依赖
+示例 59.22. 配置时间依赖
 
-Example 56.22. Configuration time dependencies
+Example 59.22. Configuration time dependencies
 
 consumer/build.gradle
 ```
@@ -968,17 +968,17 @@ To change the default configuration order to “bottom up”, use the “evaluat
 
 On the same nesting level the configuration order depends on the alphanumeric position. The most common use case is to have multi-project builds that share a common lifecycle (e.g. all projects use the Java plugin). If you declare with dependsOn a execution dependency between different projects, the default behavior of this method is to also create a configuration dependency between the two projects. Therefore it is likely that you don't have to define configuration dependencies explicitly.
 
-### **56.6.3. 现实生活示例**
+### **59.6.3. 现实生活示例**
 
-56.6.3. Real life examples
+59.6.3. Real life examples
 
 Gradle的多项目特点是通过现实生活中的用例驱动的。一个很好的例子包括两个web应用项目和一个创建分布包括两个web应用的父项目。[21]例如我们只使用一个构建脚本和进行跨项目配置。
 
 Gradle's multi-project features are driven by real life use cases. One good example consists of two web application projects and a parent project that creates a distribution including the two web applications. [21] For the example we use only one build script and do cross project configuration.
 
-示例 56.23. 依赖 - 现实生活例子 - 跨项目配置
+示例 59.23. 依赖 - 现实生活例子 - 跨项目配置
 
-Example 56.23. Dependencies - real life example - crossproject configuration
+Example 59.23. Dependencies - real life example - crossproject configuration
 
 构建布局
 
@@ -1036,7 +1036,7 @@ task explodedDist(type: Copy) {
 
 We have an interesting set of dependencies. Obviously the date and hello projects have a configuration dependency on webDist, as all the build logic for the webapp projects is injected by webDist. The execution dependency is in the other direction, as webDist depends on the build artifacts of date and hello. There is even a third dependency. webDist has a configuration dependency on date and hello because it needs to know the archivePath. But it asks for this information at execution time. Therefore we have no circular dependency.
 
-这种依赖模式是多项目构建的问题空间。如果一个构建系统不支持这些模式，你要么无法解决你的问题，要么需要你做丑陋的黑客，这样作为构建主都难以维持和会大规模影响的工作效率。
+这种依赖模式是多项目构建的一个大问题。如果一个构建系统不支持这些模式，你要么无法解决你的问题，要么需要你使用黑客手段，这样作为构建主都难以维持且会大规模影响你的工作效率。
 
 Such dependency patterns are daily bread in the problem space of multi-project builds. If a build system does not support these patterns, you either can't solve your problem or you need to do ugly hacks which are hard to maintain and massively impair your productivity as a build master.
 
