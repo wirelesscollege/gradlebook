@@ -30,7 +30,7 @@ Let's start with a very simple multi-project build. Gradle is a general purpose 
 
 Section 55.1, “Build phases” describes the phases of every Gradle build. Let's zoom into the configuration and execution phases of a multi-project build. Configuration here means executing the build.gradle file of a project, which implies e.g. downloading all plugins that were declared using 'apply plugin'. By default, the configuration of all projects happens before any task is executed. This means that when a single task, from a single project is requested, all projects of multi-project build are configured first. The reason every project needs to be configured is to support the flexibility of accessing and changing any part of the Gradle project model.
 
-59.1.1.1. 按需配置
+####**59.1.1.1. 按需配置**
 
 59.1.1.1. Configuration on demand
 
@@ -62,21 +62,21 @@ The task dependencies declared via task path are supported and cause relevant pr
 
 A task requested via task path from the command line (or Tooling API) causes the relevant project to be configured. For example, building 'projectA:projectB:someTask' causes configuration of projectB.
 
-急于尝试一下这个新功能?每次构建都按需配置参见19.1章节，“通过gradle.properties配置编译环境”。按需配置仅对一个给定的构建参见附录D，Gradle命令行
+急于尝试一下这个新功能?每次构建都按需配置参见20.1章节，“通过gradle.properties配置编译环境”。按需配置仅对一个给定的构建参见附录D，Gradle命令行.
 
-Eager to try out this new feature? To configure on demand with every build run see Section 19.1, “Configuring the build environment via gradle.properties”. To configure on demand just for a given build please see Appendix D, Gradle Command Line.
+Eager to try out this new feature? To configure on demand with every build run see Section 20.1, “Configuring the build environment via gradle.properties”. To configure on demand just for a given build please see Appendix D, Gradle Command Line.
 
-### **56.1.2. 定义共同的行为**
+### **59.1.2. 定义共同的行为**
 
-56.1.2. Defining common behavior
+59.1.2. Defining common behavior
 
 让我们来看看以下项目树的一些例子.这是个名为water的根项目和bluewhale的子项目多项目构建
 
 Let's look at some examples with the following project tree. This is a multi-project build with a root project named water and a subproject named bluewhale.
 
-示例 56.1. 多项目树 - water & bluewhale项目
+示例 59.1. 多项目树 - water & bluewhale项目
 
-Example 56.1. Multi-project tree - water & bluewhale projects
+Example 59.1. Multi-project tree - water & bluewhale projects
 
 构建布局
 ```
@@ -102,9 +102,9 @@ bluewhale项目的构建脚本在哪里?在Gradle构建脚本是可选的.显然
 
 And where is the build script for the bluewhale project? In Gradle build scripts are optional. Obviously for a single project build, a project without a build script doesn't make much sense. For multiproject builds the situation is different. Let's look at the build script for the water project and execute it:
 
-示例 56.2. water(parent)项目构建脚本
+示例 59.2. water(parent)项目构建脚本
 
-Example 56.2. Build script of water (parent) project
+Example 59.2. Build script of water (parent) project
 
 build.gradle
 ```
@@ -132,9 +132,9 @@ Gradle allows you to access any project of the multi-project build from any buil
 
 We are not that happy with the build script of the water project. It is inconvenient to add the task explicitly for every project. We can do better. Let's first add another project called krill to our multi-project build.
 
-示例 56.3. 多项目树 - water, bluewhale & krill projects
+示例 59.3. 多项目树 - water, bluewhale & krill projects
 
-Example 56.3. Multi-project tree - water, bluewhale & krill projects
+Example 59.3. Multi-project tree - water, bluewhale & krill projects
 
 构建布局
 ```
@@ -160,9 +160,9 @@ settings.gradle
 
 Now we rewrite the water build script and boil it down to a single line.
 
-示例 56.4. Water项目构建脚本
+示例 59.4. Water项目构建脚本
 
-Example 56.4. Water project build script
+Example 59.4. Water project build script
 
 build.gradle
 ```
@@ -188,25 +188,25 @@ Is this cool or is this cool? And how does this work? The Project API provides a
 
 Other build systems use inheritance as the primary means for defining common behavior. We also offer inheritance for projects as you will see later. But Gradle uses configuration injection as the usual way of defining common behavior. We think it provides a very powerful and flexible way of configuring multiproject builds.
 
-另一个possibilty用于使用一个共同的外部脚本来配置共享,更多信息参见59.3章节,"Configuring the project using an external build script"
+另一个possibilty用于使用一个共同的外部脚本来配置共享,更多信息参见62.3章节,"Configuring the project using an external build script"
 
-Another possibilty for sharing configuration is to use a common external script. See Section 59.3, “Configuring the project using an external build script” for more information.
+Another possibilty for sharing configuration is to use a common external script. See Section 62.3, “Configuring the project using an external build script” for more information.
 
-## **56.2. 子项目配置**
+## **59.2. 子项目配置**
 
-56.2. Subproject configuration
+59.2. Subproject configuration
 
 该项目API也提供一个只能访问子项目的属性
 
 The Project API also provides a property for accessing the subprojects only.
 
-### **56.2.1. 定义共同行为**
+### **59.2.1. 定义共同行为**
 
-56.2.1. Defining common behavior
+59.2.1. Defining common behavior
 
-示例 56.5. 定义所有项目及其子项目的共同行为
+示例 59.5. 定义所有项目及其子项目的共同行为
 
-Example 56.5. Defining common behavior of all projects and subprojects
+Example 59.5. Defining common behavior of all projects and subprojects
 
 build.gradle
 ```
@@ -232,17 +232,17 @@ I'm krill
 
 You may notice that there are two code snippets referencing the “hello” task. The first one, which uses the “task” keyword, constructs the task and provides it's base configuration. The second piece doesn't use the “task” keyword, as it is further configuring the existing “hello” task. You may only construct a task once in a project, but you may any number of code blocks providing additional configuration.
 
-## **56.2.2. 添加指定的行为**
+### **59.2.2. 添加指定的行为**
 
-56.2.2. Adding specific behavior
+59.2.2. Adding specific behavior
 
 你可以在共同的行为上添加指定行为.通常我们把项目指定的行为放在我们想应用该指定行为的项目构建脚本中.但正如我们已看到的,我们不必这样做.我们可以像这样添加bluewhale项目的指定行为:
 
 You can add specific behavior on top of the common behavior. Usually we put the project specific behavior in the build script of the project where we want to apply this specific behavior. But as we have already seen, we don't have to do it this way. We could add project specific behavior for the bluewhale project like this:
 
-示例 56.6. 为特定项目定义指定行为
+示例 59.6. 为特定项目定义指定行为
 
-Example 56.6. Defining specific behaviour for particular project
+Example 59.6. Defining specific behaviour for particular project
 
 build.gradle
 ```
@@ -273,9 +273,9 @@ I'm krill
 
 As we have said, we usually prefer to put project specific behavior into the build script of this project. Let's refactor and also add some project specific behavior to the krill project.
 
-示例 56.7. 为krill项目定义指定行为
+示例 59.7. 为krill项目定义指定行为
 
-Example 56.7. Defining specific behaviour for project krill
+Example 59.7. Defining specific behaviour for project krill
 
 ```
 Build layout
@@ -329,21 +329,21 @@ I'm krill
 - The weight of my species in summer is twice as heavy as all human beings.
 ```
 
-## **56.2.3. 项目过滤**
+### **59.2.3. 项目过滤**
 
-56.2.3. Project filtering
+59.2.3. Project filtering
 
 为了显示更多更强大的注入配置,让我们添加另外一个叫tropicalFish的项目和通过water项目的构建脚本添加更多的行为.
 
 To show more of the power of configuration injection, let's add another project called tropicalFish and add more behavior to the build via the build script of the water project.
 
-56.2.3.1. 通过名字过滤
+#### **59.2.3.1. 通过名字过滤**
 
-56.2.3.1. Filtering by name
+59.2.3.1. Filtering by name
 
-示例 56.8. 为一些项目添加自定义行为(通过项目名过滤)
+示例 59.8. 为一些项目添加自定义行为(通过项目名过滤)
 
-Example 56.8. Adding custom behaviour to some projects (filtered by project name)
+Example 59.8. Adding custom behaviour to some projects (filtered by project name)
 
 构建布局
 
@@ -403,17 +403,17 @@ I'm tropicalFish
 
 The configure() method takes a list as an argument and applies the configuration to the projects in this list.
 
-56.2.3.2. 通过属性过滤
+#### **59.2.3.2. 通过属性过滤**
 
-56.2.3.2. Filtering by properties
+59.2.3.2. Filtering by properties
 
 使用项目名过滤是一种选择.使用额外的项目属性是另外一回事.(关于extra properties更多信息请参见13.4.2章节,"Extra properties")
 
 Using the project name for filtering is one option. Using extra project properties is another. (See Section 13.4.2, “Extra properties” for more information on extra properties.)
 
-示例 56.9. 为一些项目添加自定义行为(通过项目属性过滤)
+示例 59.9. 为一些项目添加自定义行为(通过项目属性过滤)
 
-Example 56.9. Adding custom behaviour to some projects (filtered by project properties)
+Example 59.9. Adding custom behaviour to some projects (filtered by project properties)
 
 构建布局
 
@@ -500,17 +500,17 @@ I'm tropicalFish
 
 In the build file of the water project we use an afterEvaluate notification. This means that the closure we are passing gets evaluated after the build scripts of the subproject are evaluated. As the property arctic is set in those build scripts, we have to do it this way. You will find more on this topic in Section 56.6, “Dependencies - Which dependencies?”
 
-56.3. 多项目构建的执行规则
+## **59.3. 多项目构建的执行规则**
 
-56.3. Execution rules for multi-project builds
+59.3. Execution rules for multi-project builds
 
 当我们从根项目目录下执行了hello任务,都会很直接的表现出来.所有hello任务在不同项目中被执行.让我们切换到bluewhale目录并看看我们从那里执行Gradle会发生什么.
 
 When we executed the hello task from the root project dir, things behaved in an intuitive way. All the hello tasks of the different projects were executed. Let's switch to the bluewhale dir and see what happens if we execute Gradle from there.
 
-示例 56.10. 从子项目运行构建
+示例 59.10. 从子项目运行构建
 
-Example 56.10. Running build from subproject
+Example 59.10. Running build from subproject
 
 Output of gradle -q hello
 
@@ -527,9 +527,9 @@ Gradle行为后的基本规则是很简单的.Gradle看下面的层次,首先是
 
 The basic rule behind Gradle's behavior is simple. Gradle looks down the hierarchy, starting with the current dir, for tasks with the name hello and executes them. One thing is very important to note. Gradle always evaluates every project of the multi-project build and creates all existing task objects. Then, according to the task name arguments and the current dir, Gradle filters the tasks which should be executed. Because of Gradle's cross project configuration every project has to be evaluated before any task gets executed. We will have a closer look at this in the next section. Let's now have our last marine example. Let's add a task to bluewhale and krill.
 
-示例 56.11. 评估和执行项目
+示例 59.11. 评估和执行项目
 
-Example 56.11. Evaluation and execution of projects
+Example 59.11. Evaluation and execution of projects
 
 bluewhale/build.gradle
 
@@ -567,9 +567,9 @@ Output of gradle -q distanceToIceberg
 
 Here's the output without the -q option:
 
-示例 56.12. 评估和执行项目
+示例 59.12. 评估和执行项目
 
-Example 56.12. Evaluation and execution of projects
+Example 59.12. Evaluation and execution of projects
 
 输出 gradle distanceToIceberg
 
@@ -591,9 +591,9 @@ Total time: 1 secs
 
 The build is executed from the water project. Neither water nor tropicalFish have a task with the name distanceToIceberg. Gradle does not care. The simple rule mentioned already above is: Execute all tasks down the hierarchy which have this name. Only complain if there is no such task!
 
-## **56.4. 通过绝对路径运行任务**
+## **59.4. 通过绝对路径运行任务**
 
-56.4. Running tasks by their absolute path
+59.4. Running tasks by their absolute path
 
 正如我们所见,你可以通过输入任何子项目的路径和从该路径执行构建来运行一个多项目构建.从当前路径的项目层次的所有匹配的任务将被执行.但是Gradle也提供通过绝对路径来执行任务(参见56.5章节,“Project and task paths”)
 
