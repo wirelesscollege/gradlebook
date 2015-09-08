@@ -50,5 +50,3 @@ Using Gradle's build-by-convention support for Groovy projects.
 介绍Gradle如何支持Web工程的构建.
 
 Using Gradle's build-by-convention support for Web applications.
-
-百度搜索[无线学院](http://wirelesscollege.cn)
