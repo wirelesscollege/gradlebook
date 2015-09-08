@@ -1,7 +1,7 @@
 # Summary
 
 * [introduction](README.md)
-   * 序
+   * [序](xu.md)
 * [Chapter 1. Introduction](chapter1.md)
 * [Chapter 2. Overview](chapter_2_overview.md)
 * [Chapter 3. Tutorials](chapter_3_overview.md)
@@ -71,5 +71,4 @@
 * [Chapter 67. Ivy Publishing (new)](chapter_67_overview.md)
 * [Chapter 68. Maven Publishing (new)](chapter_68_overview.md)
 * [Chapter 69. Rule based model configuration](chapter_69_overview.md)
-* A. Gradle Samples
 
